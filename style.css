@@ -1,0 +1,16 @@
+#header {
+    height: 200px;
+    width: 100%;
+    background-color: white;
+    border-width: 2px;
+    border-color: black;
+    border-style: solid;
+}
+
+#subheader {
+    padding: 5% 0
+}
+
+#name, #occupation {
+    text-align: center;    
+}
