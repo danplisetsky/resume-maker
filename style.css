@@ -1,16 +1,19 @@
 #header {
-    height: 200px;
+    height: 100px;
     width: 100%;
     background-color: white;
     border-width: 2px;
     border-color: black;
     border-style: solid;
+    display: table;
 }
 
 #subheader {
-    padding: 5% 0
+    padding: 10% 0;
 }
 
 #name, #occupation {
-    text-align: center;    
+    text-align: center;
+    width: fit-content;
+    margin: auto;  
 }
