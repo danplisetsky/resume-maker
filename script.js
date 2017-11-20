@@ -27,5 +27,32 @@
         });
     };
 
-    attachColorPickers("canPickColor")
+    const createInput = el => {
+        let input = document.createElement('input');
+        input.setAttribute('type', 'text');
+        input.setAttribute('value', el.innerHTML);
+
+        input.onkeydown = ev => {
+            if (ev.code == 'Enter') {
+                el.innerHTML = input.value;
+                el.style.visibility = 'visible';
+                input.parentNode.removeChild(input);
+            }
+        };
+
+        return input;
+    };
+
+    const attachEditBehavior = className => {
+        let els = [...document.getElementsByClassName(className)];
+        els.forEach(el => {
+            el.ondblclick = ev => {
+                el.parentNode.insertBefore(createInput(el), el.nextSibling);
+                el.style.visibility = 'hidden';
+            };
+        })
+    };
+
+    attachColorPickers('canPickColor');
+    attachEditBehavior('canEdit');
 })();
