@@ -39,6 +39,15 @@ h3 {
     grid-row: 1;
 }
 
+.inline * {
+    display: inline;
+}
+
+.description {
+    color: lightslategray;
+}
+
+
 #skills {
     grid-column: 1;
     grid-row: 2;

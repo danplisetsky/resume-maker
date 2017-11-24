@@ -41,11 +41,13 @@
             input.style.fontSize = getComputedStyle(el).fontSize;
             input.style.fontWeight = getComputedStyle(el).fontWeight;
 
+            const prevDisplay = el.style.display;
+
             input.onkeydown = ev => {
                 if (ev.code == 'Enter') {
                     el.innerText = input.value;
-                    el.style.display = 'block';
-                    input.parentNode.removeChild(input);
+                    el.style.display = prevDisplay;
+                    input.parentNode.parentNode.removeChild(input.parentNode);
                 }
             };
 
