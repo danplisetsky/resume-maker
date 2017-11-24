@@ -1,7 +1,7 @@
 #header {
     height: 100px;
     width: 100%;
-    background-color: grey;
+    background-color: black;
     display: table;
 }
 
@@ -31,6 +31,7 @@
 h3 {    
     margin-bottom: 0;
     color: navy;
+    width: fit-content;
 }
 
 #contact {
@@ -48,6 +49,10 @@ h3 {
 #colorPicker {
     position: absolute;
     margin: 0;
+}
+
+#bckgColorPicker {
+    display: none;
 }
 
 input[type='text'] {

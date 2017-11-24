@@ -32,37 +32,60 @@
     };
 
     const attachEditBehavior = el => {
-        el.ondblclick = ev => {
 
-            const createInput = el => {
-                let input = document.createElement('input');
-                input.setAttribute('type', 'text');
-                input.setAttribute('value', el.innerText);
+        const createInput = el => {
+            let input = document.createElement('input');
+            input.setAttribute('type', 'text');
+            input.setAttribute('value', el.innerText);
 
-                input.style.fontSize = getComputedStyle(el).fontSize;
-                input.style.fontWeight = getComputedStyle(el).fontWeight;
+            input.style.fontSize = getComputedStyle(el).fontSize;
+            input.style.fontWeight = getComputedStyle(el).fontWeight;
 
-                input.onkeydown = ev => {
-                    if (ev.code == 'Enter') {
-                        el.innerText = input.value;
-                        el.style.display = 'block';
-                        input.parentNode.removeChild(input);
-                    }
-                };
-
-                let div = document.createElement('div');
-                div.appendChild(input);
-
-                return div;
+            input.onkeydown = ev => {
+                if (ev.code == 'Enter') {
+                    el.innerText = input.value;
+                    el.style.display = 'block';
+                    input.parentNode.removeChild(input);
+                }
             };
 
+            let div = document.createElement('div');
+            div.appendChild(input);
+
+            return div;
+        };
+
+        el.ondblclick = ev => {
             let input = createInput(el);
             el.parentNode.insertBefore(input, el.nextSibling);
             input.firstChild.focus();
             el.style.display = 'none';
-        }
+        };
     };
 
+    const attachBckgColorPickers = el => {
+
+        const createColorPicker = el => {
+            let colorPicker = document.createElement('input');
+            colorPicker.setAttribute('type', 'color');
+            colorPicker.setAttribute('id', 'bckgColorPicker');
+
+            colorPicker.onchange = ev => {
+                el.style.backgroundColor = ev.target.value;
+                colorPicker.parentNode.removeChild(colorPicker);
+            };
+
+            return colorPicker;
+        };
+
+        el.ondblclick = ev => {
+            let colorPicker = createColorPicker(el);
+            el.parentNode.insertBefore(colorPicker, el.nextSibling);
+            colorPicker.click();
+        };
+    };
+
+    forEachElemOfClass('canPickBackgroundColor')(attachBckgColorPickers);
     forEachElemOfClass('canEdit')(attachEditBehavior);
     forEachElemOfClass('canPickColor')(attachColorPickers);
 })();
