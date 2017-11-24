@@ -60,6 +60,7 @@
             el.parentNode.insertBefore(input, el.nextSibling);
             input.firstChild.focus();
             el.style.display = 'none';
+            ev.stopPropagation();
         };
     };
 
