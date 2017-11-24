@@ -32,23 +32,31 @@
         input.setAttribute('type', 'text');
         input.setAttribute('value', el.innerHTML);
 
+        input.style.fontSize = getComputedStyle(el).fontSize;        
+        input.style.fontWeight = getComputedStyle(el).fontWeight;
+
         input.onkeydown = ev => {
             if (ev.code == 'Enter') {
                 el.innerHTML = input.value;
-                el.style.visibility = 'visible';
+                el.style.display = 'block';
                 input.parentNode.removeChild(input);
             }
         };
 
-        return input;
+        let div = document.createElement('div');
+        div.appendChild(input);
+
+        return div;
     };
 
     const attachEditBehavior = className => {
         let els = [...document.getElementsByClassName(className)];
         els.forEach(el => {
             el.ondblclick = ev => {
-                el.parentNode.insertBefore(createInput(el), el.nextSibling);
-                el.style.visibility = 'hidden';
+                let input = createInput(el);
+                el.parentNode.insertBefore(input, el.nextSibling);
+                input.firstChild.focus();
+                el.style.display = 'none';
             };
         })
     };
