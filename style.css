@@ -12,17 +12,48 @@
 #name, #occupation {
     text-align: center;
     width: fit-content;
-    margin: auto;  
+    margin: auto;
     color: whitesmoke;
+}
+
+#wrapper {
+    margin: auto 5%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+}
+
+.section p {
+    margin: 0;
+}
+
+h3 {    
+    margin-bottom: 0;
+    color: navy;
+}
+
+#contact {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+#skills {
+    grid-column: 1;
+    grid-row: 2;
 }
 
 /* JS-created elements */
 
 #colorPicker {
     position: absolute;
+    margin: 0;
 }
 
 input[type='text'] {
     display: block;
-    margin: auto;
+ }
+
+ #subheader input[type='text'] {
+     margin: auto;
  }
