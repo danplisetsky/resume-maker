@@ -47,10 +47,17 @@ h3 {
     color: lightslategray;
 }
 
-
 #skills {
     grid-column: 1;
     grid-row: 2;
+}
+
+.multiple :not(.description) {
+    margin-left: 10px;
+}
+
+#languages {
+    grid-area: languages;
 }
 
 /* JS-created elements */
