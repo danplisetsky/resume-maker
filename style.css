@@ -19,9 +19,17 @@
 #wrapper {
     margin: auto 5%;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
     grid-gap: 10px;
     grid-auto-rows: minmax(100px, auto);
+    grid-template-areas: 
+        'contact projs'
+        'skills xp'
+        'langs education';
+}
+
+#contact {
+    grid-area: contact;
 }
 
 .section p {
@@ -34,11 +42,6 @@ h3 {
     width: fit-content;
 }
 
-#contact {
-    grid-column: 1;
-    grid-row: 1;
-}
-
 .inline * {
     display: inline;
 }
@@ -47,10 +50,8 @@ h3 {
     color: lightslategray;
 }
 
-
 #skills {
-    grid-column: 1;
-    grid-row: 2;
+    grid-area: skills;
 }
 
 /* JS-created elements */
@@ -64,7 +65,7 @@ h3 {
     display: none;
 }
 
-input[type='text'] {
+.block input[type='text'] {
     display: block;
  }
 
