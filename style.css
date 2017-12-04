@@ -16,16 +16,19 @@
     color: whitesmoke;
 }
 
-#wrapper {
-    margin: auto 5%;
+#grid {
+    margin: auto 3%;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 4fr;
     grid-gap: 10px;
-    grid-auto-rows: minmax(100px, auto);
-    grid-template-areas: 
-        'contact projs'
-        'skills xp'
-        'langs education';
+}
+
+#fstColumn {
+    display: grid;
+    grid-template-areas:
+        'contact'
+        'skills'
+        'langs'
 }
 
 #contact {
