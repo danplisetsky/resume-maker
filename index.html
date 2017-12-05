@@ -5,140 +5,158 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="style.css">
     <title>Resume Maker</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="script/FileSaver.min.js"></script>
+    <script src="script/domJSON.min.js"></script>
 </head>
 
 <body>
-    <div id="header" class="canPickBackgroundColor">
-        <div id="subheader" class="block">
-            <h1 id="name" class="canPickColor canEdit">John Doe</h1>
-            <h2 id="occupation" class="canPickColor canEdit">software developer</h3>
-        </div>
+
+    <div id="buttons">
+        <button type="submit" id="saveCV">save CV</button>
+        <br>
+        <label for="loadCV">load CV</label>
+        <input id="loadCV" type="file" accept=".cv">
     </div>
 
-    <div id="grid">
+    <div id="CV">
 
-        <div id="fstColumn">
-
-            <div id="contact" class="section">
-                <h3 class="canPickColor">contact</h3>
-                <p class="canEdit">johndoe@example.com</p>
-                <p class="canEdit">+1 555 1234</p>
-                <div class="inline">
-                    <p class="description">blog</p>
-                    <p class="canEdit">johndoe.github.io</p>
-                </div>
-                <div class="inline">
-                    <p class="description">twitter</p>
-                    <p class="canEdit">@johndoe</p>
-                </div>
-                <div class="inline">
-                    <p class="description">github</p>
-                    <p class="canEdit">johndoe</p>
-                </div>
-            </div>
-            <div id="skills" class="section">
-                <h3 class="canPickColor">skills</h3>
-                <div class="multiple">
-                    <p class="description canEdit">proficient</p>
-                    <p class="canEdit">C#</p>
-                    <p class="canEdit">Git</p>
-                </div>
-                <div class="multiple">
-                    <p class="description canEdit">comfortable</p>
-                    <p class="canEdit">JavaScript</p>
-                    <p class="canEdit">HTML/CSS</p>
-                </div>
-                <div class="multiple">
-                    <p class="description canEdit">familiar</p>
-                    <p class="canEdit">Haskell</p>
-                    <p class="canEdit">Linux (Mint)</p>
-                </div>
-            </div>
-            <div id="languages" class="section">
-                <h3 class="canPickColor">languages</h3>
-                <div class="multiple">
-                    <p class="description canEdit">native</p>
-                    <p class="canEdit">Russian</p>
-                </div>
-                <div class="multiple">
-                    <p class="description canEdit">native-like</p>
-                    <p class="canEdit">English</p>
-                </div>
-                <div class="multiple">
-                    <p class="description canEdit">intermediate</p>
-                    <p class="canEdit">Hebrew</p>
-                </div>
+        <div id="header" class="canPickBackgroundColor">
+            <div id="subheader" class="block">
+                <h1 id="name" class="canPickColor canEdit">John Doe</h1>
+                <h2 id="occupation" class="canPickColor canEdit">software developer</h3>
             </div>
         </div>
 
-        <div id="sndColumn">
+        <div id="grid">
 
-            <div id="projects" class="section">
-                <h3 class="canPickColor">selected projects</h3>
-                <div class="project">
-                    <p class="projName canEdit">Soldier Details</p>
-                    <p class="projDescription canEdit">A tool to view soldier details offline</p>
-                    <p class="link canEdit">github.com/???</p>
-                    <ul class="details">
-                        <li class="canEdit">Developed graphical Windows app using WPF w/ MVVM & C#</li>
-                        <li class="canEdit">Built backend logic using functional patterns</li>
-                        </ol>
+            <div id="fstColumn">
+
+                <div id="contact" class="section">
+                    <h3 class="canPickColor">contact</h3>
+                    <p class="canEdit">johndoe@example.com</p>
+                    <p class="canEdit">+1 555 1234</p>
+                    <div class="inline">
+                        <p class="description">blog</p>
+                        <p class="canEdit">johndoe.github.io</p>
+                    </div>
+                    <div class="inline">
+                        <p class="description">twitter</p>
+                        <p class="canEdit">@johndoe</p>
+                    </div>
+                    <div class="inline">
+                        <p class="description">github</p>
+                        <p class="canEdit">johndoe</p>
+                    </div>
                 </div>
-
-                <div class="project">
-                    <p class="projName canEdit">Guard Duty Scheduler</p>
-                    <p class="projDescription canEdit">A tool to create a reasonable and fair guard duty schedule</p>
-                    <p class="link canEdit">?????</p>
-                    <ul class="details">
-                        <li class="canEdit">Developed graphical Windows app using WPF w/ MVVM & C#</li>
-                        <li class="canEdit">Discovered the importance of TDD and built the app from the ground-up using TDD</li>
-                    </ul>
+                <div id="skills" class="section">
+                    <h3 class="canPickColor">skills</h3>
+                    <div class="multiple">
+                        <p class="description canEdit">proficient</p>
+                        <p class="canEdit">C#</p>
+                        <p class="canEdit">Git</p>
+                    </div>
+                    <div class="multiple">
+                        <p class="description canEdit">comfortable</p>
+                        <p class="canEdit">JavaScript</p>
+                        <p class="canEdit">HTML/CSS</p>
+                    </div>
+                    <div class="multiple">
+                        <p class="description canEdit">familiar</p>
+                        <p class="canEdit">Haskell</p>
+                        <p class="canEdit">Linux (Mint)</p>
+                    </div>
+                </div>
+                <div id="languages" class="section">
+                    <h3 class="canPickColor">languages</h3>
+                    <div class="multiple">
+                        <p class="description canEdit">native</p>
+                        <p class="canEdit">Russian</p>
+                    </div>
+                    <div class="multiple">
+                        <p class="description canEdit">native-like</p>
+                        <p class="canEdit">English</p>
+                    </div>
+                    <div class="multiple">
+                        <p class="description canEdit">intermediate</p>
+                        <p class="canEdit">Hebrew</p>
+                    </div>
                 </div>
             </div>
 
-            <div id="xp" class="section">
-                <h3 class="canPickColor">experience</h3>
-                <div class="job">
-                    <p class="date canEdit">08/2016 -- Present </p>
-                    <div class="jobDetails">
-                        <p class="companyName canEdit">IDF</p>
-                        <p class="jobTitle canEdit">Developer</p>
-                        <p class="location canEdit">Israel</p>
+            <div id="sndColumn">
+
+                <div id="projects" class="section">
+                    <h3 class="canPickColor">selected projects</h3>
+                    <div class="project">
+                        <p class="projName canEdit">Soldier Details</p>
+                        <p class="projDescription canEdit">A tool to view soldier details offline</p>
+                        <p class="link canEdit">github.com/???</p>
                         <ul class="details">
-                            <li class="canEdit">Develop applications for the IDF's internal use</li>
-                        </ul>
+                            <li class="canEdit">Developed graphical Windows app using WPF w/ MVVM & C#</li>
+                            <li class="canEdit">Built backend logic using functional patterns</li>
+                            </ol>
                     </div>
-                </div>
-                <div class="job">
-                    <p class="date canEdit">02-07/2015</p>
-                    <div class="jobDetails">
-                        <p class="companyName canEdit">BASICALLY</p>
-                        <p class="jobTitle canEdit">Staff Writer and Editor & ad hoc Developer</p>
-                        <p class="location canEdit">Jerusalem, Israel</p>
+
+                    <div class="project">
+                        <p class="projName canEdit">Guard Duty Scheduler</p>
+                        <p class="projDescription canEdit">A tool to create a reasonable and fair guard duty schedule</p>
+                        <p class="link canEdit">?????</p>
                         <ul class="details">
-                            <li class="canEdit">Wrote c# apps that helped streamline the process of formatting and delivering content to the Android app and the newsletter</li>
+                            <li class="canEdit">Developed graphical Windows app using WPF w/ MVVM & C#</li>
+                            <li class="canEdit">Discovered the importance of TDD and built the app from the ground-up using TDD</li>
                         </ul>
                     </div>
                 </div>
 
-            </div>
+                <div id="xp" class="section">
+                    <h3 class="canPickColor">experience</h3>
+                    <div class="job">
+                        <p class="date canEdit">08/2016 -- Present </p>
+                        <div class="jobDetails">
+                            <p class="companyName canEdit">IDF</p>
+                            <p class="jobTitle canEdit">Developer</p>
+                            <p class="location canEdit">Israel</p>
+                            <ul class="details">
+                                <li class="canEdit">Develop applications for the IDF's internal use</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="job">
+                        <p class="date canEdit">02-07/2015</p>
+                        <div class="jobDetails">
+                            <p class="companyName canEdit">BASICALLY</p>
+                            <p class="jobTitle canEdit">Staff Writer and Editor & ad hoc Developer</p>
+                            <p class="location canEdit">Jerusalem, Israel</p>
+                            <ul class="details">
+                                <li class="canEdit">Wrote c# apps that helped streamline the process of formatting and delivering content to
+                                    the Android app and the newsletter</li>
+                            </ul>
+                        </div>
+                    </div>
 
-            <div id="education" class="section">
-                <h3 class="canPickColor">education</h3>
-                <div class="degree">
-                    <p class="date canEdit">2008-2013</p>
-                    <div class="degreeDetails">
-                        <p class="degreeName canEdit">Specialist (5 yrs) Applied Mathematics & Informatics</p>                        
-                        <p class="schoolName canEdit">National Research Nuclear University 'MEPhI', Moscow, Russia</p>
+                </div>
+
+                <div id="education" class="section">
+                    <h3 class="canPickColor">education</h3>
+                    <div class="degree">
+                        <p class="date canEdit">2008-2013</p>
+                        <div class="degreeDetails">
+                            <p class="degreeName canEdit">Specialist (5 yrs) Applied Mathematics & Informatics</p>
+                            <p class="schoolName canEdit">National Research Nuclear University 'MEPhI', Moscow, Russia</p>
+                        </div>
                     </div>
                 </div>
+
             </div>
 
-        </div>
 
+        </div>
     </div>
+
 
     <script src="script.js"></script>
 </body>
