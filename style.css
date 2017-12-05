@@ -155,10 +155,15 @@ h3 {
     display: none;
 }
 
+input[type='text'] {
+    width: -webkit-fill-available;
+}
+
 .block input[type='text'] {
     display: block;
  }
 
  #subheader input[type='text'] {
      margin: auto;
- }
+     width: auto;
+ } 
