@@ -1,8 +1,8 @@
 (function () {
 
-    const forEachElemOfClass = className =>
+    const forEachElem = selector =>
         action => {
-            const els = [...document.getElementsByClassName(className)];
+            const els = [...document.querySelectorAll(selector)];
             els.forEach(el => action(el));
         }
 
@@ -89,9 +89,9 @@
     };
 
     const wireupBehavior = () => {
-        forEachElemOfClass('canPickBackgroundColor')(attachBckgColorPickers);
-        forEachElemOfClass('canEdit')(attachEditBehavior);
-        forEachElemOfClass('canPickColor')(attachColorPickers);
+        forEachElem('.canPickBackgroundColor')(attachBckgColorPickers);
+        forEachElem('.canEdit')(attachEditBehavior);
+        forEachElem('.canPickColor')(attachColorPickers);
     };
 
     const save = id => {
@@ -132,5 +132,7 @@
         save('saveCV');
         load('loadCV');
     };
+
+    
 
 })();
