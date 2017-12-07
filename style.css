@@ -75,6 +75,10 @@ h3 {
     margin-left: 10px;
 }
 
+.multiple {
+    width: fit-content;
+}
+
 #languages {
     grid-area: langs;
 }
@@ -144,9 +148,17 @@ h3 {
     grid-area: education;
 }
 
+#footer {
+    font-size: xx-small;
+}
+
+.canEdit {
+    width: fit-content;
+}
+
 /* JS-created elements */
 
-#colorPicker {
+.colorPicker {
     position: absolute;
     margin: 0;
 }
@@ -166,4 +178,15 @@ input[type='text'] {
  #subheader input[type='text'] {
      margin: auto;
      width: auto;
- } 
+ }
+
+ .actionContainer {
+     position: absolute;
+     /* border: 2px solid  red; */
+     margin: 0; 
+}
+
+.actionIcon {
+    width: 16px;
+    height: 16px;
+}
