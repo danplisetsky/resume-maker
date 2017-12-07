@@ -220,20 +220,4 @@
     forEachElem('#grid .job li', DeleteAction.DeleteSelfAndParentIfLast)(attachDeleteBehavior);
     forEachElem('#grid .degree>p.date', DeleteAction.DeleteParent)(attachDeleteBehavior);
     forEachElem('#grid .degree p:not(.date)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
-
-
-    // const removeElem = elem => {
-    //     elem.onclick = ev => {
-    //         console.log(ev.target);
-    //         elem.parentNode.removeChild(elem);
-    //         ev.stopPropagation();
-    //     };    
-    // };
-
-    // forEachElem('#grid *:not(.subgrid):not(.section)')(attachDeleteBehavior);
-    // console.log(document.querySelectorAll('#grid *:not(.subgrid):not(.section)'));
-
-    // forEachElem('#grid .canEdit')(attachDeleteBehavior);
-    // forEachElem('#grid h3')(attachDeleteBehavior);
-
 })();
