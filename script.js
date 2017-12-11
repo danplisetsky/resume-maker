@@ -1,42 +1,72 @@
 (function () {
 
+    HTMLElement.prototype.insertAfter = function (newElement) {
+        this.parentNode.insertBefore(newElement, this.nextSibling);
+    };
+
+    MouseEvent.prototype.getClientXY = function () {
+        return [this.clientX, this.clientY];
+    };
+
     const DeleteAction = {
         DeleteParent: 1,
         DeleteSelf: 2,
         DeleteSelfAndParentIfLast: 3
     };
 
-    const forEachElem = (selector, ...args) =>
-        action => {
+    const forEachElem = selector =>
+        (action, ...args) => {
             const els = [...document.querySelectorAll(selector)];
             els.forEach(el => action(el, args));
         }
 
+    const createElement = (tag, attributes) => {
+        const elem = document.createElement(tag);
+        for (const attr in attributes) {
+            if (attr == 'style') {
+                for (const rule in attributes.style) {
+                    elem.style[rule] = attributes.style[rule];
+                }
+            }
+            else
+                elem[attr] = attributes[attr];
+        }
+        return elem;
+    };
+
+    const deleteElementIfNotHoveredOver = (elem, [[clientX, clientY], offset = {
+        left: 0, top: 0, right: 0, bottom: 0
+    }]) => {
+        const coord = elem.getBoundingClientRect();
+        if (!(coord.left <= clientX + offset.left && clientX - offset.right <= coord.right && coord.top <= clientY + offset.top && clientY - offset.bottom <= coord.bottom))
+            elem.remove();
+    };
+
+
+
     const attachColorPickers = el => {
 
         const createColorPicker = (el, left) => {
-            const colorPicker = document.createElement('input');
-            colorPicker.setAttribute('type', 'color');
-            colorPicker.className = 'colorPicker';
-            colorPicker.style.left = `${left - 22}px`;
-
-            colorPicker.onchange = ev => el.style.color = ev.target.value;
-
-            colorPicker.onmouseleave = ev => colorPicker.parentNode.removeChild(colorPicker);
+            const colorPicker = createElement('input', {
+                className: 'colorPicker',
+                type: 'color',
+                style: {
+                    left: `${left - 22}px`
+                },
+                onchange: ev => el.style.color = ev.target.value,
+                onmouseleave: ev => colorPicker.remove()
+            });
 
             return colorPicker;
         };
 
-        el.addEventListener('mouseover', ev => el.parentNode.insertBefore(createColorPicker(el, ev.clientX), el.nextSibling));
+        el.addEventListener('mouseover', ev =>
+            el.insertAfter(createColorPicker(el, ev.clientX)));
 
-        el.addEventListener('mouseleave', ev => {
-            forEachElem('.colorPicker')(colorPicker => {
-                const coord = colorPicker.getBoundingClientRect();
-                if (!(coord.left <= ev.clientX && ev.clientX <= coord.right && coord.top <= ev.clientY + 10 && ev.clientY <= coord.bottom))
-                    el.parentNode.removeChild(colorPicker);                
-            });
-        });
+        el.addEventListener('mouseleave', ev =>
+            forEachElem('.colorPicker')(deleteElementIfNotHoveredOver, ev.getClientXY(), { top: 10 }));
     };
+
 
     const attachEditBehavior = el => {
 
@@ -171,7 +201,7 @@
                         el.parentNode.parentNode.removeChild(el.parentNode);
                         break;
                     case DeleteAction.DeleteSelf:
-                        el.parentNode.removeChild(el);    
+                        el.parentNode.removeChild(el);
                         break;
                     case DeleteAction.DeleteSelfAndParentIfLast:
                         if (el.parentNode.querySelectorAll('li').length == 1)
@@ -198,7 +228,7 @@
             forEachElem('.actionContainer')(actionContainer => {
                 const coord = actionContainer.getBoundingClientRect();
                 if (!(coord.left <= ev.clientX + 10 && ev.clientX <= coord.right && coord.top <= ev.clientY && ev.clientY <= coord.bottom))
-                    el.parentNode.removeChild(actionContainer);
+                    actionContainer.parentNode.removeChild(actionContainer);
             });
         });
 
