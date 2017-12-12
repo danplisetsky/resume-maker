@@ -45,7 +45,7 @@
     const deleteElementIfNotHoveredOver = (
         elem,
         [[clientX, clientY],
-        { left = 0, top = 0, right = 0, bottom = 0 }]) => {
+            { left = 0, top = 0, right = 0, bottom = 0 }]) => {
         const coord = elem.getBoundingClientRect();
         if (!(coord.left <= clientX + left && clientX - right <= coord.right && coord.top <= clientY + top && clientY - bottom <= coord.bottom))
             elem.remove();
@@ -81,7 +81,7 @@
         const createInput = () => {
             const elStyle = getComputedStyle(el);
             const prevDisplay = el.style.display;
-            
+
             const input = createElement('input', {
                 type: 'text',
                 value: el.innerText,
@@ -114,24 +114,24 @@
 
     const attachBckgColorPickers = el => {
 
-        const createColorPicker = el => {
-            const colorPicker = document.createElement('input');
-            colorPicker.setAttribute('type', 'color');
-            colorPicker.setAttribute('id', 'bckgColorPicker');
-
-            colorPicker.onchange = ev => {
-                el.style.backgroundColor = ev.target.value;
-                colorPicker.parentNode.removeChild(colorPicker);
-            };
+        const createColorPicker = () => {
+            const colorPicker = createElement('input', {
+                type: 'color',
+                id: 'bckgColorPicker',
+                onchange: ev => {
+                    el.style.backgroundColor = ev.target.value;
+                    colorPicker.remove();
+                }
+            });
 
             return colorPicker;
         };
 
-        el.ondblclick = ev => {
-            const colorPicker = createColorPicker(el);
-            el.parentNode.insertBefore(colorPicker, el.nextSibling);
+        el.addEventListener('dblclick', ev => {
+            const colorPicker = createColorPicker();
+            el.insertAfter(colorPicker);
             colorPicker.click();
-        };
+        });
     };
 
     const wireupBehavior = () => {
