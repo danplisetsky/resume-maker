@@ -59,6 +59,10 @@ h3 {
     width: fit-content;
 }
 
+.inline {
+    width: fit-content;
+}
+
 .inline * {
     display: inline;
 }
@@ -71,7 +75,7 @@ h3 {
     grid-area: skills;
 }
 
-.multiple :not(.description) {
+.multiple>p:not(.description) {
     margin-left: 10px;
 }
 

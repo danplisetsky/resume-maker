@@ -202,7 +202,7 @@
                 },
                 children: [img],
                 onmouseleave: ev => actionContainer.remove()
-            });         
+            });
 
             return actionContainer;
         };
@@ -222,7 +222,14 @@
 
     const deleteMap = new Map([
         ['.nameOfSection', DeleteAction.DeleteParent],
-        ['.section>p', DeleteAction.DeleteSelf]
+        ['.section>p', DeleteAction.DeleteSelf],
+        ['div.inline', DeleteAction.DeleteSelf],
+        ['div.multiple>p.description', DeleteAction.DeleteParent],
+        ['div.multiple>p:not(.description)', DeleteAction.DeleteSelf],
+        ['div.project>p.projName', DeleteAction.DeleteParent],
+        ['div.project>p:not(.projName)', DeleteAction.DeleteSelf],
+        ['div.project li', DeleteAction.DeleteSelfAndParentIfLast],
+        ['div.job>p.date', DeleteAction.DeleteParent]
     ]);
 
     const deleteStuff = deleteMap => {
@@ -233,20 +240,22 @@
 
     deleteStuff(deleteMap);
 
+    
+    // forEachElem('#grid .job>p.date', DeleteAction.DeleteParent)(attachDeleteBehavior);
+    // forEachElem('#grid .job p:not(.date)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
+    // forEachElem('#grid .job li', DeleteAction.DeleteSelfAndParentIfLast)(attachDeleteBehavior);
+    // forEachElem('#grid .degree>p.date', DeleteAction.DeleteParent)(attachDeleteBehavior);
+    // forEachElem('#grid .degree p:not(.date)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
+
+    // forEachElem('#grid .project>p.projName', DeleteAction.DeleteParent)(attachDeleteBehavior);
+    // forEachElem('#grid .project p:not(.projName)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
+    // forEachElem('#grid .project li', DeleteAction.DeleteSelfAndParentIfLast)(attachDeleteBehavior);
 
     // forEachElem('#grid .nameOfSection', DeleteAction.DeleteParent)(attachDeleteBehavior);
     // forEachElem('#grid .section>p', DeleteAction.DeleteSelf)(attachDeleteBehavior);
     // forEachElem('#grid div.inline', DeleteAction.DeleteSelf)(attachDeleteBehavior);
     // forEachElem('#grid .multiple>p.description', DeleteAction.DeleteParent)(attachDeleteBehavior);
     // forEachElem('#grid .multiple>p:not(.description)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
-    // forEachElem('#grid .project>p.projName', DeleteAction.DeleteParent)(attachDeleteBehavior);
-    // forEachElem('#grid .project p:not(.projName)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
-    // forEachElem('#grid .project li', DeleteAction.DeleteSelfAndParentIfLast)(attachDeleteBehavior);
-    // forEachElem('#grid .job>p.date', DeleteAction.DeleteParent)(attachDeleteBehavior);
-    // forEachElem('#grid .job p:not(.date)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
-    // forEachElem('#grid .job li', DeleteAction.DeleteSelfAndParentIfLast)(attachDeleteBehavior);
-    // forEachElem('#grid .degree>p.date', DeleteAction.DeleteParent)(attachDeleteBehavior);
-    // forEachElem('#grid .degree p:not(.date)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
 
 
 
