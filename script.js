@@ -170,80 +170,83 @@
 
     const attachDeleteBehavior = (el, deleteAction) => {
 
-        const createDivWithIcons = el => {
-            const actionContainer = document.createElement('div');
-            actionContainer.className = 'actionContainer';
-
-            const coord = el.getBoundingClientRect();
-            const elStyle = getComputedStyle(el);
-
-            actionContainer.style.left = `${el.offsetLeft + el.offsetWidth + 3}px`;
-            actionContainer.style.top = `${el.offsetTop + 3}px`;
-
-            actionContainer.onmouseleave = ev => {
-                actionContainer.parentNode.removeChild(actionContainer);
-            };
-
-            const img = document.createElement('img');
-            img.className = 'actionIcon';
-            img.src = 'img/delete.svg';
-            img.alt = img.src.match(/\/(\w+).svg$/)[1];
-
-            img.onclick = ev => {
-                switch (deleteAction[0]) {
-                    case DeleteAction.DeleteParent:
-                        el.parentNode.parentNode.removeChild(el.parentNode);
-                        break;
-                    case DeleteAction.DeleteSelf:
-                        el.parentNode.removeChild(el);
-                        break;
-                    case DeleteAction.DeleteSelfAndParentIfLast:
-                        if (el.parentNode.querySelectorAll('li').length === 1)
-                            el.parentNode.parentNode.removeChild(el.parentNode);
-                        else
-                            el.parentNode.removeChild(el);
-                        break;
+        const createDivWithIcons = () => {
+            const img = createElement('img', {
+                className: 'actionIcon',
+                src: 'img/delete.svg',
+                alt: 'img/delete.svg'.match(/\/(\w+).svg$/)[1],
+                onclick: ev => {
+                    switch (deleteAction[0]) {
+                        case DeleteAction.DeleteParent:
+                            el.parentNode.remove();
+                            break;
+                        case DeleteAction.DeleteSelf:
+                            el.remove();
+                            break;
+                        case DeleteAction.DeleteSelfAndParentIfLast:
+                            if (el.parentNode.querySelectorAll('li').length === 1)
+                                el.parentNode.remove();
+                            else
+                                el.remove();
+                            break;
+                    }
+                    actionContainer.remove();
                 }
-                actionContainer.parentNode.removeChild(actionContainer);
-            };
+            });
 
-            actionContainer.appendChild(img);
+            const actionContainer = createElement('div', {
+                className: 'actionContainer',
+                style: {
+                    left: `${el.offsetLeft + el.offsetWidth + 3}px`,
+                    top: `${el.offsetTop + 3}px`
+                },
+                children: [img],
+                onmouseleave: ev => actionContainer.remove()
+            });         
 
             return actionContainer;
         };
 
-
         el.addEventListener('mouseover', ev => {
-            el.parentNode.insertBefore(createDivWithIcons(el),
-                el.nextSibling);
+            el.insertAfter(createDivWithIcons());
         });
 
         el.addEventListener('mouseleave', ev => {
-            forEachElem('.actionContainer')(actionContainer => {
-                const coord = actionContainer.getBoundingClientRect();
-                if (!(coord.left <= ev.clientX + 10 && ev.clientX <= coord.right && coord.top <= ev.clientY && ev.clientY <= coord.bottom))
-                    actionContainer.parentNode.removeChild(actionContainer);
-            });
+            forEachElem('.actionContainer')
+                (deleteElementIfNotHoveredOver,
+                ev.getClientXY(), { left: 10 });
         });
 
     };
 
 
+    const deleteMap = new Map([
+        ['.nameOfSection', DeleteAction.DeleteParent],
+        ['.section>p', DeleteAction.DeleteSelf]
+    ]);
+
+    const deleteStuff = deleteMap => {
+        deleteMap.forEach((value, key, _) => {
+            forEachElem('#grid '.concat(key))(attachDeleteBehavior, value)
+        });
+    };
+
+    deleteStuff(deleteMap);
 
 
-    forEachElem('#grid .nameOfSection', DeleteAction.DeleteParent)(attachDeleteBehavior);
-    forEachElem('#grid .section>p', DeleteAction.DeleteSelf)(attachDeleteBehavior);
-    forEachElem('#grid div.inline', DeleteAction.DeleteSelf)(attachDeleteBehavior);
-    forEachElem('#grid .multiple>p.description', DeleteAction.DeleteParent)(attachDeleteBehavior);
-    forEachElem('#grid .multiple>p:not(.description)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
-    forEachElem('#grid .project>p.projName', DeleteAction.DeleteParent)(attachDeleteBehavior);
-    forEachElem('#grid .project p:not(.projName)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
-    forEachElem('#grid .project li', DeleteAction.DeleteSelfAndParentIfLast)(attachDeleteBehavior);
-    forEachElem('#grid .job>p.date', DeleteAction.DeleteParent)(attachDeleteBehavior);
-    forEachElem('#grid .job p:not(.date)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
-    forEachElem('#grid .job li', DeleteAction.DeleteSelfAndParentIfLast)(attachDeleteBehavior);
-    forEachElem('#grid .degree>p.date', DeleteAction.DeleteParent)(attachDeleteBehavior);
-    forEachElem('#grid .degree p:not(.date)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
+    // forEachElem('#grid .nameOfSection', DeleteAction.DeleteParent)(attachDeleteBehavior);
+    // forEachElem('#grid .section>p', DeleteAction.DeleteSelf)(attachDeleteBehavior);
+    // forEachElem('#grid div.inline', DeleteAction.DeleteSelf)(attachDeleteBehavior);
+    // forEachElem('#grid .multiple>p.description', DeleteAction.DeleteParent)(attachDeleteBehavior);
+    // forEachElem('#grid .multiple>p:not(.description)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
+    // forEachElem('#grid .project>p.projName', DeleteAction.DeleteParent)(attachDeleteBehavior);
+    // forEachElem('#grid .project p:not(.projName)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
+    // forEachElem('#grid .project li', DeleteAction.DeleteSelfAndParentIfLast)(attachDeleteBehavior);
+    // forEachElem('#grid .job>p.date', DeleteAction.DeleteParent)(attachDeleteBehavior);
+    // forEachElem('#grid .job p:not(.date)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
+    // forEachElem('#grid .job li', DeleteAction.DeleteSelfAndParentIfLast)(attachDeleteBehavior);
+    // forEachElem('#grid .degree>p.date', DeleteAction.DeleteParent)(attachDeleteBehavior);
+    // forEachElem('#grid .degree p:not(.date)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
 
 
 
@@ -251,7 +254,7 @@
     const wireupBehavior = () => {
         forEachElem('.canPickBackgroundColor')(attachBckgColorPickers);
         forEachElem('.canEdit')(attachEditBehavior);
-        forEachElem('.canPickColor')(attachColorPickers);       
+        forEachElem('.canPickColor')(attachColorPickers);
     };
 
     window.onload = () => {
