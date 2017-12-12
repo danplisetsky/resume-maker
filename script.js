@@ -75,7 +75,6 @@
                 (deleteElementIfNotHoveredOver, ev.getClientXY(), { top: 10 }));
     };
 
-
     const attachEditBehavior = el => {
 
         const createInput = () => {
@@ -134,12 +133,6 @@
         });
     };
 
-    const wireupBehavior = () => {
-        forEachElem('.canPickBackgroundColor')(attachBckgColorPickers);
-        forEachElem('.canEdit')(attachEditBehavior);
-        forEachElem('.canPickColor')(attachColorPickers);
-    };
-
     const save = id => {
         const buttonSaveCV = document.getElementById(id);
         buttonSaveCV.onclick = ev => {
@@ -172,14 +165,6 @@
             reader.readAsText(file);
         };
     };
-
-    window.onload = () => {
-        wireupBehavior();
-        save('saveCV');
-        load('loadCV');
-    };
-
-
 
 
 
@@ -259,4 +244,20 @@
     forEachElem('#grid .job li', DeleteAction.DeleteSelfAndParentIfLast)(attachDeleteBehavior);
     forEachElem('#grid .degree>p.date', DeleteAction.DeleteParent)(attachDeleteBehavior);
     forEachElem('#grid .degree p:not(.date)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
+
+
+
+
+    const wireupBehavior = () => {
+        forEachElem('.canPickBackgroundColor')(attachBckgColorPickers);
+        forEachElem('.canEdit')(attachEditBehavior);
+        forEachElem('.canPickColor')(attachColorPickers);       
+    };
+
+    window.onload = () => {
+        wireupBehavior();
+        save('saveCV');
+        load('loadCV');
+    };
+
 })();
