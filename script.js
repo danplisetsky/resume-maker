@@ -23,35 +23,42 @@
     const createElement = (tag, attributes) => {
         const elem = document.createElement(tag);
         for (const attr in attributes) {
-            if (attr == 'style') {
-                for (const rule in attributes.style) {
-                    elem.style[rule] = attributes.style[rule];
-                }
+
+            switch (attr) {
+                case 'style':
+                    for (const rule in attributes.style)
+                        elem.style[rule] = attributes.style[rule];
+                    break;
+                case 'children':
+                    for (const item of attributes.children)
+                        elem.appendChild(item);
+                    break;
+                default:
+                    elem[attr] = attributes[attr];
+                    break;
             }
-            else
-                elem[attr] = attributes[attr];
+
         }
         return elem;
     };
 
-    const deleteElementIfNotHoveredOver = (elem, [[clientX, clientY], offset = {
-        left: 0, top: 0, right: 0, bottom: 0
-    }]) => {
+    const deleteElementIfNotHoveredOver = (
+        elem,
+        [[clientX, clientY],
+        { left = 0, top = 0, right = 0, bottom = 0 }]) => {
         const coord = elem.getBoundingClientRect();
-        if (!(coord.left <= clientX + offset.left && clientX - offset.right <= coord.right && coord.top <= clientY + offset.top && clientY - offset.bottom <= coord.bottom))
+        if (!(coord.left <= clientX + left && clientX - right <= coord.right && coord.top <= clientY + top && clientY - bottom <= coord.bottom))
             elem.remove();
     };
 
-
-
     const attachColorPickers = el => {
 
-        const createColorPicker = (el, left) => {
+        const createColorPicker = clientX => {
             const colorPicker = createElement('input', {
                 className: 'colorPicker',
                 type: 'color',
                 style: {
-                    left: `${left - 22}px`
+                    left: `${clientX - 22}px`
                 },
                 onchange: ev => el.style.color = ev.target.value,
                 onmouseleave: ev => colorPicker.remove()
@@ -61,42 +68,44 @@
         };
 
         el.addEventListener('mouseover', ev =>
-            el.insertAfter(createColorPicker(el, ev.clientX)));
+            el.insertAfter(createColorPicker(ev.clientX)));
 
         el.addEventListener('mouseleave', ev =>
-            forEachElem('.colorPicker')(deleteElementIfNotHoveredOver, ev.getClientXY(), { top: 10 }));
+            forEachElem('.colorPicker')
+                (deleteElementIfNotHoveredOver, ev.getClientXY(), { top: 10 }));
     };
 
 
     const attachEditBehavior = el => {
 
-        const createInput = el => {
-            const input = document.createElement('input');
-            input.setAttribute('type', 'text');
-            input.setAttribute('value', el.innerText);
-
-            input.style.fontSize = getComputedStyle(el).fontSize;
-            input.style.fontWeight = getComputedStyle(el).fontWeight;
+        const createInput = () => {
+            const elStyle = getComputedStyle(el);
+            const input = createElement('input', {
+                type: 'text',
+                value: el.innerText,
+                style: {
+                    fontSize: elStyle.fontSize,
+                    fontWeight: elStyle.fontWeight
+                }
+            });
 
             const prevDisplay = el.style.display;
-
             input.onkeydown = ev => {
-                if (ev.code == 'Enter') {
+                if (ev.code === 'Enter') {
                     el.innerText = input.value;
                     el.style.display = prevDisplay;
-                    input.parentNode.parentNode.removeChild(input.parentNode);
+                    input.parentNode.remove();
                 }
             };
 
-            const div = document.createElement('div');
-            div.appendChild(input);
-
-            return div;
+            return createElement('div', {
+                children: [input]
+            })
         };
 
         el.ondblclick = ev => {
-            const input = createInput(el);
-            el.parentNode.insertBefore(input, el.nextSibling);
+            const input = createInput();
+            el.insertAfter(input);
             input.firstChild.focus();
             el.style.display = 'none';
             ev.stopPropagation();
@@ -204,7 +213,7 @@
                         el.parentNode.removeChild(el);
                         break;
                     case DeleteAction.DeleteSelfAndParentIfLast:
-                        if (el.parentNode.querySelectorAll('li').length == 1)
+                        if (el.parentNode.querySelectorAll('li').length === 1)
                             el.parentNode.parentNode.removeChild(el.parentNode);
                         else
                             el.parentNode.removeChild(el);
