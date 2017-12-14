@@ -11,7 +11,8 @@
     const DeleteAction = {
         DeleteParent: 1,
         DeleteSelf: 2,
-        DeleteSelfAndParentIfLast: 3
+        DeleteSelfAndParentIfLast: 3,
+        DeleteParentIfNotLast: 4
     };
 
     const forEachElem = selector =>
@@ -33,6 +34,9 @@
                     for (const item of attributes.children)
                         elem.appendChild(item);
                     break;
+                case 'behaviors':
+                    for (const item of attributes.behaviors)
+                        item(elem);
                 default:
                     elem[attr] = attributes[attr];
                     break;
@@ -99,7 +103,7 @@
 
             return createElement('div', {
                 children: [input]
-            })
+            });
         };
 
         el.addEventListener('dblclick', ev => {
@@ -114,23 +118,15 @@
     const attachBckgColorPickers = el => {
 
         const createColorPicker = () => {
-            const colorPicker = createElement('input', {
+            return colorPicker = createElement('input', {
                 type: 'color',
-                id: 'bckgColorPicker',
-                onchange: ev => {
-                    el.style.backgroundColor = ev.target.value;
-                    colorPicker.remove();
-                }
+                onchange: ev =>
+                    el.style.backgroundColor = ev.target.value
             });
-
-            return colorPicker;
         };
 
-        el.addEventListener('dblclick', ev => {
-            const colorPicker = createColorPicker();
-            el.insertAfter(colorPicker);
-            colorPicker.click();
-        });
+        el.addEventListener('dblclick', () =>
+            createColorPicker().click());
     };
 
     const save = id => {
@@ -207,9 +203,8 @@
             return actionContainer;
         };
 
-        el.addEventListener('mouseover', ev => {
-            el.insertAfter(createDivWithIcons());
-        });
+        el.addEventListener('mouseover', ev =>
+            el.insertAfter(createDivWithIcons()));
 
         el.addEventListener('mouseleave', ev => {
             forEachElem('.actionContainer')
@@ -234,29 +229,132 @@
 
     const deleteStuff = deleteMap => {
         deleteMap.forEach((value, key, _) => {
-            forEachElem('#grid '.concat(key))(attachDeleteBehavior, value)
+            forEachElem(`#grid ${key}`)(attachDeleteBehavior, value)
         });
     };
 
     deleteStuff(deleteMap);
 
+
+
+
+    const createActionContainer = el => {
+        const actionContainer = createElement('div', {
+            className: 'actionContainer',
+            style: {
+                left: `${el.offsetLeft + el.offsetWidth + 3}px`,
+                top: `${el.offsetTop + 3}px`
+            },
+            children: createActionIcons(el),
+            onmouseleave: ev => actionContainer.remove()
+        });
+
+        return actionContainer;
+    };
+
+    const createSection = () => {
+        const h3 = createElement('h3', {
+            className: 'canPickColor nameOfSection deleteParentIfNotLast',
+            innerText: 'section'
+        });
+        h3.addEventListener('mouseover', () =>
+            h3.insertAfter(createActionContainer(h3))
+        );
+        h3.addEventListener('mouseleave', ev =>
+            forEachElem('.actionContainer')
+                (deleteElementIfNotHoveredOver, ev.getClientXY(), { left: 10 })
+        );
+
+        return createElement('div', {
+            className: 'section',
+            children: [h3]
+        });
+    };
+
+
+
+
+
+
+    const createTextElement = () => {
+        return createElement('p', {
+            className: 'canEdit deleteSelf',
+            innerText: 'text',
+            behaviors: [attachEditBehavior]
+        });
+    };
+
+    const createDescriptionElement = () => {
+        return createElement('div', {
+            className: 'inline deleteSelf',
+            children: [
+                createElement('p', {
+                    className: 'description canEdit',
+                    innerText: 'description',
+                    behaviors: [attachEditBehavior]
+                }),
+                createElement('p', {
+                    className: 'canEdit',
+                    innerText: 'text',
+                    behaviors: [attachEditBehavior]
+                })
+            ]
+        });
+    };
+
+    const createListElement = () => {
+        return createElement('div', {
+            className: 'multiple',
+            children: [
+                createElement('p', {
+                    className: 'description canEdit deleteParent',
+                    innerText: 'description'
+                }),
+                createElement('p', {
+                    className: 'canEdit deleteSelf',
+                    innerText: 'text'
+                })
+            ]
+        });
+    };
+
     
-    // forEachElem('#grid .job>p.date', DeleteAction.DeleteParent)(attachDeleteBehavior);
-    // forEachElem('#grid .job p:not(.date)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
-    // forEachElem('#grid .job li', DeleteAction.DeleteSelfAndParentIfLast)(attachDeleteBehavior);
-    // forEachElem('#grid .degree>p.date', DeleteAction.DeleteParent)(attachDeleteBehavior);
-    // forEachElem('#grid .degree p:not(.date)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
 
-    // forEachElem('#grid .project>p.projName', DeleteAction.DeleteParent)(attachDeleteBehavior);
-    // forEachElem('#grid .project p:not(.projName)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
-    // forEachElem('#grid .project li', DeleteAction.DeleteSelfAndParentIfLast)(attachDeleteBehavior);
+    const createAction = (el, actionName) => {
+        return ev =>
+            el.parentNode.lastChild.insertAfter(actionName());
+    };
 
-    // forEachElem('#grid .nameOfSection', DeleteAction.DeleteParent)(attachDeleteBehavior);
-    // forEachElem('#grid .section>p', DeleteAction.DeleteSelf)(attachDeleteBehavior);
-    // forEachElem('#grid div.inline', DeleteAction.DeleteSelf)(attachDeleteBehavior);
-    // forEachElem('#grid .multiple>p.description', DeleteAction.DeleteParent)(attachDeleteBehavior);
-    // forEachElem('#grid .multiple>p:not(.description)', DeleteAction.DeleteSelf)(attachDeleteBehavior);
 
+    const createActionIcons = el => {
+
+        const createIcon = ([name, actionName]) => {
+            return createElement('img', {
+                className: 'actionIcon',
+                src: `img/${name}.svg`,
+                alt: name,
+                onclick: createAction(el, actionName)
+            });
+        };
+
+        const actionIcons = new Map([
+            ['addText', createTextElement],
+            ['addDescription', createDescriptionElement],
+            ['addList', createListElement]
+        ]);
+
+        return [...actionIcons].map(item => createIcon(item));
+    };
+
+
+
+
+    const addSectionToColumn = CVGridColumn => {
+        forEachElem(`#${CVGridColumn}`)(column =>
+            column.appendChild(createSection()))
+    };
+
+    addSectionToColumn('fstColumn');
 
 
 
