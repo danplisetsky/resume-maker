@@ -184,6 +184,7 @@ input[type='text'] {
      position: absolute;
      /* border: 2px solid  red; */
      margin: 0; 
+     background-color: pink;
 }
 
 .actionIcon {
