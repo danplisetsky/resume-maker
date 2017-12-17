@@ -129,7 +129,8 @@ const createTextElement = () => {
         className: 'canEdit deleteSelf',
         innerText: 'text',
         behaviors: new Map([
-            [attachEditBehavior, '']
+            [attachEditBehavior, ''],
+            [attachActionContainer, 'delete']
         ])
     });
 };
@@ -152,7 +153,10 @@ const createDescriptionElement = () => {
                     [attachEditBehavior, '']
                 ])
             })
-        ]
+        ],
+        behaviors: new Map([
+            [attachActionContainer, 'delete']
+        ])
     });
 };
 
@@ -269,7 +273,7 @@ const attachActionContainer = (el, icons) => {
 
     el.addEventListener('mouseover', ev =>
         el.insertAfter(createActionContainer(
-            ev.target.offsetLeft + ev.target.offsetWidth,
+            ev.currentTarget.offsetLeft + ev.currentTarget.offsetWidth,
             ev.target.offsetTop)
         )
     );
