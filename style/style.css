@@ -192,10 +192,15 @@ input[type='text'] {
     height: 16px;
 }
 
-.compoundItem {
+.compoundItem, .dateItem {
     display: grid;
     grid-auto-columns: auto;
     grid-auto-rows: auto;
+}
+
+.compoundItem {
+    grid-row: 1;
+    grid-column: 2;
 }
 
 .compoundItemName {
@@ -223,4 +228,9 @@ input[type='text'] {
     grid-column: 1/4;
     margin: 1px 0;
     padding-left: 20px;
+}
+
+.date {
+    grid-row: 1;
+    grid-column: 1;
 }
