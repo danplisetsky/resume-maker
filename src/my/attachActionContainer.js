@@ -71,7 +71,7 @@ const createDeleteBehavior = el => {
             case 'deleteParentIfNotLast':
                 return DeleteAction.DeleteParentIfNotLast
             default:
-                throw new TypeError('wrong delete class');
+                throw 'wrong delete class';
         }
     };
 
@@ -106,7 +106,7 @@ const createAction = (el, actionName) => {
         ? () => createDeleteBehavior(el)
         : actionName.name === 'createSection'
             ? () =>
-                el.parentNode.parentNode.lastChild.insertAfter(actionName(el))
+                el.parentNode.parentNode.lastChild.insertAfter(createSection(el))
             : () =>
                 el.parentNode.lastChild.insertAfter(actionName());
 };
