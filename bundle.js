@@ -240,6 +240,23 @@ const createDetailElement = () => {
     })
 };
 
+const createDateItem = () => {
+    return createElement('div', {
+        className: 'dateItem',
+        children: [
+            createElement('p', {
+                className: 'date canEdit deleteParent',
+                innerText: '01/01/2000 -- Present',
+                behaviors: new Map([
+                    [attachEditBehavior, ''],
+                    [attachActionContainer, 'delete']
+                ])
+            }),
+            createCompoundItem()
+        ]
+    });
+};
+
 const createDeleteBehavior = el => {
 
     const mapDeleteAction = name => {
@@ -315,6 +332,7 @@ const createActionIcons = (el, icons) => {
         ['addDescription', createDescriptionElement],
         ['addList', createListElement],
         ['addCompoundItem', createCompoundItem],
+        ['addDateItem', createDateItem],
         ['addDetail', createDetailElement],
         ['addAfter', createSection],
         ['delete', createDeleteBehavior]
@@ -377,7 +395,7 @@ const createSection = (el, name = 'section') => {
                     : new Map([
                         ...defaultBehaviors.entries(),
                         [attachActionContainer,
-                            ['addCompoundItem', 'addDate', 'addAfter', 'delete']]   
+                            ['addCompoundItem', 'addDateItem', 'addAfter', 'delete']]   
                     ])
             })
         ]

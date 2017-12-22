@@ -117,6 +117,23 @@ const createDetailElement = () => {
     })
 };
 
+const createDateItem = () => {
+    return createElement('div', {
+        className: 'dateItem',
+        children: [
+            createElement('p', {
+                className: 'date canEdit deleteParent',
+                innerText: '01/01/2000 -- Present',
+                behaviors: new Map([
+                    [attachEditBehavior, ''],
+                    [attachActionContainer, 'delete']
+                ])
+            }),
+            createCompoundItem()
+        ]
+    });
+};
+
 const createDeleteBehavior = el => {
 
     const mapDeleteAction = name => {
@@ -192,6 +209,7 @@ const createActionIcons = (el, icons) => {
         ['addDescription', createDescriptionElement],
         ['addList', createListElement],
         ['addCompoundItem', createCompoundItem],
+        ['addDateItem', createDateItem],
         ['addDetail', createDetailElement],
         ['addAfter', createSection],
         ['delete', createDeleteBehavior]

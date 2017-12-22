@@ -26,7 +26,7 @@ const createSection = (el, name = 'section') => {
                     : new Map([
                         ...defaultBehaviors.entries(),
                         [attachActionContainer,
-                            ['addCompoundItem', 'addDate', 'addAfter', 'delete']]   
+                            ['addCompoundItem', 'addDateItem', 'addAfter', 'delete']]   
                     ])
             })
         ]
