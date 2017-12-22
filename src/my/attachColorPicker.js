@@ -23,7 +23,7 @@ const attachColorPicker = el => {
 
     el.addEventListener('mouseleave', ev =>
         forEachElem('.colorPicker')
-            (deleteElementIfNotHoveredOver, ev.getClientXY(), { top: 10 }));
+            (deleteElementIfNotHoveredOver, ev.getClientXY(), { top: 5 }));
 };
 
 export default attachColorPicker;

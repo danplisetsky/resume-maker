@@ -161,7 +161,7 @@ const attachActionContainer = (el, icons) => {
 
     el.addEventListener('mouseleave', ev =>
         forEachElem('.actionContainer')
-            (deleteElementIfNotHoveredOver, ev.getClientXY(), { left: 10 })
+            (deleteElementIfNotHoveredOver, ev.getClientXY(), { left: 5 })
     );
 };
 

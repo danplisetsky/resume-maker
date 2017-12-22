@@ -114,7 +114,7 @@ const attachColorPicker = el => {
 
     el.addEventListener('mouseleave', ev =>
         forEachElem('.colorPicker')
-            (deleteElementIfNotHoveredOver, ev.getClientXY(), { top: 10 }));
+            (deleteElementIfNotHoveredOver, ev.getClientXY(), { top: 5 }));
 };
 
 const DeleteAction = {
@@ -280,7 +280,7 @@ const attachActionContainer = (el, icons) => {
 
     el.addEventListener('mouseleave', ev =>
         forEachElem('.actionContainer')
-            (deleteElementIfNotHoveredOver, ev.getClientXY(), { left: 10 })
+            (deleteElementIfNotHoveredOver, ev.getClientXY(), { left: 5 })
     );
 };
 
