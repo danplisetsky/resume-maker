@@ -67,6 +67,34 @@ const createListElement = () => {
     });
 };
 
+const createCompoundItem = () => {
+    return createElement('div', {
+        className: 'compoundItem',
+        children: [
+            createElement('p', {
+                className: 'compoundItemName canEdit deleteParent',
+                innerText: 'name'
+            }),
+            createElement('p', {
+                className: 'compoundItemDescription canEdit deleteSelf',
+                innerText: 'description'
+            }),
+            createElement('p', {
+                className: 'compoundItemAdditionalInfo canEdit deleteSelf',
+                innerText: 'additional info'
+            }),
+            createElement('ul', {
+                className: 'compoundItemDetails',
+                children: [
+                    createElement('li', {
+                        className: 'canEdit deleteSelfAndParentIfLast',
+                        innerText: 'detail'
+                    })
+                ]
+            })
+        ]
+    });
+};
 
 const createDeleteBehavior = el => {
 
@@ -138,6 +166,7 @@ const createActionIcons = (el, icons) => {
         ['addDescription', createDescriptionElement],
         ['addList', createListElement],
         ['addAfter', createSection],
+        ['addCompoundItem', createCompoundItem],
         ['delete', createDeleteBehavior]
     ]);
 
