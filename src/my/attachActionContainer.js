@@ -171,7 +171,7 @@ const createAction = (el, actionName) => {
             return () =>
                 el.insertAfter(createDetailElement());
         default:
-            return el.parentNode.lastChild.insertAfter(actionName());
+            return () => el.parentNode.lastChild.insertAfter(actionName());
     }
 };
 
@@ -191,9 +191,9 @@ const createActionIcons = (el, icons) => {
         ['addText', createTextElement],
         ['addDescription', createDescriptionElement],
         ['addList', createListElement],
-        ['addAfter', createSection],
         ['addCompoundItem', createCompoundItem],
         ['addDetail', createDetailElement],
+        ['addAfter', createSection],
         ['delete', createDeleteBehavior]
     ]);
 
