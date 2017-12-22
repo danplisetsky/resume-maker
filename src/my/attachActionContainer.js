@@ -73,27 +73,48 @@ const createCompoundItem = () => {
         children: [
             createElement('p', {
                 className: 'compoundItemName canEdit deleteParent',
-                innerText: 'name'
+                innerText: 'name',
+                behaviors: new Map([
+                    [attachEditBehavior, ''],
+                    [attachActionContainer, 'delete']
+                ])
             }),
             createElement('p', {
                 className: 'compoundItemDescription canEdit deleteSelf',
-                innerText: 'description'
+                innerText: 'description',
+                behaviors: new Map([
+                    [attachEditBehavior, ''],
+                    [attachActionContainer, 'delete']
+                ])
             }),
             createElement('p', {
                 className: 'compoundItemAdditionalInfo canEdit deleteSelf',
-                innerText: 'additional info'
+                innerText: 'additional info',
+                behaviors: new Map([
+                    [attachEditBehavior, ''],
+                    [attachActionContainer, 'delete']
+                ])
             }),
             createElement('ul', {
                 className: 'compoundItemDetails',
                 children: [
-                    createElement('li', {
-                        className: 'canEdit deleteSelfAndParentIfLast',
-                        innerText: 'detail'
-                    })
+                    createDetailElement()
                 ]
             })
         ]
     });
+};
+
+const createDetailElement = () => {
+    return createElement('li', {
+        className: 'canEdit deleteSelfAndParentIfLast',
+        innerText: 'detail',
+        behaviors: new Map([
+            [attachEditBehavior, ''],
+            [attachActionContainer,
+                ['addDetail', 'delete']]
+        ])
+    })
 };
 
 const createDeleteBehavior = el => {
@@ -140,13 +161,18 @@ const createDeleteBehavior = el => {
 };
 
 const createAction = (el, actionName) => {
-    return actionName.name == 'createDeleteBehavior'
-        ? () => createDeleteBehavior(el)
-        : actionName.name === 'createSection'
-            ? () =>
-                el.parentNode.parentNode.lastChild.insertAfter(createSection(el))
-            : () =>
-                el.parentNode.lastChild.insertAfter(actionName());
+    switch (actionName.name) {
+        case 'createDeleteBehavior':
+            return () => createDeleteBehavior(el);
+        case 'createSection':
+            return () =>
+                el.parentNode.parentNode.lastChild.insertAfter(createSection(el));
+        case 'createDetailElement':
+            return () =>
+                el.insertAfter(createDetailElement());
+        default:
+            return el.parentNode.lastChild.insertAfter(actionName());
+    }
 };
 
 
@@ -167,6 +193,7 @@ const createActionIcons = (el, icons) => {
         ['addList', createListElement],
         ['addAfter', createSection],
         ['addCompoundItem', createCompoundItem],
+        ['addDetail', createDetailElement],
         ['delete', createDeleteBehavior]
     ]);
 
