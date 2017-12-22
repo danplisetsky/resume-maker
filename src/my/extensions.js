@@ -7,8 +7,13 @@ HTMLElement.prototype.removeAllChildren = function removeAllChildren() {
         this.removeChild(this.lastChild);
 };
 
+HTMLElement.prototype.removeSelfAndNextSibling = function removeSelfAndNextSibling() {
+    this.nextElementSibling.remove();
+    this.remove();
+};
+
 MouseEvent.prototype.getClientXY = function getClientXY() {
     return [this.clientX, this.clientY];
 };
 
-export { insertAfter, getClientXY, removeAllChildren };
+export { insertAfter, getClientXY, removeAllChildren, removeSelfAndNextSibling };

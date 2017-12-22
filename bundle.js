@@ -10,6 +10,11 @@ HTMLElement.prototype.removeAllChildren = function removeAllChildren() {
         this.removeChild(this.lastChild);
 };
 
+HTMLElement.prototype.removeSelfAndNextSibling = function removeSelfAndNextSibling() {
+    this.nextElementSibling.remove();
+    this.remove();
+};
+
 MouseEvent.prototype.getClientXY = function getClientXY() {
     return [this.clientX, this.clientY];
 };
@@ -203,13 +208,13 @@ const createDeleteBehavior = el => {
             el.parentNode.remove();
             break;
         case DeleteAction.DeleteSelf:
-            el.remove();
+            el.removeSelfAndNextSibling(); //also removes actionContainer
             break;
         case DeleteAction.DeleteSelfAndParentIfLast:
-            if (el.parentNode.querySelectorAll('li').length === 1)
+            if (el.parentNode.querySelectorAll(el.tagName).length === 1)
                 el.parentNode.remove();
             else
-                el.remove();
+                el.removeSelfAndNextSibling(); //also removes actionContainer
             break;
         case DeleteAction.DeleteParentIfNotLast:
             if (el.parentNode.parentNode.querySelectorAll(`.${el.parentNode.className}`).length === 1)
