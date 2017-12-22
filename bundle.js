@@ -171,11 +171,20 @@ const createListElement = () => {
         children: [
             createElement('p', {
                 className: 'description canEdit deleteParent',
-                innerText: 'description'
+                innerText: 'description',
+                behaviors: new Map([
+                    [attachEditBehavior, ''],
+                    [attachActionContainer,
+                        ['addText', 'delete']]
+                ])
             }),
             createElement('p', {
                 className: 'canEdit deleteSelf',
-                innerText: 'text'
+                innerText: 'text',
+                behaviors: new Map([
+                    [attachEditBehavior, ''],
+                    [attachActionContainer, 'delete']
+                ])
             })
         ]
     });
