@@ -402,61 +402,60 @@ const createSection = (el, name = 'section') => {
     });
 };
 
-const save = id => {
-    const buttonSaveCV = document.getElementById(id);
-    buttonSaveCV.onclick = ev => {
-        const CV = document.getElementById('CV');
-        const res = domJSON.toJSON(CV, {
-            domProperties: [true, 'draggable', 'spellcheck', 'translate'],
-            stringify: true
+const attachBckgColorPicker = el => {
+
+    const createColorPicker = () => {
+        return createElement('input', {
+            type: 'color',
+            onchange: ev =>
+                el.style.backgroundColor = ev.target.value
         });
-
-        const name = document.getElementById('name').innerText + '.cv';
-        const blob = new Blob([res], { type: "text/plain;charset=utf-8" });
-        saveAs(blob, name);
     };
+
+    el.addEventListener('dblclick', () =>
+        createColorPicker().click());
 };
 
-const load = id => {
-    const buttonLoadCV = document.getElementById(id);
-    buttonLoadCV.onchange = ev => {
-        const file = buttonLoadCV.files[0];
+// const save = id => {
+//     const buttonSaveCV = document.getElementById(id);
+//     buttonSaveCV.onclick = ev => {
+//         const CV = document.getElementById('CV');
+//         const res = domJSON.toJSON(CV, {
+//             domProperties: [true, 'draggable', 'spellcheck', 'translate'],
+//             stringify: true
+//         });
 
-        const reader = new FileReader();
-        reader.onload = prEv => {
-            const res = reader.result;
-            const CV = document.getElementById('CV');
-            const domCV = domJSON.toDOM(res);
-            CV.parentNode.replaceChild(domCV, CV);
-            wireupBehavior();
-        };
+//         const name = document.getElementById('name').innerText + '.cv';
+//         const blob = new Blob([res], { type: "text/plain;charset=utf-8" });
+//         saveAs(blob, name);
+//     };
+// };
 
-        reader.readAsText(file);
-    };
+// const load = id => {
+//     const buttonLoadCV = document.getElementById(id);
+//     buttonLoadCV.onchange = ev => {
+//         const file = buttonLoadCV.files[0];
+
+//         const reader = new FileReader();
+//         reader.onload = prEv => {
+//             const res = reader.result;
+//             const CV = document.getElementById('CV');
+//             const domCV = domJSON.toDOM(res);
+//             CV.parentNode.replaceChild(domCV, CV);
+//             wireupBehavior();
+//         };
+
+//         reader.readAsText(file);
+//     };
+// };
+
+const wireupBehavior = () => {
+    forEachElem('.canPickBackgroundColor')(attachBckgColorPicker);
+    forEachElem('.canEdit')(attachEditBehavior);
+    forEachElem('.canPickColor')(attachColorPicker);
+    // save('saveCV');
+    // load('loadCV');
 };
-
-
-
-
-
-
-// const addSectionToColumn = CVGridColumn => {
-//     forEachElem(`#${CVGridColumn}`)(column =>
-//         column.appendChild(createSection()))
-// };
-
-// addSectionToColumn('fstColumn');
-
-
-
-// const wireupBehavior = () => {
-//     forEachElem('.canPickBackgroundColor')(attachBckgColorPickers);
-//     forEachElem('.canEdit')(attachEditBehavior);
-//     forEachElem('.canPickColor')(attachColorPickers);
-// };
-
-
-
 
 const newCV = () => {
     const cleanColumn = (column, [nameOfFirstSection]) => {
@@ -469,10 +468,8 @@ const newCV = () => {
 };
 
 window.onload = () => {
+    wireupBehavior(); //for elements always present on page
     newCV();
-    // wireupBehavior();
-    save('saveCV');
-    load('loadCV');
 };
 
 }());
