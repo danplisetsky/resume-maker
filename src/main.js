@@ -3,26 +3,42 @@ import createSection from './my/createSection';
 import attachEditBehavior from './my/attachEditBehavior';
 import attachColorPicker from './my/attachColorPicker'
 import attachBckgColorPicker from './my/attachBckgColorPicker';
+import randomName from './my/randomName';
 
 const createNewCV = id => {
     const buttonNewCV = document.getElementById(id);
-    buttonNewCV.onclick = ev => newCV();
+    buttonNewCV.onclick = _ => newCV();
 };
 
-// const save = id => {
-//     const buttonSaveCV = document.getElementById(id);
-//     buttonSaveCV.onclick = ev => {
-//         const CV = document.getElementById('CV');
-//         const res = domJSON.toJSON(CV, {
-//             domProperties: [true, 'draggable', 'spellcheck', 'translate'],
-//             stringify: true
-//         });
+const setInitialAttributes = id => {
+    const elem = document.getElementById(id);
+    return (text = elem.innerHTML, color = null) => {
+        elem.innerHTML = text;
+        elem.className.includes('canPickBackgroundColor')
+            ? elem.style.backgroundColor = color
+            : elem.style.color = color;
+    };
+};
 
-//         const name = document.getElementById('name').innerText + '.cv';
-//         const blob = new Blob([res], { type: "text/plain;charset=utf-8" });
-//         saveAs(blob, name);
-//     };
-// };
+
+const saveCV = id => {
+    const buttonSaveCV = document.getElementById(id);
+    buttonSaveCV.onclick = ev => {
+
+        //save header info (name, occupation, colors)
+        //save cv        
+
+        // const CV = document.getElementById('CV');
+        // const res = domJSON.toJSON(CV, {
+        //     domProperties: [true, 'draggable', 'spellcheck', 'translate'],
+        //     stringify: true
+        // });
+
+        // const name = document.getElementById('name').innerText + '.cv';
+        // const blob = new Blob([res], { type: "text/plain;charset=utf-8" });
+        // saveAs(blob, name);
+    };
+};
 
 // const load = id => {
 //     const buttonLoadCV = document.getElementById(id);
@@ -46,10 +62,6 @@ const wireupBehavior = () => {
     forEachElem('.canPickBackgroundColor')(attachBckgColorPicker);
     forEachElem('.canEdit')(attachEditBehavior);
     forEachElem('.canPickColor')(attachColorPicker);
-
-    createNewCV('newButton');
-    // save('saveCV');
-    // load('loadCV');
 };
 
 const newCV = () => {
@@ -58,11 +70,18 @@ const newCV = () => {
         column.appendChild(createSection(column, nameOfFirstSection))
     };
 
+    setInitialAttributes('header')();
+    setInitialAttributes('name')(randomName());
+    setInitialAttributes('occupation')('software developer');
+    wireupBehavior(); //for elements always present on page
+
     forEachElem('#fstColumn')(cleanColumn, 'contact');
     forEachElem('#sndColumn')(cleanColumn, 'experience');
 };
 
 window.onload = () => {
-    wireupBehavior(); //for elements always present on page
+    createNewCV('newButton');
+    saveCV('saveButton');
+    // load('loadCV');
     newCV();
 };
