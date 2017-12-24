@@ -418,6 +418,11 @@ const attachBckgColorPicker = el => {
         createColorPicker().click());
 };
 
+const createNewCV = id => {
+    const buttonNewCV = document.getElementById(id);
+    buttonNewCV.onclick = ev => newCV();
+};
+
 // const save = id => {
 //     const buttonSaveCV = document.getElementById(id);
 //     buttonSaveCV.onclick = ev => {
@@ -455,6 +460,8 @@ const wireupBehavior = () => {
     forEachElem('.canPickBackgroundColor')(attachBckgColorPicker);
     forEachElem('.canEdit')(attachEditBehavior);
     forEachElem('.canPickColor')(attachColorPicker);
+
+    createNewCV('newButton');
     // save('saveCV');
     // load('loadCV');
 };

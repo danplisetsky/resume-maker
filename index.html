@@ -17,11 +17,24 @@
 <body>
 
     <div id="buttons" class="noPrint">
-        <label for="saveCV">save CV</label>
-        <button type="submit" id="saveCV">Choose File</button>
-        <br>
-        <label for="loadCV">load CV</label>
-        <input id="loadCV" type="file" accept=".cv">
+        <div id="newCV">
+            <button type="submit" id="newButton">new CV</button>
+        </div>
+
+        <div id="templateCV">
+            <button type="submit" id="templateButton">template CV</button>
+        </div>
+
+
+        <div id="saveCV">
+            <label for="saveButton">save CV</label>
+            <button type="submit" id="saveButton">Choose File</button>
+        </div>
+
+        <div id="loadCV">
+            <label for="loadButton">load CV</label>
+            <input id="loadButton" type="file" accept=".cv">
+        </div>
     </div>
 
     <div id="CV">
@@ -45,8 +58,7 @@
         Icons made by
         <a href="https://www.flaticon.com/authors/alfredo-hernandez" title="Alfredo Hernandez">Alfredo Hernandez</a> from
         <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
-        <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0"
-            target="_blank">CC 3.0 BY</a>
+        <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
     </div>
 
     <script src="bundle.js"></script>
