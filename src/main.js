@@ -1,8 +1,5 @@
-import { insertAfter, getClientXY, removeAllChildren } from './my/extensions';
-import createElement from './my/createElement';
-import createSection from './my/createSection';
 import forEachElem from './my/forEachElem';
-import deleteElementIfNotHoveredOver from './my/deleteElementIfNotHoveredOver';
+import createSection from './my/createSection';
 import attachEditBehavior from './my/attachEditBehavior';
 import attachColorPicker from './my/attachColorPicker'
 import attachBckgColorPicker from './my/attachBckgColorPicker';

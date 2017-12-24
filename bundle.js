@@ -1,22 +1,11 @@
 (function () {
 'use strict';
 
-HTMLElement.prototype.insertAfter = function insertAfter(newElement) {
-    this.parentNode.insertBefore(newElement, this.nextSibling);
-};
-
-HTMLElement.prototype.removeAllChildren = function removeAllChildren() {
-    while (this.hasChildNodes())
-        this.removeChild(this.lastChild);
-};
-
-HTMLElement.prototype.removeSelfAndNextSibling = function removeSelfAndNextSibling() {
-    this.nextElementSibling.remove();
-    this.remove();
-};
-
-MouseEvent.prototype.getClientXY = function getClientXY() {
-    return [this.clientX, this.clientY];
+const forEachElem = selector => {
+    return (action, ...args) => {
+        const els = [...document.querySelectorAll(selector)];
+        els.forEach(el => action(el, args));
+    }
 };
 
 const createElement = (tag, attributes) => {
@@ -80,13 +69,6 @@ const attachEditBehavior = el => {
     });
 };
 
-const forEachElem = selector => {
-    return (action, ...args) => {
-        const els = [...document.querySelectorAll(selector)];
-        els.forEach(el => action(el, args));
-    }
-};
-
 const deleteElementIfNotHoveredOver = (
     elem,
     [
@@ -127,6 +109,24 @@ const DeleteAction = {
     DeleteSelf: 2,
     DeleteSelfAndParentIfLast: 3,
     DeleteParentIfNotLast: 4
+};
+
+HTMLElement.prototype.insertAfter = function insertAfter(newElement) {
+    this.parentNode.insertBefore(newElement, this.nextSibling);
+};
+
+HTMLElement.prototype.removeAllChildren = function removeAllChildren() {
+    while (this.hasChildNodes())
+        this.removeChild(this.lastChild);
+};
+
+HTMLElement.prototype.removeSelfAndNextSibling = function removeSelfAndNextSibling() {
+    this.nextElementSibling.remove();
+    this.remove();
+};
+
+MouseEvent.prototype.getClientXY = function getClientXY() {
+    return [this.clientX, this.clientY];
 };
 
 const createTextElement = () => {
