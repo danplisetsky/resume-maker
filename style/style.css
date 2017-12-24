@@ -1,16 +1,35 @@
 #buttons {
     margin: 10px;
+    display: none;
 }
 
 #header {
-    height: 100px;
+    height: fit-content;
     width: 100%;
     background-color: black;
-    display: table;
 }
 
 #subheader {
-    padding: 10% 0;
+    padding: 50px 0;
+}
+
+ #subheader input[type='text'] {
+     margin: auto;
+     width: auto;
+    display: block;
+ }
+
+.colorPicker {
+    position: absolute;
+    margin: 0;
+}
+
+.canEdit {
+    width: fit-content;
+}
+
+input[type='text'] {
+    width: -webkit-fill-available;
 }
 
 #name, #occupation {
@@ -24,30 +43,31 @@
     margin: auto 3%;
     display: grid;
     grid-template-columns: 1fr 5fr;
-    grid-gap: 30px;
+    grid-column-gap: 30px;
 }
 
 #fstColumn {
     grid-column: 1;
-    display: grid;
-    grid-template-areas:
-        'contact'
-        'skills'
-        'langs'
 }
 
 #sndColumn {
     grid-column: 2;
-    display: grid;
-    grid-template-areas:
-        'projs'
-        'xp'
-        'education'
 }
 
-#contact {
-    grid-area: contact;
+.subgrid {
+    display: grid;
 }
+
+#footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-size: xx-small;
+}
+
+/* JS-created elements */
 
 .section p {
     margin: 0;
@@ -67,12 +87,12 @@ h3 {
     display: inline;
 }
 
-.description, .link, .location, .schoolName {
-    color: lightslategray;
+.inline>p.description {
+    margin-right: 5px;
 }
 
-#skills {
-    grid-area: skills;
+.description, .compoundItemAdditionalInfo {
+    color: lightslategray;
 }
 
 .multiple>p:not(.description) {
@@ -82,107 +102,9 @@ h3 {
 .multiple {
     width: fit-content;
 }
-/* 
-#languages {
-    grid-area: langs;
-}
-
-#projects {
-    grid-area: projs;
-}
-
-.project, .jobDetails {
-    display: grid;
-    grid-auto-columns: auto;
-    grid-auto-rows: auto;
-}
-
-.project {
-    margin: 2% auto;
-}
-
-.projName, .companyName, .degreeName {
-    grid-row: 1;
-    grid-column: 1;
-    font-weight: bold;
-}
-
-.projDescription, .jobTitle {
-    grid-row: 1;
-    grid-column: 2;
-    color: gray;
-    font-weight: bolder;
-    justify-self: center;
-}
-
-.link, .location, .schoolName {
-    grid-row: 1;
-    grid-column: 3;
-    justify-self: end;
-}
-
-.details {
-    grid-row: 2;
-    grid-column: 1/4;
-    margin: 1px 0;
-    padding-left: 20px;
-}
-
-#xp {
-    grid-area: xp;
-}
-
-.job, .degree {
-    display: grid;
-    grid-auto-columns: 1fr 3fr;
-    margin: 2% auto;
-}
-
-.date {
-    grid-row: 1;
-    grid-column: 1;
-}
-
-.jobDetails, .degreeDetails {
-    grid-row: 1;
-    grid-column: 2;
-}
-
-#education {
-    grid-area: education;
-} */
-
-#footer {
-    font-size: xx-small;
-}
-
-.canEdit {
-    width: fit-content;
-}
-
-/* JS-created elements */
-
-.colorPicker {
-    position: absolute;
-    margin: 0;
-}
-
-input[type='text'] {
-    width: -webkit-fill-available;
-}
-
-.block input[type='text'] {
-    display: block;
- }
-
- #subheader input[type='text'] {
-     margin: auto;
-     width: auto;
- }
 
  .actionContainer {
      position: absolute;
-     /* border: 2px solid  red; */
      margin: 0; 
      background-color: pink;
 }
@@ -194,11 +116,18 @@ input[type='text'] {
 
 .compoundItem, .dateItem {
     display: grid;
-    grid-auto-columns: auto;
-    grid-auto-rows: auto;
 }
 
-.compoundItem {
+.section>.compoundItem, .dateItem {
+    margin: 10px auto;
+}
+
+.dateItem {
+    grid-template-columns: auto 1fr;
+    grid-column-gap: 20px;
+}
+
+.dateItem>.compoundItem {
     grid-row: 1;
     grid-column: 2;
 }
@@ -214,7 +143,7 @@ input[type='text'] {
     grid-column: 2;
     color: gray;
     font-weight: bolder;
-    justify-self: center;
+    justify-self: start;
 }
 
 .compoundItemAdditionalInfo {

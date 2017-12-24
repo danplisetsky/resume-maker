@@ -1,4 +1,5 @@
 import createElement from './createElement'
+import forEachElem from './forEachElem';
 
 const attachEditBehavior = el => {
 
@@ -18,6 +19,7 @@ const attachEditBehavior = el => {
                     el.innerText = input.value;
                     el.style.display = prevDisplay;
                     input.parentNode.remove();
+                    forEachElem('.actionContainer')(ac => ac.remove());                    
                 }
             }
         });
@@ -33,6 +35,7 @@ const attachEditBehavior = el => {
         input.firstChild.focus();
         el.style.display = 'none';
         ev.stopPropagation();
+        forEachElem('.actionContainer')(ac => ac.remove());
     });
 };
 
