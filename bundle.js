@@ -411,8 +411,8 @@ const createSection = (el, name = 'section') => {
 
 const setInitialAttributes = id => {
     const elem = document.getElementById(id);
-    return (text = elem.innerHTML, color = null) => {
-        elem.innerHTML = text;
+    return (text, color = null) => {
+        elem.innerHTML = text || elem.innerHTML;
         elem.className.includes('canPickBackgroundColor')
             ? elem.style.backgroundColor = color
             : elem.style.color = color;
@@ -460,6 +460,21 @@ const newCV = () => {
     forEachElem('#sndColumn')(cleanColumn, 'experience');
 };
 
+const saveCV = id => {
+    const CV = document.getElementById('CV');
+    const jsonOutput = domJSON.toJSON(CV, {
+        attributes: [false, 'id', 'class', 'style'],
+        domProperties: [false, 'alt'],
+        stringify: true
+    });
+
+    const name = document.getElementById('name').innerText + '.cv';
+    const blob = new Blob([jsonOutput], {
+        type: "text/plain;charset=utf-8"
+    });
+    saveAs(blob, name);
+};
+
 // const load = id => {
 //     const buttonLoadCV = document.getElementById(id);
 //     buttonLoadCV.onchange = ev => {
@@ -481,7 +496,7 @@ const newCV = () => {
 
 window.onload = () => {
     attachButtonBehavior('newCVButton', newCV);
-    // saveCV('saveButton');
+    attachButtonBehavior('saveCVButton', saveCV);
     // load('loadCV');
     newCV();
 };
