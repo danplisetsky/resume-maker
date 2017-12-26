@@ -1,11 +1,27 @@
 (function () {
 'use strict';
 
-const forEachElem = selector => {
-    return (action, ...args) => {
-        const els = [...document.querySelectorAll(selector)];
-        els.forEach(el => action(el, args));
-    }
+const attachButtonBehavior = (id, callback) => {
+    const button = document.getElementById(id);
+    button.onclick = callback;
+};
+
+HTMLElement.prototype.insertAfter = function insertAfter(newElement) {
+    this.parentNode.insertBefore(newElement, this.nextSibling);
+};
+
+HTMLElement.prototype.removeAllChildren = function removeAllChildren() {
+    while (this.hasChildNodes())
+        this.removeChild(this.lastChild);
+};
+
+HTMLElement.prototype.removeSelfAndNextSibling = function removeSelfAndNextSibling() {
+    this.nextElementSibling.remove();
+    this.remove();
+};
+
+MouseEvent.prototype.getClientXY = function getClientXY() {
+    return [this.clientX, this.clientY];
 };
 
 const createElement = (tag, attributes) => {
@@ -31,6 +47,13 @@ const createElement = (tag, attributes) => {
 
     }
     return elem;
+};
+
+const forEachElem = selector => {
+    return (action, ...args) => {
+        const els = [...document.querySelectorAll(selector)];
+        els.forEach(el => action(el, args));
+    }
 };
 
 const attachEditBehavior = el => {
@@ -111,24 +134,6 @@ const DeleteAction = {
     DeleteSelf: 2,
     DeleteSelfAndParentIfLast: 3,
     DeleteParentIfNotLast: 4
-};
-
-HTMLElement.prototype.insertAfter = function insertAfter(newElement) {
-    this.parentNode.insertBefore(newElement, this.nextSibling);
-};
-
-HTMLElement.prototype.removeAllChildren = function removeAllChildren() {
-    while (this.hasChildNodes())
-        this.removeChild(this.lastChild);
-};
-
-HTMLElement.prototype.removeSelfAndNextSibling = function removeSelfAndNextSibling() {
-    this.nextElementSibling.remove();
-    this.remove();
-};
-
-MouseEvent.prototype.getClientXY = function getClientXY() {
-    return [this.clientX, this.clientY];
 };
 
 const createTextElement = () => {
@@ -404,6 +409,16 @@ const createSection = (el, name = 'section') => {
     });
 };
 
+const setInitialAttributes = id => {
+    const elem = document.getElementById(id);
+    return (text = elem.innerHTML, color = null) => {
+        elem.innerHTML = text;
+        elem.className.includes('canPickBackgroundColor')
+            ? elem.style.backgroundColor = color
+            : elem.style.color = color;
+    };
+};
+
 const attachBckgColorPicker = el => {
 
     const createColorPicker = () => {
@@ -418,45 +433,31 @@ const attachBckgColorPicker = el => {
         createColorPicker().click());
 };
 
+const wireupInitialBehavior = () => {
+    forEachElem('.canPickBackgroundColor')(attachBckgColorPicker);
+    forEachElem('.canEdit')(attachEditBehavior);
+    forEachElem('.canPickColor')(attachColorPicker);
+};
+
 const randomName = () => {
     return Math.random() < 0.5
         ? 'John Doe'
         : 'Jane Doe';
 };
 
-const createNewCV = id => {
-    const buttonNewCV = document.getElementById(id);
-    buttonNewCV.onclick = _ => newCV();
-};
-
-const setInitialAttributes = id => {
-    const elem = document.getElementById(id);
-    return (text = elem.innerHTML, color = null) => {
-        elem.innerHTML = text;
-        elem.className.includes('canPickBackgroundColor')
-            ? elem.style.backgroundColor = color
-            : elem.style.color = color;
+const newCV = () => {
+    const cleanColumn = (column, [nameOfFirstSection]) => {
+        column.removeAllChildren();
+        column.appendChild(createSection(column, nameOfFirstSection));
     };
-};
 
+    setInitialAttributes('header')();
+    setInitialAttributes('name')(randomName());
+    setInitialAttributes('occupation')('software developer');
+    wireupInitialBehavior(); //for elements always present on page
 
-const saveCV = id => {
-    const buttonSaveCV = document.getElementById(id);
-    buttonSaveCV.onclick = ev => {
-
-        //save header info (name, occupation, colors)
-        //save cv        
-
-        // const CV = document.getElementById('CV');
-        // const res = domJSON.toJSON(CV, {
-        //     domProperties: [true, 'draggable', 'spellcheck', 'translate'],
-        //     stringify: true
-        // });
-
-        // const name = document.getElementById('name').innerText + '.cv';
-        // const blob = new Blob([res], { type: "text/plain;charset=utf-8" });
-        // saveAs(blob, name);
-    };
+    forEachElem('#fstColumn')(cleanColumn, 'contact');
+    forEachElem('#sndColumn')(cleanColumn, 'experience');
 };
 
 // const load = id => {
@@ -477,30 +478,10 @@ const saveCV = id => {
 //     };
 // };
 
-const wireupBehavior = () => {
-    forEachElem('.canPickBackgroundColor')(attachBckgColorPicker);
-    forEachElem('.canEdit')(attachEditBehavior);
-    forEachElem('.canPickColor')(attachColorPicker);
-};
-
-const newCV = () => {
-    const cleanColumn = (column, [nameOfFirstSection]) => {
-        column.removeAllChildren();
-        column.appendChild(createSection(column, nameOfFirstSection));
-    };
-
-    setInitialAttributes('header')();
-    setInitialAttributes('name')(randomName());
-    setInitialAttributes('occupation')('software developer');
-    wireupBehavior(); //for elements always present on page
-
-    forEachElem('#fstColumn')(cleanColumn, 'contact');
-    forEachElem('#sndColumn')(cleanColumn, 'experience');
-};
 
 window.onload = () => {
-    createNewCV('newButton');
-    saveCV('saveButton');
+    attachButtonBehavior('newCVButton', newCV);
+    // saveCV('saveButton');
     // load('loadCV');
     newCV();
 };
