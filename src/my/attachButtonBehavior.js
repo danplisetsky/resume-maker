@@ -1,6 +1,9 @@
 const attachButtonBehavior = (id, callback) => {
     const button = document.getElementById(id);
-    button.onclick = callback;
+    if (button.tagName === 'INPUT' && button.type === 'file')
+        button.onchange = callback;
+    else
+        button.onclick = callback;
 };
 
 export default attachButtonBehavior;

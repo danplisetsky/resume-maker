@@ -20,6 +20,9 @@ const createTextElement = () => {
 const createDescriptionElement = () => {
     return createElement('div', {
         className: 'inline deleteSelf',
+        behaviors: new Map([
+            [attachActionContainer, 'delete']
+        ]),
         children: [
             createElement('p', {
                 className: 'description canEdit',
@@ -35,10 +38,7 @@ const createDescriptionElement = () => {
                     [attachEditBehavior, '']
                 ])
             })
-        ],
-        behaviors: new Map([
-            [attachActionContainer, 'delete']
-        ])
+        ]        
     });
 };
 
@@ -183,7 +183,7 @@ const createAction = (el, actionName) => {
             return () => createDeleteBehavior(el);
         case 'createSection':
             return () =>
-                el.parentNode.parentNode.lastChild.insertAfter(createSection(el));
+                el.parentNode.parentNode.lastChild.insertAfter(createSection(el.parentNode.parentNode.id));
         case 'createDetailElement':
             return () =>
                 el.insertAfter(createDetailElement());

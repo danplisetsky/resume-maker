@@ -1,23 +1,23 @@
-import { removeAllChildren } from './extensions';
-import createSection from './createSection';
-import setInitialAttributes from './setInitialAttributes';
-import wireupInitialBehavior from './wireupInitialBehavior';
+import createHeader from './createHeader';
+import createGrid from './createGrid';
 import randomName from './randomName';
-import forEachElem from './forEachElem';
 
 const newCV = () => {
-    const cleanColumn = (column, [nameOfFirstSection]) => {
-        column.removeAllChildren();
-        column.appendChild(createSection(column, nameOfFirstSection))
-    };
-
-    setInitialAttributes('header')();
-    setInitialAttributes('name')(randomName());
-    setInitialAttributes('occupation')('software developer');
-    wireupInitialBehavior(); //for elements always present on page
-
-    forEachElem('#fstColumn')(cleanColumn, 'contact');
-    forEachElem('#sndColumn')(cleanColumn, 'experience');
+    const CV = document.getElementById('CV');
+    CV.removeAllChildren();
+    CV.appendChild(
+        createHeader(randomName(), 'software developer'));
+    CV.appendChild(
+        createGrid([
+            {
+                id: 'fstColumn',
+                name: 'contact'
+            },
+            {
+                id: 'sndColumn',
+                name: 'experience'
+            }
+        ]));
 };
 
 export default newCV;

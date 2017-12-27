@@ -3,25 +3,10 @@
 
 const attachButtonBehavior = (id, callback) => {
     const button = document.getElementById(id);
-    button.onclick = callback;
-};
-
-HTMLElement.prototype.insertAfter = function insertAfter(newElement) {
-    this.parentNode.insertBefore(newElement, this.nextSibling);
-};
-
-HTMLElement.prototype.removeAllChildren = function removeAllChildren() {
-    while (this.hasChildNodes())
-        this.removeChild(this.lastChild);
-};
-
-HTMLElement.prototype.removeSelfAndNextSibling = function removeSelfAndNextSibling() {
-    this.nextElementSibling.remove();
-    this.remove();
-};
-
-MouseEvent.prototype.getClientXY = function getClientXY() {
-    return [this.clientX, this.clientY];
+    if (button.tagName === 'INPUT' && button.type === 'file')
+        button.onchange = callback;
+    else
+        button.onclick = callback;
 };
 
 const createElement = (tag, attributes) => {
@@ -49,11 +34,60 @@ const createElement = (tag, attributes) => {
     return elem;
 };
 
+const attachBckgColorPicker = el => {
+
+    const createColorPicker = () => {
+        return createElement('input', {
+            type: 'color',
+            onchange: ev =>
+                el.style.backgroundColor = ev.target.value
+        });
+    };
+
+    el.addEventListener('dblclick', () =>
+        createColorPicker().click());
+};
+
 const forEachElem = selector => {
     return (action, ...args) => {
         const els = [...document.querySelectorAll(selector)];
         els.forEach(el => action(el, args));
     }
+};
+
+const deleteElementIfNotHoveredOver = (
+    elem,
+    [
+        [clientX, clientY],
+        { left = 0, top = 0, right = 0, bottom = 0 }
+    ]) => {
+    const coord = elem.getBoundingClientRect();
+    if (!(coord.left <= clientX + left && clientX - right <= coord.right && coord.top <= clientY + top && clientY - bottom <= coord.bottom))
+        elem.remove();
+};
+
+const attachColorPicker = el => {
+
+    const createColorPicker = clientX => {
+        const colorPicker = createElement('input', {
+            className: 'colorPicker',
+            type: 'color',
+            style: {
+                left: `${clientX - 22}px`
+            },
+            onchange: ev => el.style.color = ev.target.value,
+            onmouseleave: ev => colorPicker.remove()
+        });
+
+        return colorPicker;
+    };
+
+    el.addEventListener('mouseover', ev =>
+        el.insertAfter(createColorPicker(ev.clientX)));
+
+    el.addEventListener('mouseleave', ev =>
+        forEachElem('.colorPicker')
+            (deleteElementIfNotHoveredOver, ev.getClientXY(), { top: 5 }));
 };
 
 const attachEditBehavior = el => {
@@ -94,39 +128,34 @@ const attachEditBehavior = el => {
     });
 };
 
-const deleteElementIfNotHoveredOver = (
-    elem,
-    [
-        [clientX, clientY],
-        { left = 0, top = 0, right = 0, bottom = 0 }
-    ]) => {
-    const coord = elem.getBoundingClientRect();
-    if (!(coord.left <= clientX + left && clientX - right <= coord.right && coord.top <= clientY + top && clientY - bottom <= coord.bottom))
-        elem.remove();
-};
-
-const attachColorPicker = el => {
-
-    const createColorPicker = clientX => {
-        const colorPicker = createElement('input', {
-            className: 'colorPicker',
-            type: 'color',
-            style: {
-                left: `${clientX - 22}px`
-            },
-            onchange: ev => el.style.color = ev.target.value,
-            onmouseleave: ev => colorPicker.remove()
-        });
-
-        return colorPicker;
-    };
-
-    el.addEventListener('mouseover', ev =>
-        el.insertAfter(createColorPicker(ev.clientX)));
-
-    el.addEventListener('mouseleave', ev =>
-        forEachElem('.colorPicker')
-            (deleteElementIfNotHoveredOver, ev.getClientXY(), { top: 5 }));
+const createHeader = (name, occupation) => {
+    return createElement('div', {
+        id: 'header',
+        className: 'canPickBackgroundColor',
+        behaviors: new Map([
+            [attachBckgColorPicker, '']
+        ]),
+        children: [
+            createElement('h1', {
+                id: 'name',
+                className: 'canPickColor canEdit',
+                innerText: name,
+                behaviors: new Map([
+                    [attachColorPicker, ''],
+                    [attachEditBehavior, '']
+                ])
+            }),
+            createElement('h2', {
+                id: 'occupation',
+                className: 'canPickColor canEdit',
+                innerText: occupation,
+                behaviors: new Map([
+                    [attachColorPicker, ''],
+                    [attachEditBehavior, '']
+                ])
+            })
+        ]
+    });
 };
 
 const DeleteAction = {
@@ -134,6 +163,24 @@ const DeleteAction = {
     DeleteSelf: 2,
     DeleteSelfAndParentIfLast: 3,
     DeleteParentIfNotLast: 4
+};
+
+HTMLElement.prototype.insertAfter = function insertAfter(newElement) {
+    this.parentNode.insertBefore(newElement, this.nextSibling);
+};
+
+HTMLElement.prototype.removeAllChildren = function removeAllChildren() {
+    while (this.hasChildNodes())
+        this.removeChild(this.lastChild);
+};
+
+HTMLElement.prototype.removeSelfAndNextSibling = function removeSelfAndNextSibling() {
+    this.nextElementSibling.remove();
+    this.remove();
+};
+
+MouseEvent.prototype.getClientXY = function getClientXY() {
+    return [this.clientX, this.clientY];
 };
 
 const createTextElement = () => {
@@ -150,6 +197,9 @@ const createTextElement = () => {
 const createDescriptionElement = () => {
     return createElement('div', {
         className: 'inline deleteSelf',
+        behaviors: new Map([
+            [attachActionContainer, 'delete']
+        ]),
         children: [
             createElement('p', {
                 className: 'description canEdit',
@@ -165,10 +215,7 @@ const createDescriptionElement = () => {
                     [attachEditBehavior, '']
                 ])
             })
-        ],
-        behaviors: new Map([
-            [attachActionContainer, 'delete']
-        ])
+        ]        
     });
 };
 
@@ -313,7 +360,7 @@ const createAction = (el, actionName) => {
             return () => createDeleteBehavior(el);
         case 'createSection':
             return () =>
-                el.parentNode.parentNode.lastChild.insertAfter(createSection(el));
+                el.parentNode.parentNode.lastChild.insertAfter(createSection(el.parentNode.parentNode.id));
         case 'createDetailElement':
             return () =>
                 el.insertAfter(createDetailElement());
@@ -379,7 +426,7 @@ const attachActionContainer = (el, icons) => {
     );
 };
 
-const createSection = (el, name = 'section') => {
+const createSection = (columnid, name = 'section') => {
     
     const defaultBehaviors = new Map([
         [attachEditBehavior, ''],
@@ -393,7 +440,7 @@ const createSection = (el, name = 'section') => {
                 className:
                     'nameOfSection canPickColor  deleteParentIfNotLast',
                 innerText: name,
-                behaviors: el.id === 'fstColumn' || el.parentNode.parentNode.id === 'fstColumn'
+                behaviors: columnid === 'fstColumn'
                     ? new Map([
                         ...defaultBehaviors.entries(),
                         [attachActionContainer,
@@ -409,34 +456,25 @@ const createSection = (el, name = 'section') => {
     });
 };
 
-const setInitialAttributes = id => {
-    const elem = document.getElementById(id);
-    return (text, color = null) => {
-        elem.innerHTML = text || elem.innerHTML;
-        elem.className.includes('canPickBackgroundColor')
-            ? elem.style.backgroundColor = color
-            : elem.style.color = color;
-    };
-};
+const createGrid = ([fstColumn, sndColumn]) => {
 
-const attachBckgColorPicker = el => {
-
-    const createColorPicker = () => {
-        return createElement('input', {
-            type: 'color',
-            onchange: ev =>
-                el.style.backgroundColor = ev.target.value
+    const createColumn = ({ id, name }) => {
+        return createElement('div', {
+            id: id,
+            className: 'subgrid',
+            children: [
+                createSection(id, name)
+            ]
         });
     };
 
-    el.addEventListener('dblclick', () =>
-        createColorPicker().click());
-};
-
-const wireupInitialBehavior = () => {
-    forEachElem('.canPickBackgroundColor')(attachBckgColorPicker);
-    forEachElem('.canEdit')(attachEditBehavior);
-    forEachElem('.canPickColor')(attachColorPicker);
+    return createElement('div', {
+        id: 'grid',
+        children: [
+            createColumn(fstColumn),
+            createColumn(sndColumn)
+        ]
+    });
 };
 
 const randomName = () => {
@@ -446,22 +484,28 @@ const randomName = () => {
 };
 
 const newCV = () => {
-    const cleanColumn = (column, [nameOfFirstSection]) => {
-        column.removeAllChildren();
-        column.appendChild(createSection(column, nameOfFirstSection));
-    };
-
-    setInitialAttributes('header')();
-    setInitialAttributes('name')(randomName());
-    setInitialAttributes('occupation')('software developer');
-    wireupInitialBehavior(); //for elements always present on page
-
-    forEachElem('#fstColumn')(cleanColumn, 'contact');
-    forEachElem('#sndColumn')(cleanColumn, 'experience');
+    const CV = document.getElementById('CV');
+    CV.removeAllChildren();
+    CV.appendChild(
+        createHeader(randomName(), 'software developer'));
+    CV.appendChild(
+        createGrid([
+            {
+                id: 'fstColumn',
+                name: 'contact'
+            },
+            {
+                id: 'sndColumn',
+                name: 'experience'
+            }
+        ]));
 };
 
-const saveCV = id => {
+const saveCV = () => {
     const CV = document.getElementById('CV');
+
+    //TODO: ignore input elements!!
+
     const jsonOutput = domJSON.toJSON(CV, {
         attributes: [false, 'id', 'class', 'style'],
         domProperties: [false, 'alt'],
@@ -475,29 +519,71 @@ const saveCV = id => {
     saveAs(blob, name);
 };
 
-// const load = id => {
-//     const buttonLoadCV = document.getElementById(id);
-//     buttonLoadCV.onchange = ev => {
-//         const file = buttonLoadCV.files[0];
+const setInitialAttributes = id => {
+    const elem = document.getElementById(id);
+    return (text, color = null) => {
+        elem.innerHTML = text || elem.innerHTML;
+        elem.className.includes('canPickBackgroundColor')
+            ? elem.style.backgroundColor = color
+            : elem.style.color = color;
+    };
+};
 
-//         const reader = new FileReader();
-//         reader.onload = prEv => {
-//             const res = reader.result;
-//             const CV = document.getElementById('CV');
-//             const domCV = domJSON.toDOM(res);
-//             CV.parentNode.replaceChild(domCV, CV);
-//             wireupBehavior();
-//         };
-
-//         reader.readAsText(file);
-//     };
+// const foo = node => {
+//     console.log(node.tagName, node.id, node.className, node.innerText);    
+//     if (!node.childNodes) return
+//     else[...node.childNodes].forEach(cn => foo(cn));
 // };
 
+const processHeader = node => {
+    if (!node.childNodes) return;
+    else {
+        switch (node.id) {
+            case 'header':
+                setInitialAttributes('header')(null, node.style.backgroundColor);
+                break;
+            case 'name':
+            case 'occupation':
+                setInitialAttributes(node.id)(node.innerText, node.style.color);
+                break;
+        }
+        [...node.childNodes].forEach(cn => processHeader(cn));
+    }
+    //last line follows
+    // wireupInitialBehavior();
+};
+
+
+const loadCV = ev => {
+    const file = ev.target.files[0];
+
+    const reader = new FileReader();
+    reader.onload = () => {
+        const domCV = domJSON.toDOM(reader.result)
+            .firstElementChild;
+        processHeader([...domCV.childNodes].find(cn => cn.id === 'header'));
+
+        // foo(domCV);
+
+        //TODO: deal with header
+        //TODO: deal with grid        
+
+        // console.log([domCV]);
+
+        // const CV = document.getElementById('CV');
+        // const domCV = domJSON.toDOM(res);
+        // CV.parentNode.replaceChild(domCV, CV);
+        // wireupBehavior();
+    };
+
+    reader.readAsText(file);
+
+};
 
 window.onload = () => {
     attachButtonBehavior('newCVButton', newCV);
     attachButtonBehavior('saveCVButton', saveCV);
-    // load('loadCV');
+    attachButtonBehavior('loadCVButton', loadCV);
     newCV();
 };
 

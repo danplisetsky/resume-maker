@@ -3,7 +3,7 @@ import attachEditBehavior from './attachEditBehavior';
 import attachColorPicker from './attachColorPicker';
 import attachActionContainer from './attachActionContainer';
 
-const createSection = (el, name = 'section') => {
+const createSection = (columnid, name = 'section') => {
     
     const defaultBehaviors = new Map([
         [attachEditBehavior, ''],
@@ -17,7 +17,7 @@ const createSection = (el, name = 'section') => {
                 className:
                     'nameOfSection canPickColor  deleteParentIfNotLast',
                 innerText: name,
-                behaviors: el.id === 'fstColumn' || el.parentNode.parentNode.id === 'fstColumn'
+                behaviors: columnid === 'fstColumn'
                     ? new Map([
                         ...defaultBehaviors.entries(),
                         [attachActionContainer,

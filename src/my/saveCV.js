@@ -1,5 +1,6 @@
-const saveCV = id => {
+const saveCV = () => {
     const CV = document.getElementById('CV');
+
     const jsonOutput = domJSON.toJSON(CV, {
         attributes: [false, 'id', 'class', 'style'],
         domProperties: [false, 'alt'],
