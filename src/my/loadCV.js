@@ -1,4 +1,6 @@
-import setInitialAttributes from "./setInitialAttributes";
+import createHeader from "./createHeader";
+import { removeAllChildren } from './extensions';
+
 
 // const foo = node => {
 //     console.log(node.tagName, node.id, node.className, node.innerText);    
@@ -6,22 +8,29 @@ import setInitialAttributes from "./setInitialAttributes";
 //     else[...node.childNodes].forEach(cn => foo(cn));
 // };
 
-const processHeader = node => {
-    if (!node.childNodes) return;
+const processHeader = (node, id) => {
+    if (!node || !node.childNodes) return;
     else {
         switch (node.id) {
             case 'header':
-                setInitialAttributes('header')(null, node.style.backgroundColor);
-                break;
-            case 'name':
-            case 'occupation':
-                setInitialAttributes(node.id)(node.innerText, node.style.color);
-                break;
+                return createHeader(
+                    {
+                        headerBackgroundColor: node.style.backgroundColor
+                    },
+                    processHeader(node.firstElementChild, 'name'),
+                    processHeader(node.firstElementChild, 'occupation')
+                );
+            case id:
+                return {
+                    tag: node.tagName,
+                    id: node.id,
+                    name: node.innerText,
+                    color: node.style.color
+                };
+            default:
+                return processHeader(node.nextSibling, id);
         }
-        [...node.childNodes].forEach(cn => processHeader(cn));
     }
-    //last line follows
-    // wireupInitialBehavior();
 };
 
 
@@ -32,19 +41,15 @@ const loadCV = ev => {
     reader.onload = () => {
         const domCV = domJSON.toDOM(reader.result)
             .firstElementChild;
-        processHeader([...domCV.childNodes].find(cn => cn.id === 'header'));
+        const header = processHeader([...domCV.childNodes].find(cn => cn.id === 'header'));
+
+        const CV = document.getElementById('CV');
+        CV.removeAllChildren();
+        CV.appendChild(header);        
 
         // foo(domCV);
 
-        //TODO: deal with header
-        //TODO: deal with grid        
-
-        // console.log([domCV]);
-
-        // const CV = document.getElementById('CV');
-        // const domCV = domJSON.toDOM(res);
-        // CV.parentNode.replaceChild(domCV, CV);
-        // wireupBehavior();
+        //TODO: call createNewCV here
     };
 
     reader.readAsText(file);

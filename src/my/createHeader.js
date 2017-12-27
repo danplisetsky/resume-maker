@@ -1,34 +1,48 @@
-import createElement from "./createElement";
-import attachBckgColorPicker from "./attachBckgColorPicker";
-import attachColorPicker from "./attachColorPicker";
-import attachEditBehavior from "./attachEditBehavior";
+import createElement from './createElement';
+import attachBckgColorPicker from './attachBckgColorPicker';
+import attachColorPicker from './attachColorPicker';
+import attachEditBehavior from './attachEditBehavior';
+import randomName from './randomName';
 
-const createHeader = (name, occupation) => {
+
+const createSubheader = ({ tag, id, name, color }) => {
+    return createElement(tag, {
+        id: id,
+        className: 'canPickColor canEdit',
+        innerText: name,
+        style: {
+            color: color
+        },
+        behaviors: new Map([
+            [attachColorPicker, ''],
+            [attachEditBehavior, '']
+        ])
+    });
+};
+
+const createHeader = (
+    {
+        headerBackgroundColor = null
+    } = {},
+    name = {
+        tag: 'h1', id: 'name', name: randomName(), color: null
+    },
+    occupation = {
+        tag: 'h2', id: 'occupation', name: 'software developer', color: null
+    }   
+) => {
     return createElement('div', {
         id: 'header',
         className: 'canPickBackgroundColor',
+        style: {
+            backgroundColor: headerBackgroundColor
+        },
         behaviors: new Map([
             [attachBckgColorPicker, '']
         ]),
         children: [
-            createElement('h1', {
-                id: 'name',
-                className: 'canPickColor canEdit',
-                innerText: name,
-                behaviors: new Map([
-                    [attachColorPicker, ''],
-                    [attachEditBehavior, '']
-                ])
-            }),
-            createElement('h2', {
-                id: 'occupation',
-                className: 'canPickColor canEdit',
-                innerText: occupation,
-                behaviors: new Map([
-                    [attachColorPicker, ''],
-                    [attachEditBehavior, '']
-                ])
-            })
+            createSubheader(name),
+            createSubheader(occupation)           
         ]
     });
 };

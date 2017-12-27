@@ -9,6 +9,24 @@ const attachButtonBehavior = (id, callback) => {
         button.onclick = callback;
 };
 
+HTMLElement.prototype.insertAfter = function insertAfter(newElement) {
+    this.parentNode.insertBefore(newElement, this.nextSibling);
+};
+
+HTMLElement.prototype.removeAllChildren = function removeAllChildren() {
+    while (this.hasChildNodes())
+        this.removeChild(this.lastChild);
+};
+
+HTMLElement.prototype.removeSelfAndNextSibling = function removeSelfAndNextSibling() {
+    this.nextElementSibling.remove();
+    this.remove();
+};
+
+MouseEvent.prototype.getClientXY = function getClientXY() {
+    return [this.clientX, this.clientY];
+};
+
 const createElement = (tag, attributes) => {
     const elem = document.createElement(tag);
     for (const attr in attributes) {
@@ -128,32 +146,50 @@ const attachEditBehavior = el => {
     });
 };
 
-const createHeader = (name, occupation) => {
+const randomName = () => {
+    return Math.random() < 0.5
+        ? 'John Doe'
+        : 'Jane Doe';
+};
+
+const createSubheader = ({ tag, id, name, color }) => {
+    return createElement(tag, {
+        id: id,
+        className: 'canPickColor canEdit',
+        innerText: name,
+        style: {
+            color: color
+        },
+        behaviors: new Map([
+            [attachColorPicker, ''],
+            [attachEditBehavior, '']
+        ])
+    });
+};
+
+const createHeader = (
+    {
+        headerBackgroundColor = null
+    } = {},
+    name = {
+        tag: 'h1', id: 'name', name: randomName(), color: null
+    },
+    occupation = {
+        tag: 'h2', id: 'occupation', name: 'software developer', color: null
+    }   
+) => {
     return createElement('div', {
         id: 'header',
         className: 'canPickBackgroundColor',
+        style: {
+            backgroundColor: headerBackgroundColor
+        },
         behaviors: new Map([
             [attachBckgColorPicker, '']
         ]),
         children: [
-            createElement('h1', {
-                id: 'name',
-                className: 'canPickColor canEdit',
-                innerText: name,
-                behaviors: new Map([
-                    [attachColorPicker, ''],
-                    [attachEditBehavior, '']
-                ])
-            }),
-            createElement('h2', {
-                id: 'occupation',
-                className: 'canPickColor canEdit',
-                innerText: occupation,
-                behaviors: new Map([
-                    [attachColorPicker, ''],
-                    [attachEditBehavior, '']
-                ])
-            })
+            createSubheader(name),
+            createSubheader(occupation)           
         ]
     });
 };
@@ -163,24 +199,6 @@ const DeleteAction = {
     DeleteSelf: 2,
     DeleteSelfAndParentIfLast: 3,
     DeleteParentIfNotLast: 4
-};
-
-HTMLElement.prototype.insertAfter = function insertAfter(newElement) {
-    this.parentNode.insertBefore(newElement, this.nextSibling);
-};
-
-HTMLElement.prototype.removeAllChildren = function removeAllChildren() {
-    while (this.hasChildNodes())
-        this.removeChild(this.lastChild);
-};
-
-HTMLElement.prototype.removeSelfAndNextSibling = function removeSelfAndNextSibling() {
-    this.nextElementSibling.remove();
-    this.remove();
-};
-
-MouseEvent.prototype.getClientXY = function getClientXY() {
-    return [this.clientX, this.clientY];
 };
 
 const createTextElement = () => {
@@ -477,17 +495,13 @@ const createGrid = ([fstColumn, sndColumn]) => {
     });
 };
 
-const randomName = () => {
-    return Math.random() < 0.5
-        ? 'John Doe'
-        : 'Jane Doe';
-};
-
 const newCV = () => {
+
+    //TODO: abstract creating new cv to createNewCV in separate module
     const CV = document.getElementById('CV');
     CV.removeAllChildren();
     CV.appendChild(
-        createHeader(randomName(), 'software developer'));
+        createHeader());
     CV.appendChild(
         createGrid([
             {
@@ -504,8 +518,6 @@ const newCV = () => {
 const saveCV = () => {
     const CV = document.getElementById('CV');
 
-    //TODO: ignore input elements!!
-
     const jsonOutput = domJSON.toJSON(CV, {
         attributes: [false, 'id', 'class', 'style'],
         domProperties: [false, 'alt'],
@@ -519,38 +531,35 @@ const saveCV = () => {
     saveAs(blob, name);
 };
 
-const setInitialAttributes = id => {
-    const elem = document.getElementById(id);
-    return (text, color = null) => {
-        elem.innerHTML = text || elem.innerHTML;
-        elem.className.includes('canPickBackgroundColor')
-            ? elem.style.backgroundColor = color
-            : elem.style.color = color;
-    };
-};
-
 // const foo = node => {
 //     console.log(node.tagName, node.id, node.className, node.innerText);    
 //     if (!node.childNodes) return
 //     else[...node.childNodes].forEach(cn => foo(cn));
 // };
 
-const processHeader = node => {
-    if (!node.childNodes) return;
+const processHeader = (node, id) => {
+    if (!node || !node.childNodes) return;
     else {
         switch (node.id) {
             case 'header':
-                setInitialAttributes('header')(null, node.style.backgroundColor);
-                break;
-            case 'name':
-            case 'occupation':
-                setInitialAttributes(node.id)(node.innerText, node.style.color);
-                break;
+                return createHeader(
+                    {
+                        headerBackgroundColor: node.style.backgroundColor
+                    },
+                    processHeader(node.firstElementChild, 'name'),
+                    processHeader(node.firstElementChild, 'occupation')
+                );
+            case id:
+                return {
+                    tag: node.tagName,
+                    id: node.id,
+                    name: node.innerText,
+                    color: node.style.color
+                };
+            default:
+                return processHeader(node.nextSibling, id);
         }
-        [...node.childNodes].forEach(cn => processHeader(cn));
     }
-    //last line follows
-    // wireupInitialBehavior();
 };
 
 
@@ -561,19 +570,15 @@ const loadCV = ev => {
     reader.onload = () => {
         const domCV = domJSON.toDOM(reader.result)
             .firstElementChild;
-        processHeader([...domCV.childNodes].find(cn => cn.id === 'header'));
+        const header = processHeader([...domCV.childNodes].find(cn => cn.id === 'header'));
+
+        const CV = document.getElementById('CV');
+        CV.removeAllChildren();
+        CV.appendChild(header);        
 
         // foo(domCV);
 
-        //TODO: deal with header
-        //TODO: deal with grid        
-
-        // console.log([domCV]);
-
-        // const CV = document.getElementById('CV');
-        // const domCV = domJSON.toDOM(res);
-        // CV.parentNode.replaceChild(domCV, CV);
-        // wireupBehavior();
+        //TODO: call createNewCV here
     };
 
     reader.readAsText(file);
