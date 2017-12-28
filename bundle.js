@@ -237,27 +237,20 @@ const createDescriptionElement = (description = 'description', text = 'text') =>
     });
 };
 
-const createListElement = () => {
+const createListElement = (description = 'description', children = [createTextElement()]) => {
     return createElement('div', {
-        className: 'multiple',
+        className: 'listElement multiple',
         children: [
             createElement('p', {
                 className: 'description canEdit deleteParent',
-                innerText: 'description',
+                innerText: description,
                 behaviors: new Map([
                     [attachEditBehavior, ''],
                     [attachActionContainer,
                         ['addText', 'delete']]
                 ])
             }),
-            createElement('p', {
-                className: 'canEdit deleteSelf',
-                innerText: 'text',
-                behaviors: new Map([
-                    [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
-                ])
-            })
+            ...children
         ]
     });
 };
@@ -511,19 +504,38 @@ const createGrid = (
                         : processDescriptionElement(rest, args);
         };
 
-        const processChidren = ([fstElement, ...rest], children = []) => {
+        const processListElement = ([fstChild, ...rest], args = []) => {
+            return !fstChild
+                ? args
+                : fstChild.classList.contains('description')
+                    ? createListElement(fstChild.innerText, processListElement(rest))
+                    : fstChild.classList.contains('textElement')
+                        ? processListElement(
+                            rest,
+                            args.concat(
+                                createTextElement(fstChild.innerText)))
+                        : processListElement(rest, args);
+        };
+
+        const processChildren = ([fstElement, ...rest], children = []) => {
             if (!fstElement) return children;
             else {
                 const classList = fstElement.classList;
                 switch (true) {
                     case classList.contains('textElement'):
-                        return processChidren(rest,
-                            children.concat(processTextElement(fstElement)));
+                        return processChildren(rest,
+                            children.concat(
+                                processTextElement(fstElement)));
                     case classList.contains('descriptionElement'):
-                        return processChidren(rest,
-                            children.concat(processDescriptionElement(fstElement.childNodes)));
+                        return processChildren(rest,
+                            children.concat(
+                                processDescriptionElement(fstElement.childNodes)));
+                    case classList.contains('listElement'):
+                        return processChildren(rest,
+                            children.concat(
+                                processListElement(fstElement.childNodes)));
                     default:
-                        return processChidren(rest, children);
+                        return processChildren(rest, children);
                 }
             }
         };
@@ -533,7 +545,7 @@ const createGrid = (
                 id,
                 fst.name,
                 fst.color,
-                processChidren(rest))
+                processChildren(rest))
             : (() => { throw 'wrongly formatted CV!' });
     };
 

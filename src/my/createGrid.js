@@ -2,6 +2,7 @@ import createElement from './createElement';
 import createSection from './createSection';
 import createTextElement from './createTextElement';
 import createDescriptionElement from './createDescriptionElement';
+import createListElement from './createListElement';
 
 const createGrid = (
     fstColumn = {
@@ -36,19 +37,38 @@ const createGrid = (
                         : processDescriptionElement(rest, args);
         };
 
-        const processChidren = ([fstElement, ...rest], children = []) => {
+        const processListElement = ([fstChild, ...rest], args = []) => {
+            return !fstChild
+                ? args
+                : fstChild.classList.contains('description')
+                    ? createListElement(fstChild.innerText, processListElement(rest))
+                    : fstChild.classList.contains('textElement')
+                        ? processListElement(
+                            rest,
+                            args.concat(
+                                createTextElement(fstChild.innerText)))
+                        : processListElement(rest, args);
+        };
+
+        const processChildren = ([fstElement, ...rest], children = []) => {
             if (!fstElement) return children;
             else {
                 const classList = fstElement.classList;
                 switch (true) {
                     case classList.contains('textElement'):
-                        return processChidren(rest,
-                            children.concat(processTextElement(fstElement)));
+                        return processChildren(rest,
+                            children.concat(
+                                processTextElement(fstElement)));
                     case classList.contains('descriptionElement'):
-                        return processChidren(rest,
-                            children.concat(processDescriptionElement(fstElement.childNodes)));
+                        return processChildren(rest,
+                            children.concat(
+                                processDescriptionElement(fstElement.childNodes)));
+                    case classList.contains('listElement'):
+                        return processChildren(rest,
+                            children.concat(
+                                processListElement(fstElement.childNodes)));
                     default:
-                        return processChidren(rest, children);
+                        return processChildren(rest, children);
                 }
             }
         };
@@ -58,7 +78,7 @@ const createGrid = (
                 id,
                 fst.name,
                 fst.color,
-                processChidren(rest))
+                processChildren(rest))
             : (() => { throw 'wrongly formatted CV!' });
     };
 

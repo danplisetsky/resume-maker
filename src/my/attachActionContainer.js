@@ -7,31 +7,7 @@ import attachEditBehavior from './attachEditBehavior';
 import { removeSelfAndNextSibling } from './extensions';
 import createTextElement from './createTextElement';
 import createDescriptionElement from './createDescriptionElement';
-
-const createListElement = () => {
-    return createElement('div', {
-        className: 'multiple',
-        children: [
-            createElement('p', {
-                className: 'description canEdit deleteParent',
-                innerText: 'description',
-                behaviors: new Map([
-                    [attachEditBehavior, ''],
-                    [attachActionContainer,
-                        ['addText', 'delete']]
-                ])
-            }),
-            createElement('p', {
-                className: 'canEdit deleteSelf',
-                innerText: 'text',
-                behaviors: new Map([
-                    [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
-                ])
-            })
-        ]
-    });
-};
+import createListElement from './createListElement';
 
 const createCompoundItem = () => {
     return createElement('div', {
