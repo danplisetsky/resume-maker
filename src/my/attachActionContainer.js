@@ -5,42 +5,8 @@ import createSection from './createSection';
 import DeleteAction from './deleteAction';
 import attachEditBehavior from './attachEditBehavior';
 import { removeSelfAndNextSibling } from './extensions';
-
-const createTextElement = () => {
-    return createElement('p', {
-        className: 'canEdit deleteSelf',
-        innerText: 'text',
-        behaviors: new Map([
-            [attachEditBehavior, ''],
-            [attachActionContainer, 'delete']
-        ])
-    });
-};
-
-const createDescriptionElement = () => {
-    return createElement('div', {
-        className: 'inline deleteSelf',
-        behaviors: new Map([
-            [attachActionContainer, 'delete']
-        ]),
-        children: [
-            createElement('p', {
-                className: 'description canEdit',
-                innerText: 'description',
-                behaviors: new Map([
-                    [attachEditBehavior, '']
-                ])
-            }),
-            createElement('p', {
-                className: 'canEdit',
-                innerText: 'text',
-                behaviors: new Map([
-                    [attachEditBehavior, '']
-                ])
-            })
-        ]        
-    });
-};
+import createTextElement from './createTextElement';
+import createDescriptionElement from './createDescriptionElement';
 
 const createListElement = () => {
     return createElement('div', {

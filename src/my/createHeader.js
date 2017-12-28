@@ -21,9 +21,9 @@ const createSubheader = ({ tag, id, name, color }) => {
 };
 
 const createHeader = (
-    {
-        headerBackgroundColor = null
-    } = {},
+    header = {
+        backgroundColor: null
+    },
     name = {
         tag: 'h1', id: 'name', name: randomName(), color: null
     },
@@ -35,7 +35,7 @@ const createHeader = (
         id: 'header',
         className: 'canPickBackgroundColor',
         style: {
-            backgroundColor: headerBackgroundColor
+            backgroundColor: header.backgroundColor
         },
         behaviors: new Map([
             [attachBckgColorPicker, '']

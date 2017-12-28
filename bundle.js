@@ -168,9 +168,9 @@ const createSubheader = ({ tag, id, name, color }) => {
 };
 
 const createHeader = (
-    {
-        headerBackgroundColor = null
-    } = {},
+    header = {
+        backgroundColor: null
+    },
     name = {
         tag: 'h1', id: 'name', name: randomName(), color: null
     },
@@ -182,7 +182,7 @@ const createHeader = (
         id: 'header',
         className: 'canPickBackgroundColor',
         style: {
-            backgroundColor: headerBackgroundColor
+            backgroundColor: header.backgroundColor
         },
         behaviors: new Map([
             [attachBckgColorPicker, '']
@@ -201,10 +201,10 @@ const DeleteAction = {
     DeleteParentIfNotLast: 4
 };
 
-const createTextElement = () => {
+const createTextElement = (text = 'text') => {
     return createElement('p', {
-        className: 'canEdit deleteSelf',
-        innerText: 'text',
+        className: 'textElement canEdit deleteSelf',
+        innerText: text,
         behaviors: new Map([
             [attachEditBehavior, ''],
             [attachActionContainer, 'delete']
@@ -212,28 +212,28 @@ const createTextElement = () => {
     });
 };
 
-const createDescriptionElement = () => {
+const createDescriptionElement = (description = 'description', text = 'text') => {
     return createElement('div', {
-        className: 'inline deleteSelf',
+        className: 'descriptionElement inline deleteSelf',
         behaviors: new Map([
             [attachActionContainer, 'delete']
         ]),
         children: [
             createElement('p', {
                 className: 'description canEdit',
-                innerText: 'description',
+                innerText: description,
                 behaviors: new Map([
                     [attachEditBehavior, '']
                 ])
             }),
             createElement('p', {
-                className: 'canEdit',
-                innerText: 'text',
+                className: 'descriptionText canEdit',
+                innerText: text,
                 behaviors: new Map([
                     [attachEditBehavior, '']
                 ])
             })
-        ]        
+        ]
     });
 };
 
@@ -444,7 +444,7 @@ const attachActionContainer = (el, icons) => {
     );
 };
 
-const createSection = (columnid, name = 'section') => {
+const createSection = (columnid, name = 'section', nameColor = null, children = []) => {
     
     const defaultBehaviors = new Map([
         [attachEditBehavior, ''],
@@ -458,6 +458,9 @@ const createSection = (columnid, name = 'section') => {
                 className:
                     'nameOfSection canPickColor  deleteParentIfNotLast',
                 innerText: name,
+                style: {
+                    color: nameColor
+                },
                 behaviors: columnid === 'fstColumn'
                     ? new Map([
                         ...defaultBehaviors.entries(),
@@ -469,20 +472,80 @@ const createSection = (columnid, name = 'section') => {
                         [attachActionContainer,
                             ['addCompoundItem', 'addDateItem', 'addAfter', 'delete']]   
                     ])
-            })
+            }),
+            ...children
         ]
     });
 };
 
-const createGrid = ([fstColumn, sndColumn]) => {
+const createGrid = (
+    fstColumn = {
+        id: 'fstColumn',
+        children: [
+            [
+                { name: 'contact', color: null }
+            ]
+        ]
+    },
+    sndColumn = {
+        id: 'sndColumn',
+        children: [
+            [
+                { name: 'experience', color: null }
+            ]
+        ]
+    }) => {
 
-    const createColumn = ({ id, name }) => {
+    const makeCreateSection = (id, [fst, ...rest]) => {
+
+        const processTextElement = node =>
+            createTextElement(node.innerText);
+
+        const processDescriptionElement = ([fstChild, ...rest], args = []) => {
+            return !fstChild
+                ? createDescriptionElement(...args)
+                : fstChild.classList.contains('description')
+                    ? processDescriptionElement(rest, args.concat(fstChild.innerText))
+                    : fstChild.classList.contains('descriptionText')
+                        ? processDescriptionElement(rest, args.concat(fstChild.innerText))
+                        : processDescriptionElement(rest, args);
+        };
+
+        const processChidren = ([fstElement, ...rest], children = []) => {
+            if (!fstElement) return children;
+            else {
+                const classList = fstElement.classList;
+                switch (true) {
+                    case classList.contains('textElement'):
+                        return processChidren(rest,
+                            children.concat(processTextElement(fstElement)));
+                    case classList.contains('descriptionElement'):
+                        return processChidren(rest,
+                            children.concat(processDescriptionElement(fstElement.childNodes)));
+                    default:
+                        return processChidren(rest, children);
+                }
+            }
+        };
+
+        return fst.hasOwnProperty('name')
+            ? createSection(
+                id,
+                fst.name,
+                fst.color,
+                processChidren(rest))
+            : (() => { throw 'wrongly formatted CV!' });
+    };
+
+    const createColumn = ({
+        id,
+        children
+    }) => {
+        const sections = children.map(section => makeCreateSection(id, section));
         return createElement('div', {
             id: id,
             className: 'subgrid',
-            children: [
-                createSection(id, name)
-            ]
+            children: sections
         });
     };
 
@@ -503,16 +566,7 @@ const newCV = () => {
     CV.appendChild(
         createHeader());
     CV.appendChild(
-        createGrid([
-            {
-                id: 'fstColumn',
-                name: 'contact'
-            },
-            {
-                id: 'sndColumn',
-                name: 'experience'
-            }
-        ]));
+        createGrid());
 };
 
 const saveCV = () => {
@@ -531,12 +585,6 @@ const saveCV = () => {
     saveAs(blob, name);
 };
 
-// const foo = node => {
-//     console.log(node.tagName, node.id, node.className, node.innerText);    
-//     if (!node.childNodes) return
-//     else[...node.childNodes].forEach(cn => foo(cn));
-// };
-
 const processHeader = (node, id) => {
     if (!node || !node.childNodes) return;
     else {
@@ -544,7 +592,7 @@ const processHeader = (node, id) => {
             case 'header':
                 return createHeader(
                     {
-                        headerBackgroundColor: node.style.backgroundColor
+                        backgroundColor: node.style.backgroundColor
                     },
                     processHeader(node.firstElementChild, 'name'),
                     processHeader(node.firstElementChild, 'occupation')
@@ -562,6 +610,45 @@ const processHeader = (node, id) => {
     }
 };
 
+const processGrid = node => {
+
+    const processSection = ([fstElement, ...rest], children = []) => {
+        return !fstElement
+            ? children
+            : fstElement.classList.contains('nameOfSection')
+                ? processSection(
+                    rest,
+                    children.concat({
+                        name: fstElement.innerText,
+                        color: fstElement.style.color
+                    }))
+                : processSection(rest, children.concat(fstElement))
+    };
+
+    const processSubgrid = ([fstSection, ...rest], children = []) => {
+        return !fstSection
+            ? children
+            : processSubgrid(
+                rest,
+                [
+                    ...children,
+                    processSection(fstSection.childNodes)
+                ]);
+    };
+
+    return (!node || !node.childNodes)
+        ? (() => { throw 'wrongly formatted cv!' })
+        : node.id === 'grid'
+            ? createGrid(
+                processGrid(node.firstElementChild),
+                processGrid(node.lastElementChild)
+            )
+            : {
+                id: node.id,
+                children: processSubgrid(node.childNodes)
+            };
+};
+
 
 const loadCV = ev => {
     const file = ev.target.files[0];
@@ -570,15 +657,17 @@ const loadCV = ev => {
     reader.onload = () => {
         const domCV = domJSON.toDOM(reader.result)
             .firstElementChild;
-        const header = processHeader([...domCV.childNodes].find(cn => cn.id === 'header'));
+        const header = processHeader(
+            [...domCV.childNodes].find(cn => cn.id === 'header'));
+        const grid = processGrid(
+            [...domCV.childNodes].find(cn => cn.id === 'grid'));
+
+        //TODO: call createNewCV here
 
         const CV = document.getElementById('CV');
         CV.removeAllChildren();
-        CV.appendChild(header);        
-
-        // foo(domCV);
-
-        //TODO: call createNewCV here
+        CV.appendChild(header);
+        CV.appendChild(grid);
     };
 
     reader.readAsText(file);

@@ -11,16 +11,7 @@ const newCV = () => {
     CV.appendChild(
         createHeader());
     CV.appendChild(
-        createGrid([
-            {
-                id: 'fstColumn',
-                name: 'contact'
-            },
-            {
-                id: 'sndColumn',
-                name: 'experience'
-            }
-        ]));
+        createGrid());
 };
 
 export default newCV;
