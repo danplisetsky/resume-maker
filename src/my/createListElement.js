@@ -5,9 +5,11 @@ import createTextElement from './createTextElement';
 
 const createListElement = (
     {
-        description = 'description',
-        children = [createTextElement()]
-    } = {}) => {
+        description = 'description'
+    } = {},
+    children = [
+        createTextElement()
+    ]) => {
     return createElement('div', {
         className: 'listElement multiple',
         children: [
