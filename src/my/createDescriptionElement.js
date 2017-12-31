@@ -2,7 +2,11 @@ import createElement from './createElement';
 import attachActionContainer from './attachActionContainer';
 import attachEditBehavior from './attachEditBehavior';
 
-const createDescriptionElement = (description = 'description', text = 'text') => {
+const createDescriptionElement = (
+    {
+        description = 'description',
+        text = 'text'
+    } = {}) => {
     return createElement('div', {
         className: 'descriptionElement inline deleteSelf',
         behaviors: new Map([

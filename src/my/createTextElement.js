@@ -2,7 +2,10 @@ import createElement from './createElement';
 import attachEditBehavior from './attachEditBehavior';
 import attachActionContainer from './attachActionContainer';
 
-const createTextElement = (text = 'text') => {
+const createTextElement = (
+    {
+        text = 'text'
+    } = {}) => {
     return createElement('p', {
         className: 'textElement canEdit deleteSelf',
         innerText: text,

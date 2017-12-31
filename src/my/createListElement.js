@@ -3,7 +3,11 @@ import attachEditBehavior from './attachEditBehavior';
 import attachActionContainer from './attachActionContainer';
 import createTextElement from './createTextElement';
 
-const createListElement = (description = 'description', children = [createTextElement()]) => {
+const createListElement = (
+    {
+        description = 'description',
+        children = [createTextElement()]
+    } = {}) => {
     return createElement('div', {
         className: 'listElement multiple',
         children: [

@@ -29,30 +29,49 @@ const createGrid = (
 
         const addToArgsMeta = (argsMeta, obj) => Object.assign(argsMeta, obj);
 
-        const processTextElement = ([fstChild, ...rest]) =>
-            createTextElement(fstChild.textContent);
+        const processTextElement = ([fstChild]) =>
+            createTextElement({
+                text: fstChild.textContent
+            });
 
-        const processDescriptionElement = ([fstChild, ...rest], args = []) => {
+        const processDescriptionElement = ([fstChild, ...rest], argsMeta = {}) => {
             return !fstChild
-                ? createDescriptionElement(...args)
+                ? createDescriptionElement(argsMeta)
                 : fstChild.classList.contains('description')
-                    ? processDescriptionElement(rest, args.concat(fstChild.innerText))
+                    ? processDescriptionElement(
+                        rest,
+                        addToArgsMeta(argsMeta, {
+                            description: fstChild.innerText
+                        }))
                     : fstChild.classList.contains('descriptionText')
-                        ? processDescriptionElement(rest, args.concat(fstChild.innerText))
-                        : processDescriptionElement(rest, args);
+                        ? processDescriptionElement(
+                            rest,
+                            addToArgsMeta(argsMeta, {
+                                text: fstChild.innerText
+                            }))
+                        : processDescriptionElement(rest, argsMeta);
         };
 
-        const processListElement = ([fstChild, ...rest], args = []) => {
+        const processListElement = ([fstChild, ...rest], [argsMeta = {}, ...argsChildren] = []) => {
             return !fstChild
-                ? args
+                ? createListElement(argsMeta, argsChildren)
                 : fstChild.classList.contains('description')
-                    ? createListElement(fstChild.innerText, processListElement(rest))
+                    ? processListElement(
+                        rest, [
+                            addToArgsMeta(argsMeta, {
+                                description: fstChild.innerText
+                            })
+                        ])
                     : fstChild.classList.contains('textElement')
                         ? processListElement(
-                            rest,
-                            args.concat(
-                                createTextElement(fstChild.innerText)))
-                        : processListElement(rest, args);
+                            rest, [
+                                argsMeta,
+                                ...argsChildren,
+                                createTextElement({
+                                    text: fstChild.innerText
+                                })
+                            ])
+                        : processListElement(rest, [argsMeta, argsChildren]);
         };
 
         const processCompoundItem = ([fstChild, ...rest], [argsMeta = {}, ...argsChildren] = []) => {
@@ -85,7 +104,9 @@ const createGrid = (
                         return processCompoundItem(rest, [
                             argsMeta,
                             ...argsChildren,
-                            createDetailElement(fstChild.innerText)
+                            createDetailElement({
+                                text: fstChild.innerText
+                            })
                         ]);
                     default:
                         return processCompoundItem(rest, [argsMeta, ...argsChildren]);
