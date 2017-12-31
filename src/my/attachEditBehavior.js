@@ -15,11 +15,15 @@ const attachEditBehavior = el => {
                 fontWeight: elStyle.fontWeight
             },
             onkeydown: ev => {
-                if (ev.code === 'Enter') {
-                    el.innerText = input.value;
-                    el.style.display = prevDisplay;
-                    input.parentNode.remove();
-                    forEachElem('.actionContainer')(ac => ac.remove());                    
+                if (ev.code === 'Enter' || ev.code === 'NumpadEnter') {
+                    if (!input.value)
+                        alert("can't be empty!");
+                    else {
+                        el.innerText = input.value;
+                        el.style.display = prevDisplay;
+                        input.parentNode.remove();
+                        forEachElem('.actionContainer')(ac => ac.remove());
+                    }
                 }
             }
         });

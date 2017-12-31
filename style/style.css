@@ -1,3 +1,5 @@
+/* buttons */
+
 #buttons {
     margin: 10px;
     display: grid;
@@ -22,6 +24,12 @@
     grid-row: 2;
     grid-column: 2;
 }
+
+#loadCVButton {
+    display: none
+}
+
+/* header */
 
 #header {
     height: fit-content;
@@ -56,6 +64,8 @@ input[type='text'] {
     color: whitesmoke;
 }
 
+/* CV */
+
 #grid {
     margin: auto 3%;
     display: grid;
@@ -75,7 +85,7 @@ input[type='text'] {
     display: grid;
 }
 
-/* JS-created elements */
+/* section */
 
 .section p {
     margin: 0;
@@ -87,15 +97,15 @@ h3 {
     width: fit-content;
 }
 
-.inline {
+.descriptionElement, .listElement {
     width: fit-content;
 }
 
-.inline * {
+.descriptionElement * {
     display: inline;
 }
 
-.inline>p.description {
+.descriptionElement>p.description {
     margin-right: 5px;
 }
 
@@ -103,23 +113,8 @@ h3 {
     color: lightslategray;
 }
 
-.multiple>p:not(.description) {
+.listElement>p:not(.description) {
     margin-left: 10px;
-}
-
-.multiple {
-    width: fit-content;
-}
-
- .actionContainer {
-     position: absolute;
-     margin: 0; 
-     background-color: pink;
-}
-
-.actionIcon {
-    width: 16px;
-    height: 16px;
 }
 
 .compoundItem, .dateItem {
@@ -170,4 +165,17 @@ h3 {
 .date {
     grid-row: 1;
     grid-column: 1;
+}
+
+/* action container */
+
+ .actionContainer {
+     position: absolute;
+     margin: 0; 
+     background-color: pink;
+}
+
+.actionIcon {
+    width: 16px;
+    height: 16px;
 }

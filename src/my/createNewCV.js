@@ -1,6 +1,9 @@
 import { removeAllChildren } from './extensions';
 
 const createNewCV = (id, header, grid) => {
+    const loadCVButton = document.getElementById('loadCVButton');
+    loadCVButton.value = null;
+    
     const CV = document.getElementById(id);
     CV.removeAllChildren();
     CV.appendChild(header);

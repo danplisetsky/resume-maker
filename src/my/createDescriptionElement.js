@@ -8,7 +8,7 @@ const createDescriptionElement = (
         text = 'text'
     } = {}) => {
     return createElement('div', {
-        className: 'descriptionElement inline deleteSelf',
+        className: 'descriptionElement deleteSelf',
         behaviors: new Map([
             [attachActionContainer, 'delete']
         ]),

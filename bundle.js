@@ -122,11 +122,15 @@ const attachEditBehavior = el => {
                 fontWeight: elStyle.fontWeight
             },
             onkeydown: ev => {
-                if (ev.code === 'Enter') {
-                    el.innerText = input.value;
-                    el.style.display = prevDisplay;
-                    input.parentNode.remove();
-                    forEachElem('.actionContainer')(ac => ac.remove());                    
+                if (ev.code === 'Enter' || ev.code === 'NumpadEnter') {
+                    if (!input.value)
+                        alert("can't be empty!");
+                    else {
+                        el.innerText = input.value;
+                        el.style.display = prevDisplay;
+                        input.parentNode.remove();
+                        forEachElem('.actionContainer')(ac => ac.remove());
+                    }
                 }
             }
         });
@@ -221,7 +225,7 @@ const createDescriptionElement = (
         text = 'text'
     } = {}) => {
     return createElement('div', {
-        className: 'descriptionElement inline deleteSelf',
+        className: 'descriptionElement deleteSelf',
         behaviors: new Map([
             [attachActionContainer, 'delete']
         ]),
@@ -252,7 +256,7 @@ const createListElement = (
         createTextElement()
     ]) => {
     return createElement('div', {
-        className: 'listElement multiple',
+        className: 'listElement',
         children: [
             createElement('p', {
                 className: 'description canEdit deleteParent',
@@ -670,7 +674,9 @@ const createGrid = (
                     nameColor: fst.color
                 },
                 processChildren(rest))
-            : (() => { throw 'wrongly formatted CV!' });
+            : (() => {
+                throw 'wrongly formatted CV file'
+            });
     };
 
     const createColumn = ({
@@ -695,6 +701,9 @@ const createGrid = (
 };
 
 const createNewCV = (id, header, grid) => {
+    const loadCVButton = document.getElementById('loadCVButton');
+    loadCVButton.value = null;
+    
     const CV = document.getElementById(id);
     CV.removeAllChildren();
     CV.appendChild(header);
@@ -791,17 +800,33 @@ const loadCV = ev => {
 
     const reader = new FileReader();
     reader.onload = () => {
-        const domCV = domJSON.toDOM(reader.result)
-            .firstElementChild;
-        const header = processHeader(
-            [...domCV.childNodes].find(cn => cn.id === 'header'));
-        const grid = processGrid(
-            [...domCV.childNodes].find(cn => cn.id === 'grid'));
-        
-        createNewCV(domCV.id, header, grid);        
+        try {
+            const domCV = domJSON.toDOM(reader.result)
+                .firstElementChild;
+            const header = processHeader(
+                [...domCV.childNodes].find(cn => cn.id === 'header'));
+            const grid = processGrid(
+                [...domCV.childNodes].find(cn => cn.id === 'grid'));
+
+            createNewCV(domCV.id, header, grid);
+        } catch (e) {
+            if (e instanceof SyntaxError) {
+                console.log('file is wrongly formatted ', e.message);
+            }
+            else
+                console.log('unknown error', e.message);
+            alert('it seems that your cv file is corrupted. Sorry ):');
+        }
     };
 
-    reader.readAsText(file);
+    try {
+        reader.readAsText(file);
+    } catch (e) {
+        if (e instanceof TypeError)
+            console.log('no file selected, ', e.message);
+        else
+            console.log('unknown error', e.message);
+    }
 
 };
 
