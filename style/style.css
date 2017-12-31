@@ -97,7 +97,7 @@ h3 {
     width: fit-content;
 }
 
-.descriptionElement .listElement {
+.descriptionElement, .listElement {
     width: fit-content;
 }
 
