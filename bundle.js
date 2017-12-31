@@ -681,15 +681,15 @@ const createGrid = (
     });
 };
 
-const newCV = () => {
-
-    //TODO: abstract creating new cv to createNewCV in separate module
-    const CV = document.getElementById('CV');
+const createNewCV = (id, header, grid) => {
+    const CV = document.getElementById(id);
     CV.removeAllChildren();
-    CV.appendChild(
-        createHeader());
-    CV.appendChild(
-        createGrid());
+    CV.appendChild(header);
+    CV.appendChild(grid);
+};
+
+const newCV = () => {
+    createNewCV('CV', createHeader(), createGrid());
 };
 
 const saveCV = () => {
@@ -784,13 +784,17 @@ const loadCV = ev => {
             [...domCV.childNodes].find(cn => cn.id === 'header'));
         const grid = processGrid(
             [...domCV.childNodes].find(cn => cn.id === 'grid'));
+        
+        createNewCV(domCV.id, header, grid);
+        
+        // console.log(domCV);
 
-        //TODO: call createNewCV here
+        // //TODO: call createNewCV here
 
-        const CV = document.getElementById('CV');
-        CV.removeAllChildren();
-        CV.appendChild(header);
-        CV.appendChild(grid);
+        // const CV = document.getElementById('CV');
+        // CV.removeAllChildren();
+        // CV.appendChild(header);
+        // CV.appendChild(grid);
     };
 
     reader.readAsText(file);

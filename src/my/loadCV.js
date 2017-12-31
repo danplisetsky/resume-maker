@@ -1,6 +1,7 @@
 import createHeader from "./createHeader";
 import { removeAllChildren } from './extensions';
 import createGrid from "./createGrid";
+import createNewCV from "./createNewCV";
 
 const processHeader = (node, id) => {
     if (!node || !node.childNodes) return;
@@ -78,13 +79,8 @@ const loadCV = ev => {
             [...domCV.childNodes].find(cn => cn.id === 'header'));
         const grid = processGrid(
             [...domCV.childNodes].find(cn => cn.id === 'grid'));
-
-        //TODO: call createNewCV here
-
-        const CV = document.getElementById('CV');
-        CV.removeAllChildren();
-        CV.appendChild(header);
-        CV.appendChild(grid);
+        
+        createNewCV(domCV.id, header, grid);        
     };
 
     reader.readAsText(file);
