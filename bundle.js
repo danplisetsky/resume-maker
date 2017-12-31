@@ -221,7 +221,7 @@ const createDescriptionElement = (
         text = 'text'
     } = {}) => {
     return createElement('div', {
-        className: 'descriptionElement inline deleteSelf',
+        className: 'descriptionElement deleteSelf',
         behaviors: new Map([
             [attachActionContainer, 'delete']
         ]),
@@ -250,7 +250,7 @@ const createListElement = (
         children = [createTextElement()]
     } = {}) => {
     return createElement('div', {
-        className: 'listElement multiple',
+        className: 'listElement',
         children: [
             createElement('p', {
                 className: 'description canEdit deleteParent',

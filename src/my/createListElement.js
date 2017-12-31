@@ -9,7 +9,7 @@ const createListElement = (
         children = [createTextElement()]
     } = {}) => {
     return createElement('div', {
-        className: 'listElement multiple',
+        className: 'listElement',
         children: [
             createElement('p', {
                 className: 'description canEdit deleteParent',
