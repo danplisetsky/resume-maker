@@ -501,6 +501,8 @@ const createGrid = (
 
     const makeCreateSection = (id, [fst, ...rest]) => {
 
+        const addToArgsMeta = (argsMeta, obj) => Object.assign(argsMeta, obj);
+
         const processTextElement = ([fstChild, ...rest]) =>
             createTextElement(fstChild.textContent);
 
@@ -529,27 +531,25 @@ const createGrid = (
 
         const processCompoundItem = ([fstChild, ...rest], [argsMeta = {}, ...argsChildren] = []) => {
 
-            const addToArgsMeta = obj => Object.assign(argsMeta, obj);
-
             if (!fstChild) return createCompoundItem(argsMeta, argsChildren);
             else {
                 const classList = fstChild.classList;
                 switch (true) {
                     case classList.contains('compoundItemName'):
                         return processCompoundItem(rest, [
-                            addToArgsMeta({
+                            addToArgsMeta(argsMeta, {
                                 name: fstChild.innerText
                             })
                         ]);
                     case classList.contains('compoundItemDescription'):
                         return processCompoundItem(rest, [
-                            addToArgsMeta({
+                            addToArgsMeta(argsMeta, {
                                 description: fstChild.innerText
                             })
                         ]);
                     case classList.contains('compoundItemAdditionalInfo'):
                         return processCompoundItem(rest, [
-                            addToArgsMeta({
+                            addToArgsMeta(argsMeta, {
                                 additionalInfo: fstChild.innerText
                             })
                         ]);
@@ -567,8 +567,18 @@ const createGrid = (
             }
         };
 
-        const processDateItem = ([fstElement, ...rest]) => {
-
+        const processDateItem = ([fstChild, ...rest], argsMeta = {}) => {
+            return !fstChild
+                ? createDateItem(argsMeta)
+                : fstChild.classList.contains('date')
+                    ? processDateItem(rest, addToArgsMeta(argsMeta, {
+                        date: fstChild.innerText
+                    }))
+                    : fstChild.classList.contains('compoundItem')
+                        ? processDateItem(rest, addToArgsMeta(argsMeta, {
+                            compoundItem: processCompoundItem(fstChild.childNodes)
+                        }))
+                        : processDateItem(rest, argsMeta);
         };
 
         const processChildren = ([fstElement, ...rest], children = []) => {
