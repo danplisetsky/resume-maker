@@ -26,8 +26,8 @@ const createGrid = (
 
     const makeCreateSection = (id, [fst, ...rest]) => {
 
-        const processTextElement = node =>
-            createTextElement(node.innerText);
+        const processTextElement = ([fstChild, ...rest]) =>
+            createTextElement(fstChild.textContent);
 
         const processDescriptionElement = ([fstChild, ...rest], args = []) => {
             return !fstChild
@@ -92,27 +92,39 @@ const createGrid = (
             }
         };
 
+        const processDateItem = ([fstElement, ...rest]) => {
+
+        };
+
         const processChildren = ([fstElement, ...rest], children = []) => {
+
+            const processChild = fn => {
+                return processChildren(
+                    rest,
+                    children.concat(
+                        fn(fstElement.childNodes)
+                    ));
+            }
+
             if (!fstElement) return children;
             else {
                 const classList = fstElement.classList;
                 switch (true) {
                     case classList.contains('textElement'):
-                        return processChildren(rest,
-                            children.concat(
-                                processTextElement(fstElement)));
+                        return processChild(
+                            processTextElement);
                     case classList.contains('descriptionElement'):
-                        return processChildren(rest,
-                            children.concat(
-                                processDescriptionElement(fstElement.childNodes)));
+                        return processChild(
+                            processDescriptionElement);
                     case classList.contains('listElement'):
-                        return processChildren(rest,
-                            children.concat(
-                                processListElement(fstElement.childNodes)));
+                        return processChild(
+                            processListElement);
                     case classList.contains('compoundItem'):
-                        return processChildren(rest,
-                            children.concat(
-                                processCompoundItem(fstElement.childNodes)));
+                        return processChild(
+                            processCompoundItem);
+                    case classList.contains('dateItem'):
+                        return processChild(
+                            processDateItem);
                     default:
                         return processChildren(rest, children);
                 }

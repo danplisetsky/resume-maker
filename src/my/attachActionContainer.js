@@ -10,23 +10,7 @@ import createDescriptionElement from './createDescriptionElement';
 import createListElement from './createListElement';
 import createCompoundItem from './createCompoundItem';
 import createDetailElement from './createDetailElement';
-
-const createDateItem = () => {
-    return createElement('div', {
-        className: 'dateItem',
-        children: [
-            createElement('p', {
-                className: 'date canEdit deleteParent',
-                innerText: '01/01/2000 -- Present',
-                behaviors: new Map([
-                    [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
-                ])
-            }),
-            createCompoundItem()
-        ]
-    });
-};
+import createDateItem from './createDateItem';
 
 const createDeleteBehavior = el => {
 
