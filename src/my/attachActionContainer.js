@@ -8,56 +8,8 @@ import { removeSelfAndNextSibling } from './extensions';
 import createTextElement from './createTextElement';
 import createDescriptionElement from './createDescriptionElement';
 import createListElement from './createListElement';
-
-const createCompoundItem = () => {
-    return createElement('div', {
-        className: 'compoundItem',
-        children: [
-            createElement('p', {
-                className: 'compoundItemName canEdit deleteParent',
-                innerText: 'name',
-                behaviors: new Map([
-                    [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
-                ])
-            }),
-            createElement('p', {
-                className: 'compoundItemDescription canEdit deleteSelf',
-                innerText: 'description',
-                behaviors: new Map([
-                    [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
-                ])
-            }),
-            createElement('p', {
-                className: 'compoundItemAdditionalInfo canEdit deleteSelf',
-                innerText: 'additional info',
-                behaviors: new Map([
-                    [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
-                ])
-            }),
-            createElement('ul', {
-                className: 'compoundItemDetails',
-                children: [
-                    createDetailElement()
-                ]
-            })
-        ]
-    });
-};
-
-const createDetailElement = () => {
-    return createElement('li', {
-        className: 'canEdit deleteSelfAndParentIfLast',
-        innerText: 'detail',
-        behaviors: new Map([
-            [attachEditBehavior, ''],
-            [attachActionContainer,
-                ['addDetail', 'delete']]
-        ])
-    })
-};
+import createCompoundItem from './createCompoundItem';
+import createDetailElement from './createDetailElement';
 
 const createDateItem = () => {
     return createElement('div', {

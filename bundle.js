@@ -255,13 +255,33 @@ const createListElement = (description = 'description', children = [createTextEl
     });
 };
 
-const createCompoundItem = () => {
+const createDetailElement = (text = 'detail') => {
+    return createElement('li', {
+        className: 'detailElement canEdit deleteSelfAndParentIfLast',
+        innerText: text,
+        behaviors: new Map([
+            [attachEditBehavior, ''],
+            [attachActionContainer,
+                ['addDetail', 'delete']]
+        ])
+    })
+};
+
+const createCompoundItem = (
+    {
+        name = 'name',
+        description = 'description',
+        additionalInfo = 'additional info'
+    } = {},
+    detailsChildren = [
+        createDetailElement()
+    ]) => {
     return createElement('div', {
         className: 'compoundItem',
         children: [
             createElement('p', {
                 className: 'compoundItemName canEdit deleteParent',
-                innerText: 'name',
+                innerText: name,
                 behaviors: new Map([
                     [attachEditBehavior, ''],
                     [attachActionContainer, 'delete']
@@ -269,7 +289,7 @@ const createCompoundItem = () => {
             }),
             createElement('p', {
                 className: 'compoundItemDescription canEdit deleteSelf',
-                innerText: 'description',
+                innerText: description,
                 behaviors: new Map([
                     [attachEditBehavior, ''],
                     [attachActionContainer, 'delete']
@@ -277,7 +297,7 @@ const createCompoundItem = () => {
             }),
             createElement('p', {
                 className: 'compoundItemAdditionalInfo canEdit deleteSelf',
-                innerText: 'additional info',
+                innerText: additionalInfo,
                 behaviors: new Map([
                     [attachEditBehavior, ''],
                     [attachActionContainer, 'delete']
@@ -285,24 +305,10 @@ const createCompoundItem = () => {
             }),
             createElement('ul', {
                 className: 'compoundItemDetails',
-                children: [
-                    createDetailElement()
-                ]
+                children: detailsChildren
             })
         ]
     });
-};
-
-const createDetailElement = () => {
-    return createElement('li', {
-        className: 'canEdit deleteSelfAndParentIfLast',
-        innerText: 'detail',
-        behaviors: new Map([
-            [attachEditBehavior, ''],
-            [attachActionContainer,
-                ['addDetail', 'delete']]
-        ])
-    })
 };
 
 const createDateItem = () => {
@@ -517,6 +523,46 @@ const createGrid = (
                         : processListElement(rest, args);
         };
 
+        const processCompoundItem = ([fstChild, ...rest], [argsMeta = {}, ...argsChildren] = []) => {
+
+            const addToArgsMeta = obj => Object.assign(argsMeta, obj);
+
+            if (!fstChild) return createCompoundItem(argsMeta, argsChildren);
+            else {
+                const classList = fstChild.classList;
+                switch (true) {
+                    case classList.contains('compoundItemName'):
+                        return processCompoundItem(rest, [
+                            addToArgsMeta({
+                                name: fstChild.innerText
+                            })
+                        ]);
+                    case classList.contains('compoundItemDescription'):
+                        return processCompoundItem(rest, [
+                            addToArgsMeta({
+                                description: fstChild.innerText
+                            })
+                        ]);
+                    case classList.contains('compoundItemAdditionalInfo'):
+                        return processCompoundItem(rest, [
+                            addToArgsMeta({
+                                additionalInfo: fstChild.innerText
+                            })
+                        ]);
+                    case classList.contains('compoundItemDetails'):
+                        return processCompoundItem(fstChild.childNodes, [argsMeta]);
+                    case classList.contains('detailElement'):
+                        return processCompoundItem(rest, [
+                            argsMeta,
+                            ...argsChildren,
+                            createDetailElement(fstChild.innerText)
+                        ]);
+                    default:
+                        return processCompoundItem(rest, [argsMeta, ...argsChildren]);
+                }
+            }
+        };
+
         const processChildren = ([fstElement, ...rest], children = []) => {
             if (!fstElement) return children;
             else {
@@ -534,6 +580,10 @@ const createGrid = (
                         return processChildren(rest,
                             children.concat(
                                 processListElement(fstElement.childNodes)));
+                    case classList.contains('compoundItem'):
+                        return processChildren(rest,
+                            children.concat(
+                                processCompoundItem(fstElement.childNodes)));
                     default:
                         return processChildren(rest, children);
                 }
