@@ -123,10 +123,14 @@ const attachEditBehavior = el => {
             },
             onkeydown: ev => {
                 if (ev.code === 'Enter' || ev.code === 'NumpadEnter') {
-                    el.innerText = input.value;
-                    el.style.display = prevDisplay;
-                    input.parentNode.remove();
-                    forEachElem('.actionContainer')(ac => ac.remove());                    
+                    if (!input.value)
+                        alert("can't be empty!");
+                    else {
+                        el.innerText = input.value;
+                        el.style.display = prevDisplay;
+                        input.parentNode.remove();
+                        forEachElem('.actionContainer')(ac => ac.remove());
+                    }
                 }
             }
         });
