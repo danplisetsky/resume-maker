@@ -73,14 +73,23 @@ const loadCV = ev => {
 
     const reader = new FileReader();
     reader.onload = () => {
-        const domCV = domJSON.toDOM(reader.result)
-            .firstElementChild;
-        const header = processHeader(
-            [...domCV.childNodes].find(cn => cn.id === 'header'));
-        const grid = processGrid(
-            [...domCV.childNodes].find(cn => cn.id === 'grid'));
+        try {
+            const domCV = domJSON.toDOM(reader.result)
+                .firstElementChild;
+            const header = processHeader(
+                [...domCV.childNodes].find(cn => cn.id === 'header'));
+            const grid = processGrid(
+                [...domCV.childNodes].find(cn => cn.id === 'grid'));
 
-        createNewCV(domCV.id, header, grid);
+            createNewCV(domCV.id, header, grid);
+        } catch (e) {
+            if (e instanceof SyntaxError) {
+                console.log('file is wrongly formatted ', e.message);
+            }
+            else
+                console.log('unknown error', e.message);
+            alert('it seems that your cv file is corrupted. Sorry ):');
+        }
     };
 
     try {

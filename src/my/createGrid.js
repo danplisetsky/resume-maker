@@ -171,7 +171,9 @@ const createGrid = (
                     nameColor: fst.color
                 },
                 processChildren(rest))
-            : (() => { throw 'wrongly formatted CV!' });
+            : (() => {
+                throw 'wrongly formatted CV file'
+            });
     };
 
     const createColumn = ({
