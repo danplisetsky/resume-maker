@@ -27,15 +27,12 @@
     height: fit-content;
     width: 100%;
     background-color: black;
+    padding: 50px 0;    
 }
 
-#subheader {
-    padding: 50px 0;
-}
-
- #subheader input[type='text'] {
-     margin: auto;
-     width: auto;
+ #header input[type='text'] {
+    margin: auto;
+    width: auto;
     display: block;
  }
 

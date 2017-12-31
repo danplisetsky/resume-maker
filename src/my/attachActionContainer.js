@@ -5,134 +5,12 @@ import createSection from './createSection';
 import DeleteAction from './deleteAction';
 import attachEditBehavior from './attachEditBehavior';
 import { removeSelfAndNextSibling } from './extensions';
-
-const createTextElement = () => {
-    return createElement('p', {
-        className: 'canEdit deleteSelf',
-        innerText: 'text',
-        behaviors: new Map([
-            [attachEditBehavior, ''],
-            [attachActionContainer, 'delete']
-        ])
-    });
-};
-
-const createDescriptionElement = () => {
-    return createElement('div', {
-        className: 'inline deleteSelf',
-        children: [
-            createElement('p', {
-                className: 'description canEdit',
-                innerText: 'description',
-                behaviors: new Map([
-                    [attachEditBehavior, '']
-                ])
-            }),
-            createElement('p', {
-                className: 'canEdit',
-                innerText: 'text',
-                behaviors: new Map([
-                    [attachEditBehavior, '']
-                ])
-            })
-        ],
-        behaviors: new Map([
-            [attachActionContainer, 'delete']
-        ])
-    });
-};
-
-const createListElement = () => {
-    return createElement('div', {
-        className: 'multiple',
-        children: [
-            createElement('p', {
-                className: 'description canEdit deleteParent',
-                innerText: 'description',
-                behaviors: new Map([
-                    [attachEditBehavior, ''],
-                    [attachActionContainer,
-                        ['addText', 'delete']]
-                ])
-            }),
-            createElement('p', {
-                className: 'canEdit deleteSelf',
-                innerText: 'text',
-                behaviors: new Map([
-                    [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
-                ])
-            })
-        ]
-    });
-};
-
-const createCompoundItem = () => {
-    return createElement('div', {
-        className: 'compoundItem',
-        children: [
-            createElement('p', {
-                className: 'compoundItemName canEdit deleteParent',
-                innerText: 'name',
-                behaviors: new Map([
-                    [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
-                ])
-            }),
-            createElement('p', {
-                className: 'compoundItemDescription canEdit deleteSelf',
-                innerText: 'description',
-                behaviors: new Map([
-                    [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
-                ])
-            }),
-            createElement('p', {
-                className: 'compoundItemAdditionalInfo canEdit deleteSelf',
-                innerText: 'additional info',
-                behaviors: new Map([
-                    [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
-                ])
-            }),
-            createElement('ul', {
-                className: 'compoundItemDetails',
-                children: [
-                    createDetailElement()
-                ]
-            })
-        ]
-    });
-};
-
-const createDetailElement = () => {
-    return createElement('li', {
-        className: 'canEdit deleteSelfAndParentIfLast',
-        innerText: 'detail',
-        behaviors: new Map([
-            [attachEditBehavior, ''],
-            [attachActionContainer,
-                ['addDetail', 'delete']]
-        ])
-    })
-};
-
-const createDateItem = () => {
-    return createElement('div', {
-        className: 'dateItem',
-        children: [
-            createElement('p', {
-                className: 'date canEdit deleteParent',
-                innerText: '01/01/2000 -- Present',
-                behaviors: new Map([
-                    [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
-                ])
-            }),
-            createCompoundItem()
-        ]
-    });
-};
+import createTextElement from './createTextElement';
+import createDescriptionElement from './createDescriptionElement';
+import createListElement from './createListElement';
+import createCompoundItem from './createCompoundItem';
+import createDetailElement from './createDetailElement';
+import createDateItem from './createDateItem';
 
 const createDeleteBehavior = el => {
 
@@ -183,7 +61,10 @@ const createAction = (el, actionName) => {
             return () => createDeleteBehavior(el);
         case 'createSection':
             return () =>
-                el.parentNode.parentNode.lastChild.insertAfter(createSection(el));
+                el.parentNode.parentNode.lastChild.insertAfter(
+                    createSection({
+                        columnid: el.parentNode.parentNode.id
+                    }));
         case 'createDetailElement':
             return () =>
                 el.insertAfter(createDetailElement());
