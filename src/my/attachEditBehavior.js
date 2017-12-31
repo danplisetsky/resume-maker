@@ -15,7 +15,7 @@ const attachEditBehavior = el => {
                 fontWeight: elStyle.fontWeight
             },
             onkeydown: ev => {
-                if (ev.code === 'Enter') {
+                if (ev.code === 'Enter' || ev.code === 'NumpadEnter') {
                     el.innerText = input.value;
                     el.style.display = prevDisplay;
                     input.parentNode.remove();
