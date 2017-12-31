@@ -3,8 +3,14 @@ import attachEditBehavior from './attachEditBehavior';
 import attachColorPicker from './attachColorPicker';
 import attachActionContainer from './attachActionContainer';
 
-const createSection = (columnid, name = 'section', nameColor = null, children = []) => {
-    
+const createSection = (
+    {
+        columnid,
+        name = 'section',
+        nameColor = null
+    } = {},
+    children = []) => {
+
     const defaultBehaviors = new Map([
         [attachEditBehavior, ''],
         [attachColorPicker, '']
@@ -29,7 +35,7 @@ const createSection = (columnid, name = 'section', nameColor = null, children = 
                     : new Map([
                         ...defaultBehaviors.entries(),
                         [attachActionContainer,
-                            ['addCompoundItem', 'addDateItem', 'addAfter', 'delete']]   
+                            ['addCompoundItem', 'addDateItem', 'addAfter', 'delete']]
                     ])
             }),
             ...children

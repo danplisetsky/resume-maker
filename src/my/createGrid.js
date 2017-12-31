@@ -165,9 +165,11 @@ const createGrid = (
 
         return fst.hasOwnProperty('name')
             ? createSection(
-                id,
-                fst.name,
-                fst.color,
+                {
+                    columnid: id,
+                    name: fst.name,
+                    nameColor: fst.color
+                },
                 processChildren(rest))
             : (() => { throw 'wrongly formatted CV!' });
     };

@@ -395,7 +395,10 @@ const createAction = (el, actionName) => {
             return () => createDeleteBehavior(el);
         case 'createSection':
             return () =>
-                el.parentNode.parentNode.lastChild.insertAfter(createSection(el.parentNode.parentNode.id));
+                el.parentNode.parentNode.lastChild.insertAfter(
+                    createSection({
+                        columnid: el.parentNode.parentNode.id
+                    }));
         case 'createDetailElement':
             return () =>
                 el.insertAfter(createDetailElement());
@@ -461,8 +464,14 @@ const attachActionContainer = (el, icons) => {
     );
 };
 
-const createSection = (columnid, name = 'section', nameColor = null, children = []) => {
-    
+const createSection = (
+    {
+        columnid,
+        name = 'section',
+        nameColor = null
+    } = {},
+    children = []) => {
+
     const defaultBehaviors = new Map([
         [attachEditBehavior, ''],
         [attachColorPicker, '']
@@ -487,7 +496,7 @@ const createSection = (columnid, name = 'section', nameColor = null, children = 
                     : new Map([
                         ...defaultBehaviors.entries(),
                         [attachActionContainer,
-                            ['addCompoundItem', 'addDateItem', 'addAfter', 'delete']]   
+                            ['addCompoundItem', 'addDateItem', 'addAfter', 'delete']]
                     ])
             }),
             ...children
@@ -653,9 +662,11 @@ const createGrid = (
 
         return fst.hasOwnProperty('name')
             ? createSection(
-                id,
-                fst.name,
-                fst.color,
+                {
+                    columnid: id,
+                    name: fst.name,
+                    nameColor: fst.color
+                },
                 processChildren(rest))
             : (() => { throw 'wrongly formatted CV!' });
     };
@@ -785,16 +796,7 @@ const loadCV = ev => {
         const grid = processGrid(
             [...domCV.childNodes].find(cn => cn.id === 'grid'));
         
-        createNewCV(domCV.id, header, grid);
-        
-        // console.log(domCV);
-
-        // //TODO: call createNewCV here
-
-        // const CV = document.getElementById('CV');
-        // CV.removeAllChildren();
-        // CV.appendChild(header);
-        // CV.appendChild(grid);
+        createNewCV(domCV.id, header, grid);        
     };
 
     reader.readAsText(file);

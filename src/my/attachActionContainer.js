@@ -61,7 +61,10 @@ const createAction = (el, actionName) => {
             return () => createDeleteBehavior(el);
         case 'createSection':
             return () =>
-                el.parentNode.parentNode.lastChild.insertAfter(createSection(el.parentNode.parentNode.id));
+                el.parentNode.parentNode.lastChild.insertAfter(
+                    createSection({
+                        columnid: el.parentNode.parentNode.id
+                    }));
         case 'createDetailElement':
             return () =>
                 el.insertAfter(createDetailElement());
