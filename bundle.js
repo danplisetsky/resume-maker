@@ -795,11 +795,18 @@ const loadCV = ev => {
             [...domCV.childNodes].find(cn => cn.id === 'header'));
         const grid = processGrid(
             [...domCV.childNodes].find(cn => cn.id === 'grid'));
-        
-        createNewCV(domCV.id, header, grid);        
+
+        createNewCV(domCV.id, header, grid);
     };
 
-    reader.readAsText(file);
+    try {
+        reader.readAsText(file);
+    } catch (e) {
+        if (e instanceof TypeError)
+            console.log('no file selected, ', e.message);
+        else
+            console.log('unknown error', e.message);
+    }
 
 };
 
