@@ -25,6 +25,10 @@
     grid-column: 2;
 }
 
+#loadCVButton {
+    display: none
+}
+
 /* header */
 
 #header {
