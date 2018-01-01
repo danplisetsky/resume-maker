@@ -1,5 +1,6 @@
 import createElement from './createElement'
 import forEachElem from './forEachElem';
+import { insertAfter } from './extensions';
 
 const attachEditBehavior = el => {
 
@@ -36,7 +37,7 @@ const attachEditBehavior = el => {
 
     el.addEventListener('dblclick', ev => {
         const input = createInput();
-        el.insertAfter(input);
+        insertAfter(el, input);
         input.firstChild.focus();
         el.style.display = 'none';
         ev.stopPropagation();

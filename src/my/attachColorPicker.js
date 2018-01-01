@@ -1,6 +1,7 @@
 import createElement from './createElement';
 import forEachElem from './forEachElem';
 import deleteElementIfNotHoveredOver from './deleteElementIfNotHoveredOver';
+import { insertAfter, getClientXY } from './extensions';
 
 const attachColorPicker = el => {
 
@@ -19,11 +20,11 @@ const attachColorPicker = el => {
     };
 
     el.addEventListener('mouseover', ev =>
-        el.insertAfter(createColorPicker(ev.clientX)));
+        insertAfter(el, createColorPicker(ev.clientX)));
 
     el.addEventListener('mouseleave', ev =>
         forEachElem('.colorPicker')
-            (deleteElementIfNotHoveredOver, ev.getClientXY(), { top: 5 }));
+            (deleteElementIfNotHoveredOver, getClientXY(ev), { top: 5 }));
 };
 
 export default attachColorPicker;

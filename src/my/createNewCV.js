@@ -5,7 +5,7 @@ const createNewCV = (id, header, grid) => {
     loadCVButton.value = null;
     
     const CV = document.getElementById(id);
-    CV.removeAllChildren();
+    removeAllChildren(CV);
     CV.appendChild(header);
     CV.appendChild(grid);
 };

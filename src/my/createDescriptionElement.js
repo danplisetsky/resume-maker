@@ -10,7 +10,7 @@ const createDescriptionElement = (
     return createElement('div', {
         className: 'descriptionElement deleteSelf',
         behaviors: new Map([
-            [attachActionContainer, 'delete']
+            [attachActionContainer, ['delete']]
         ]),
         children: [
             createElement('p', {

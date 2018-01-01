@@ -10,24 +10,6 @@ const attachButtonBehavior = id =>
             button.onclick = callback;
     };
 
-HTMLElement.prototype.insertAfter = function insertAfter(newElement) {
-    this.parentNode.insertBefore(newElement, this.nextSibling);
-};
-
-HTMLElement.prototype.removeAllChildren = function removeAllChildren() {
-    while (this.hasChildNodes())
-        this.removeChild(this.lastChild);
-};
-
-HTMLElement.prototype.removeSelfAndNextSibling = function removeSelfAndNextSibling() {
-    this.nextElementSibling.remove();
-    this.remove();
-};
-
-MouseEvent.prototype.getClientXY = function getClientXY() {
-    return [this.clientX, this.clientY];
-};
-
 const createElement = (tag, attributes) => {
     const elem = document.createElement(tag);
     for (const attr in attributes) {
@@ -85,6 +67,32 @@ const deleteElementIfNotHoveredOver = (
         elem.remove();
 };
 
+const insertAfter = (referenceElement, newElement) => {
+    referenceElement.parentNode.insertBefore(newElement, referenceElement.nextElementSibling);
+};
+
+const removeAllChildren = el => {
+    while (el.hasChildNodes())
+        el.removeChild(el.lastChild);
+};
+
+const removeSelfAndNextSibling = el => {
+    el.nextElementSibling.remove();
+    el.remove();
+};
+
+const moveUp = el => {
+    el.parentNode.insertBefore(el, el.previousElementSibling);
+};
+
+const moveDown = el => {
+    insertAfter(el.nextElementSibling, el);
+};
+
+const getClientXY = mouseEvent => {
+    return [mouseEvent.clientX, mouseEvent.clientY]
+};
+
 const attachColorPicker = el => {
 
     const createColorPicker = clientX => {
@@ -102,11 +110,11 @@ const attachColorPicker = el => {
     };
 
     el.addEventListener('mouseover', ev =>
-        el.insertAfter(createColorPicker(ev.clientX)));
+        insertAfter(el, createColorPicker(ev.clientX)));
 
     el.addEventListener('mouseleave', ev =>
         forEachElem('.colorPicker')
-            (deleteElementIfNotHoveredOver, ev.getClientXY(), { top: 5 }));
+            (deleteElementIfNotHoveredOver, getClientXY(ev), { top: 5 }));
 };
 
 const attachEditBehavior = el => {
@@ -144,7 +152,7 @@ const attachEditBehavior = el => {
 
     el.addEventListener('dblclick', ev => {
         const input = createInput();
-        el.insertAfter(input);
+        insertAfter(el, input);
         input.firstChild.focus();
         el.style.display = 'none';
         ev.stopPropagation();
@@ -217,7 +225,7 @@ const createTextElement = (
         innerText: text,
         behaviors: new Map([
             [attachEditBehavior, ''],
-            [attachActionContainer, 'delete']
+            [attachActionContainer, ['delete']]
         ])
     });
 };
@@ -230,7 +238,7 @@ const createDescriptionElement = (
     return createElement('div', {
         className: 'descriptionElement deleteSelf',
         behaviors: new Map([
-            [attachActionContainer, 'delete']
+            [attachActionContainer, ['delete']]
         ]),
         children: [
             createElement('p', {
@@ -322,7 +330,7 @@ const createCompoundItem = (
                 innerText: name,
                 behaviors: new Map([
                     [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
+                    [attachActionContainer, ['delete']]
                 ])
             }),
             ...children        
@@ -343,12 +351,30 @@ const createDateItem = (
                 innerText: date,
                 behaviors: new Map([
                     [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
+                    [attachActionContainer, ['delete']]
                 ])
             }),
             compoundItem
         ]
     });
+};
+
+const attachMovingBehavior = el => {
+    return fn => {
+        el.nextElementSibling.remove(); //remove action container
+        if (el.className.includes('deleteParent'))
+            fn(el.parentNode);
+        else
+            fn(el);
+    };
+};
+
+const attachMoveUpBehavior = el => {  
+    attachMovingBehavior(el)(moveUp);
+};
+
+const attachMoveDownBehavior = el => {
+    attachMovingBehavior(el)(moveDown);
 };
 
 const createDeleteBehavior = el => {
@@ -377,13 +403,13 @@ const createDeleteBehavior = el => {
             el.parentNode.remove();
             break;
         case DeleteAction.DeleteSelf:
-            el.removeSelfAndNextSibling(); //also removes actionContainer
+            removeSelfAndNextSibling(el); //also removes actionContainer
             break;
         case DeleteAction.DeleteSelfAndParentIfLast:
             if (el.parentNode.querySelectorAll(el.tagName).length === 1)
                 el.parentNode.remove();
             else
-                el.removeSelfAndNextSibling(); //also removes actionContainer
+                removeSelfAndNextSibling(el); //also removes actionContainer
             break;
         case DeleteAction.DeleteParentIfNotLast:
             if (el.parentNode.parentNode.querySelectorAll(`.${el.parentNode.className}`).length === 1)
@@ -400,15 +426,25 @@ const createAction = (el, actionName) => {
             return () => createDeleteBehavior(el);
         case 'createSection':
             return () =>
-                el.parentNode.parentNode.lastChild.insertAfter(
+                insertAfter(
+                    el.parentNode.parentNode.lastChild,
                     createSection({
                         columnid: el.parentNode.parentNode.id
-                    }));
+                    })
+                );
         case 'createDetailElement':
-            return () =>
-                el.insertAfter(createDetailElement());
+            return () => insertAfter(
+                el,
+                createDetailElement()
+            );
+        case 'attachMoveUpBehavior':
+        case 'attachMoveDownBehavior':
+            return () => actionName(el);
         default:
-            return () => el.parentNode.lastChild.insertAfter(actionName());
+            return () => insertAfter(
+                el.parentNode.lastChild,
+                actionName()
+            );
     }
 };
 
@@ -432,6 +468,8 @@ const createActionIcons = (el, icons) => {
         ['addDateItem', createDateItem],
         ['addDetail', createDetailElement],
         ['addAfter', createSection],
+        ['moveUp', attachMoveUpBehavior],
+        ['moveDown', attachMoveDownBehavior],
         ['delete', createDeleteBehavior]
     ]);
 
@@ -442,31 +480,56 @@ const createActionIcons = (el, icons) => {
 
 const attachActionContainer = (el, icons) => {
 
-    const createActionContainer = (left, top) => {
-        const actionContainer = createElement('div', {
-            className: 'actionContainer',
-            style: {
-                left: `${left + 3}px`,
-                top: `${top + 3}px`
-            },
-            children: createActionIcons(el, icons),
-            onmouseleave: ev => actionContainer.remove()
-        });
-
-        return actionContainer;
+    const addMoveUp = (el) => {
+        return el.className.includes('deleteParent')
+            ? addMoveUp(el.parentNode)
+            : !el.previousElementSibling
+                || el.previousElementSibling.className.includes('deleteParent')
+                || el.parentNode.classList.contains('compoundItem')
+                ? ''
+                : 'moveUp';
     };
 
-    el.addEventListener('mouseover', ev =>
-        el.insertAfter(createActionContainer(
+    const addMoveDown = (el) => {
+        return el.className.includes('deleteParent')
+            ? addMoveDown(el.parentNode)
+            : !el.nextElementSibling
+                || el.parentNode.classList.contains('compoundItem')
+                ? ''
+                : 'moveDown';
+    };
+
+const createActionContainer = (left, top) => {
+    const actionContainer = createElement('div', {
+        className: 'actionContainer',
+        style: {
+            left: `${left + 3}px`,
+            top: `${top + 3}px`
+        },
+        children: createActionIcons(el, [
+            ...icons,
+            addMoveUp(el),
+            addMoveDown(el)
+        ]),
+        onmouseleave: ev => actionContainer.remove()
+    });
+
+    return actionContainer;
+};
+
+el.addEventListener('mouseover', ev =>
+    insertAfter(
+        el,
+        createActionContainer(
             ev.currentTarget.offsetLeft + ev.currentTarget.offsetWidth,
             ev.target.offsetTop)
-        )
-    );
+    )
+);
 
-    el.addEventListener('mouseleave', ev =>
-        forEachElem('.actionContainer')
-            (deleteElementIfNotHoveredOver, ev.getClientXY(), { left: 5 })
-    );
+el.addEventListener('mouseleave', ev =>
+    forEachElem('.actionContainer')
+        (deleteElementIfNotHoveredOver, getClientXY(ev), { left: 5 })
+);
 };
 
 const createSection = (
@@ -722,7 +785,7 @@ const createNewCV = (id, header, grid) => {
     loadCVButton.value = null;
     
     const CV = document.getElementById(id);
-    CV.removeAllChildren();
+    removeAllChildren(CV);
     CV.appendChild(header);
     CV.appendChild(grid);
 };

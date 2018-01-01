@@ -1,16 +1,18 @@
 import forEachElem from './forEachElem';
 import createElement from './createElement';
+import { insertAfter, removeSelfAndNextSibling, getClientXY } from './extensions';
 import deleteElementIfNotHoveredOver from './deleteElementIfNotHoveredOver';
 import createSection from './createSection';
 import DeleteAction from './deleteAction';
 import attachEditBehavior from './attachEditBehavior';
-import { removeSelfAndNextSibling } from './extensions';
 import createTextElement from './createTextElement';
 import createDescriptionElement from './createDescriptionElement';
 import createListElement from './createListElement';
 import createCompoundItem from './createCompoundItem';
 import createDetailElement from './createDetailElement';
 import createDateItem from './createDateItem';
+import attachMoveUpBehavior from './attachMoveUpBehavior';
+import attachMoveDownBehavior from './attachMoveDownBehavior';
 
 const createDeleteBehavior = el => {
 
@@ -38,13 +40,13 @@ const createDeleteBehavior = el => {
             el.parentNode.remove();
             break;
         case DeleteAction.DeleteSelf:
-            el.removeSelfAndNextSibling(); //also removes actionContainer
+            removeSelfAndNextSibling(el); //also removes actionContainer
             break;
         case DeleteAction.DeleteSelfAndParentIfLast:
             if (el.parentNode.querySelectorAll(el.tagName).length === 1)
                 el.parentNode.remove();
             else
-                el.removeSelfAndNextSibling(); //also removes actionContainer
+                removeSelfAndNextSibling(el); //also removes actionContainer
             break;
         case DeleteAction.DeleteParentIfNotLast:
             if (el.parentNode.parentNode.querySelectorAll(`.${el.parentNode.className}`).length === 1)
@@ -61,15 +63,25 @@ const createAction = (el, actionName) => {
             return () => createDeleteBehavior(el);
         case 'createSection':
             return () =>
-                el.parentNode.parentNode.lastChild.insertAfter(
+                insertAfter(
+                    el.parentNode.parentNode.lastChild,
                     createSection({
                         columnid: el.parentNode.parentNode.id
-                    }));
+                    })
+                );
         case 'createDetailElement':
-            return () =>
-                el.insertAfter(createDetailElement());
+            return () => insertAfter(
+                el,
+                createDetailElement()
+            );
+        case 'attachMoveUpBehavior':
+        case 'attachMoveDownBehavior':
+            return () => actionName(el);
         default:
-            return () => el.parentNode.lastChild.insertAfter(actionName());
+            return () => insertAfter(
+                el.parentNode.lastChild,
+                actionName()
+            );
     }
 };
 
@@ -93,6 +105,8 @@ const createActionIcons = (el, icons) => {
         ['addDateItem', createDateItem],
         ['addDetail', createDetailElement],
         ['addAfter', createSection],
+        ['moveUp', attachMoveUpBehavior],
+        ['moveDown', attachMoveDownBehavior],
         ['delete', createDeleteBehavior]
     ]);
 
@@ -103,31 +117,56 @@ const createActionIcons = (el, icons) => {
 
 const attachActionContainer = (el, icons) => {
 
-    const createActionContainer = (left, top) => {
-        const actionContainer = createElement('div', {
-            className: 'actionContainer',
-            style: {
-                left: `${left + 3}px`,
-                top: `${top + 3}px`
-            },
-            children: createActionIcons(el, icons),
-            onmouseleave: ev => actionContainer.remove()
-        });
-
-        return actionContainer;
+    const addMoveUp = (el) => {
+        return el.className.includes('deleteParent')
+            ? addMoveUp(el.parentNode)
+            : !el.previousElementSibling
+                || el.previousElementSibling.className.includes('deleteParent')
+                || el.parentNode.classList.contains('compoundItem')
+                ? ''
+                : 'moveUp';
     };
 
-    el.addEventListener('mouseover', ev =>
-        el.insertAfter(createActionContainer(
+    const addMoveDown = (el) => {
+        return el.className.includes('deleteParent')
+            ? addMoveDown(el.parentNode)
+            : !el.nextElementSibling
+                || el.parentNode.classList.contains('compoundItem')
+                ? ''
+                : 'moveDown';
+    }
+
+const createActionContainer = (left, top) => {
+    const actionContainer = createElement('div', {
+        className: 'actionContainer',
+        style: {
+            left: `${left + 3}px`,
+            top: `${top + 3}px`
+        },
+        children: createActionIcons(el, [
+            ...icons,
+            addMoveUp(el),
+            addMoveDown(el)
+        ]),
+        onmouseleave: ev => actionContainer.remove()
+    });
+
+    return actionContainer;
+};
+
+el.addEventListener('mouseover', ev =>
+    insertAfter(
+        el,
+        createActionContainer(
             ev.currentTarget.offsetLeft + ev.currentTarget.offsetWidth,
             ev.target.offsetTop)
-        )
-    );
+    )
+);
 
-    el.addEventListener('mouseleave', ev =>
-        forEachElem('.actionContainer')
-            (deleteElementIfNotHoveredOver, ev.getClientXY(), { left: 5 })
-    );
+el.addEventListener('mouseleave', ev =>
+    forEachElem('.actionContainer')
+        (deleteElementIfNotHoveredOver, getClientXY(ev), { left: 5 })
+);
 };
 
 export default attachActionContainer;

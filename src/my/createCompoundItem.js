@@ -1,7 +1,6 @@
 import createElement from './createElement';
 import attachEditBehavior from './attachEditBehavior';
 import attachActionContainer from './attachActionContainer';
-import createDetailElement from './createDetailElement';
 import createTextElement from './createTextElement';
 import createDetailsElement from './createDetailsElement';
 
@@ -28,7 +27,7 @@ const createCompoundItem = (
                 innerText: name,
                 behaviors: new Map([
                     [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
+                    [attachActionContainer, ['delete']]
                 ])
             }),
             ...children        

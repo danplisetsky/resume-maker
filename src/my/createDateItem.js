@@ -16,7 +16,7 @@ const createDateItem = (
                 innerText: date,
                 behaviors: new Map([
                     [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
+                    [attachActionContainer, ['delete']]
                 ])
             }),
             compoundItem

@@ -1,19 +1,27 @@
-HTMLElement.prototype.insertAfter = function insertAfter(newElement) {
-    this.parentNode.insertBefore(newElement, this.nextSibling);
+const insertAfter = (referenceElement, newElement) => {
+    referenceElement.parentNode.insertBefore(newElement, referenceElement.nextElementSibling);
 };
 
-HTMLElement.prototype.removeAllChildren = function removeAllChildren() {
-    while (this.hasChildNodes())
-        this.removeChild(this.lastChild);
+const removeAllChildren = el => {
+    while (el.hasChildNodes())
+        el.removeChild(el.lastChild);
+}
+
+const removeSelfAndNextSibling = el => {
+    el.nextElementSibling.remove();
+    el.remove();
+}
+
+const moveUp = el => {
+    el.parentNode.insertBefore(el, el.previousElementSibling);
 };
 
-HTMLElement.prototype.removeSelfAndNextSibling = function removeSelfAndNextSibling() {
-    this.nextElementSibling.remove();
-    this.remove();
+const moveDown = el => {
+    insertAfter(el.nextElementSibling, el);
+}
+
+const getClientXY = mouseEvent => {
+    return [mouseEvent.clientX, mouseEvent.clientY]
 };
 
-MouseEvent.prototype.getClientXY = function getClientXY() {
-    return [this.clientX, this.clientY];
-};
-
-export { insertAfter, getClientXY, removeAllChildren, removeSelfAndNextSibling };
+export { insertAfter, removeAllChildren, removeSelfAndNextSibling, moveUp, moveDown, getClientXY };

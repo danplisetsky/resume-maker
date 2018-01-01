@@ -12,7 +12,7 @@ const createTextElement = (
         innerText: text,
         behaviors: new Map([
             [attachEditBehavior, ''],
-            [attachActionContainer, 'delete']
+            [attachActionContainer, ['delete']]
         ])
     });
 };
