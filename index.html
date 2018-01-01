@@ -18,21 +18,25 @@
 
     <div id="buttons" class="noPrint">
         <div id="newCV">
-            <button type="submit" id="newCVButton">new CV</button>
+            <button type="button" id="newCVButton">new CV</button>
         </div>
 
         <div id="templateCV">
-            <button type="submit" id="templateCVButton">template CV</button>
+            <button type="button" id="templateCVButton">template CV</button>
         </div>
 
 
         <div id="saveCV">
-            <button type="submit" id="saveCVButton">save CV...</button>
+            <button type="button" id="saveCVButton">save CV...</button>
         </div>
 
         <div id="loadCV">
             <input type="file" id="loadCVButton" accept=".cv">
             <button onclick="document.getElementById('loadCVButton').click();">load CV...</button>
+        </div>
+
+        <div id="print">
+            <button id="printButton" type="button">print (also to pdf)...</button>
         </div>
     </div>
 

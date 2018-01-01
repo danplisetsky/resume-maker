@@ -844,11 +844,14 @@ async function templateCV() {
     processCV(content);
 }
 
+const print = () => window.print();
+
 window.onload = () => {
     attachButtonBehavior('newCVButton')(newCV);
     attachButtonBehavior('saveCVButton')(saveCV);
     attachButtonBehavior('loadCVButton')(loadCV);
     attachButtonBehavior('templateCVButton')(templateCV);
+    attachButtonBehavior('printButton')(print);
     newCV();
 };
 
