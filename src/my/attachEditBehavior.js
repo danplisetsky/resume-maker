@@ -29,6 +29,7 @@ const attachEditBehavior = el => {
         });
 
         return createElement('div', {
+            className: 'input',
             children: [input]
         });
     };
