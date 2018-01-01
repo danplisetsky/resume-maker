@@ -4,10 +4,11 @@ import attachActionContainer from './attachActionContainer';
 
 const createTextElement = (
     {
-        text = 'text'
+        text = 'text',
+        className = 'textElement'
     } = {}) => {
     return createElement('p', {
-        className: 'textElement canEdit deleteSelf',
+        className: `${className} canEdit deleteSelf`,
         innerText: text,
         behaviors: new Map([
             [attachEditBehavior, ''],

@@ -2,15 +2,23 @@ import createElement from './createElement';
 import attachEditBehavior from './attachEditBehavior';
 import attachActionContainer from './attachActionContainer';
 import createDetailElement from './createDetailElement';
+import createTextElement from './createTextElement';
+import createDetailsElement from './createDetailsElement';
 
 const createCompoundItem = (
     {
         name = 'name',
-        description = 'description',
-        additionalInfo = 'additional info'
     } = {},
-    detailsChildren = [
-        createDetailElement()
+    children = [
+        createTextElement({
+            text: 'description',
+            className: 'compoundItemDescription'
+        }),
+        createTextElement({
+            text: 'additional info',
+            className: 'compoundItemAdditionalInfo'
+        }),
+        createDetailsElement()
     ]) => {
     return createElement('div', {
         className: 'compoundItem',
@@ -23,26 +31,7 @@ const createCompoundItem = (
                     [attachActionContainer, 'delete']
                 ])
             }),
-            createElement('p', {
-                className: 'compoundItemDescription canEdit deleteSelf',
-                innerText: description,
-                behaviors: new Map([
-                    [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
-                ])
-            }),
-            createElement('p', {
-                className: 'compoundItemAdditionalInfo canEdit deleteSelf',
-                innerText: additionalInfo,
-                behaviors: new Map([
-                    [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
-                ])
-            }),
-            createElement('ul', {
-                className: 'compoundItemDetails',
-                children: detailsChildren
-            })
+            ...children        
         ]
     });
 };

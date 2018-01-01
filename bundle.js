@@ -209,10 +209,11 @@ const DeleteAction = {
 
 const createTextElement = (
     {
-        text = 'text'
+        text = 'text',
+        className = 'textElement'
     } = {}) => {
     return createElement('p', {
-        className: 'textElement canEdit deleteSelf',
+        className: `${className} canEdit deleteSelf`,
         innerText: text,
         behaviors: new Map([
             [attachEditBehavior, ''],
@@ -289,14 +290,29 @@ const createDetailElement = (
     })
 };
 
+const createDetailsElement = (children = [
+    createDetailElement()
+]) => {
+    return createElement('ul', {
+        className: 'compoundItemDetails',
+        children: children
+    })
+};
+
 const createCompoundItem = (
     {
         name = 'name',
-        description = 'description',
-        additionalInfo = 'additional info'
     } = {},
-    detailsChildren = [
-        createDetailElement()
+    children = [
+        createTextElement({
+            text: 'description',
+            className: 'compoundItemDescription'
+        }),
+        createTextElement({
+            text: 'additional info',
+            className: 'compoundItemAdditionalInfo'
+        }),
+        createDetailsElement()
     ]) => {
     return createElement('div', {
         className: 'compoundItem',
@@ -309,26 +325,7 @@ const createCompoundItem = (
                     [attachActionContainer, 'delete']
                 ])
             }),
-            createElement('p', {
-                className: 'compoundItemDescription canEdit deleteSelf',
-                innerText: description,
-                behaviors: new Map([
-                    [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
-                ])
-            }),
-            createElement('p', {
-                className: 'compoundItemAdditionalInfo canEdit deleteSelf',
-                innerText: additionalInfo,
-                behaviors: new Map([
-                    [attachEditBehavior, ''],
-                    [attachActionContainer, 'delete']
-                ])
-            }),
-            createElement('ul', {
-                className: 'compoundItemDetails',
-                children: detailsChildren
-            })
+            ...children        
         ]
     });
 };
@@ -581,6 +578,22 @@ const createGrid = (
 
         const processCompoundItem = ([fstChild, ...rest], [argsMeta = {}, ...argsChildren] = []) => {
 
+            const processDetails = (
+                [fstDetail, ...rest],
+                children = []
+            ) => {
+                return !fstDetail
+                    ? createDetailsElement(children)
+                    : fstDetail.classList.contains('detailElement')
+                        ? processDetails(rest, children.concat(
+                            createDetailElement(
+                                {
+                                    text: fstDetail.innerText
+                                })
+                        ))
+                        : processDetails(rest, children);
+            };
+
             if (!fstChild) return createCompoundItem(argsMeta, argsChildren);
             else {
                 const classList = fstChild.classList;
@@ -593,25 +606,27 @@ const createGrid = (
                         ]);
                     case classList.contains('compoundItemDescription'):
                         return processCompoundItem(rest, [
-                            addToArgsMeta(argsMeta, {
-                                description: fstChild.innerText
+                            argsMeta,
+                            ...argsChildren,
+                            createTextElement({
+                                text: fstChild.innerText,
+                                className: 'compoundItemDescription'
                             })
                         ]);
                     case classList.contains('compoundItemAdditionalInfo'):
                         return processCompoundItem(rest, [
-                            addToArgsMeta(argsMeta, {
-                                additionalInfo: fstChild.innerText
+                            argsMeta,
+                            ...argsChildren,
+                            createTextElement({
+                                text: fstChild.innerText,
+                                className: 'compoundItemAdditionalInfo'
                             })
                         ]);
                     case classList.contains('compoundItemDetails'):
-                        return processCompoundItem(fstChild.childNodes, [argsMeta]);
-                    case classList.contains('detailElement'):
                         return processCompoundItem(rest, [
                             argsMeta,
                             ...argsChildren,
-                            createDetailElement({
-                                text: fstChild.innerText
-                            })
+                            processDetails(fstChild.childNodes)
                         ]);
                     default:
                         return processCompoundItem(rest, [argsMeta, ...argsChildren]);
