@@ -1,7 +1,8 @@
 /* buttons */
 
 #buttons {
-    margin: 10px;
+    margin: 10px auto;
+    width: 50%;
     display: grid;
     grid-row-gap: 5px;
 }
