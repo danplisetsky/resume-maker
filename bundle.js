@@ -1,13 +1,14 @@
 (function () {
 'use strict';
 
-const attachButtonBehavior = (id, callback) => {
-    const button = document.getElementById(id);
-    if (button.tagName === 'INPUT' && button.type === 'file')
-        button.onchange = callback;
-    else
-        button.onclick = callback;
-};
+const attachButtonBehavior = id =>
+    callback => {
+        const button = document.getElementById(id);
+        if (button.tagName === 'INPUT' && button.type === 'file')
+            button.onchange = callback;
+        else
+            button.onclick = callback;
+    };
 
 HTMLElement.prototype.insertAfter = function insertAfter(newElement) {
     this.parentNode.insertBefore(newElement, this.nextSibling);
@@ -794,30 +795,31 @@ const processGrid = node => {
             };
 };
 
+const processCV = jsonCV => {
+    try {
+        const domCV = domJSON.toDOM(jsonCV)
+            .firstElementChild;
+        const header = processHeader(
+            [...domCV.childNodes].find(cn => cn.id === 'header'));
+        const grid = processGrid(
+            [...domCV.childNodes].find(cn => cn.id === 'grid'));
+
+        createNewCV(domCV.id, header, grid);
+    } catch (e) {
+        if (e instanceof SyntaxError) {
+            console.log('file is wrongly formatted ', e.message);
+        }
+        else
+            console.log('unknown error', e.message);
+        alert('it seems that the cv file is corrupted. Sorry ):');
+    }
+};
 
 const loadCV = ev => {
     const file = ev.target.files[0];
 
     const reader = new FileReader();
-    reader.onload = () => {
-        try {
-            const domCV = domJSON.toDOM(reader.result)
-                .firstElementChild;
-            const header = processHeader(
-                [...domCV.childNodes].find(cn => cn.id === 'header'));
-            const grid = processGrid(
-                [...domCV.childNodes].find(cn => cn.id === 'grid'));
-
-            createNewCV(domCV.id, header, grid);
-        } catch (e) {
-            if (e instanceof SyntaxError) {
-                console.log('file is wrongly formatted ', e.message);
-            }
-            else
-                console.log('unknown error', e.message);
-            alert('it seems that your cv file is corrupted. Sorry ):');
-        }
-    };
+    reader.onload = () => processCV(reader.result);
 
     try {
         reader.readAsText(file);
@@ -830,10 +832,22 @@ const loadCV = ev => {
 
 };
 
+async function fetchAsync(link) {
+    const response = await fetch(link);
+    return await response.json();  
+}
+
+async function templateCV() {
+    const data = await fetchAsync('https://api.github.com/gists/22e69fd2edb08b666f01b46eea4c5cff');
+    const content = data.files['template.cv'].content;    
+    processCV(content);
+}
+
 window.onload = () => {
-    attachButtonBehavior('newCVButton', newCV);
-    attachButtonBehavior('saveCVButton', saveCV);
-    attachButtonBehavior('loadCVButton', loadCV);
+    attachButtonBehavior('newCVButton')(newCV);
+    attachButtonBehavior('saveCVButton')(saveCV);
+    attachButtonBehavior('loadCVButton')(loadCV);
+    attachButtonBehavior('templateCVButton')(templateCV);
     newCV();
 };
 

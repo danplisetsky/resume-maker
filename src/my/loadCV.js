@@ -1,96 +1,10 @@
-import createHeader from "./createHeader";
-import { removeAllChildren } from './extensions';
-import createGrid from "./createGrid";
-import createNewCV from "./createNewCV";
-
-const processHeader = (node, id) => {
-    if (!node || !node.childNodes) return;
-    else {
-        switch (node.id) {
-            case 'header':
-                return createHeader(
-                    {
-                        backgroundColor: node.style.backgroundColor
-                    },
-                    processHeader(node.firstElementChild, 'name'),
-                    processHeader(node.firstElementChild, 'occupation')
-                );
-            case id:
-                return {
-                    tag: node.tagName,
-                    id: node.id,
-                    name: node.innerText,
-                    color: node.style.color
-                };
-            default:
-                return processHeader(node.nextSibling, id);
-        }
-    }
-};
-
-const processGrid = node => {
-
-    const processSection = ([fstElement, ...rest], children = []) => {
-        return !fstElement
-            ? children
-            : fstElement.classList.contains('nameOfSection')
-                ? processSection(
-                    rest,
-                    children.concat({
-                        name: fstElement.innerText,
-                        color: fstElement.style.color
-                    }))
-                : processSection(rest, children.concat(fstElement))
-    };
-
-    const processSubgrid = ([fstSection, ...rest], children = []) => {
-        return !fstSection
-            ? children
-            : processSubgrid(
-                rest,
-                [
-                    ...children,
-                    processSection(fstSection.childNodes)
-                ]);
-    };
-
-    return (!node || !node.childNodes)
-        ? (() => { throw 'wrongly formatted cv!' })
-        : node.id === 'grid'
-            ? createGrid(
-                processGrid(node.firstElementChild),
-                processGrid(node.lastElementChild)
-            )
-            : {
-                id: node.id,
-                children: processSubgrid(node.childNodes)
-            };
-};
-
+import processCV from "./processCV";
 
 const loadCV = ev => {
     const file = ev.target.files[0];
 
     const reader = new FileReader();
-    reader.onload = () => {
-        try {
-            const domCV = domJSON.toDOM(reader.result)
-                .firstElementChild;
-            const header = processHeader(
-                [...domCV.childNodes].find(cn => cn.id === 'header'));
-            const grid = processGrid(
-                [...domCV.childNodes].find(cn => cn.id === 'grid'));
-
-            createNewCV(domCV.id, header, grid);
-        } catch (e) {
-            if (e instanceof SyntaxError) {
-                console.log('file is wrongly formatted ', e.message);
-            }
-            else
-                console.log('unknown error', e.message);
-            alert('it seems that your cv file is corrupted. Sorry ):');
-        }
-    };
+    reader.onload = () => processCV(reader.result);
 
     try {
         reader.readAsText(file);
