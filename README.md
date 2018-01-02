@@ -1,6 +1,6 @@
 # resume-maker
 
-A simple online resume-making tool
+A simple online resume-making tool. Live version is here: https://danplisetsky.github.io/resume-maker/
 
 ## How to use
 
