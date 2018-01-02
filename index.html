@@ -16,27 +16,32 @@
 
 <body>
 
-    <div id="buttons" class="noPrint">
-        <div id="newCV">
-            <button type="button" id="newCVButton">new CV</button>
-        </div>
+    <div id="navbar" class="noPrint">
+        <a id="logo" href="https://github.com/danplisetsky/resume-maker" title="Check out the code on Github!">
+            <p id="title">resume-maker</p>
+        </a>
+        <div id="buttons">
+            <div id="newCV">
+                <button type="button" id="newCVButton">new CV</button>
+            </div>
 
-        <div id="templateCV">
-            <button type="button" id="templateCVButton">template CV</button>
-        </div>
+            <div id="templateCV">
+                <button type="button" id="templateCVButton">template CV</button>
+            </div>
 
 
-        <div id="saveCV">
-            <button type="button" id="saveCVButton">save CV...</button>
-        </div>
+            <div id="saveCV">
+                <button type="button" id="saveCVButton">save CV...</button>
+            </div>
 
-        <div id="loadCV">
-            <input type="file" id="loadCVButton" accept=".cv">
-            <button onclick="document.getElementById('loadCVButton').click();">load CV...</button>
-        </div>
+            <div id="loadCV">
+                <input type="file" id="loadCVButton" accept=".cv">
+                <button onclick="document.getElementById('loadCVButton').click();">load CV...</button>
+            </div>
 
-        <div id="print">
-            <button id="printButton" type="button">print (also to pdf)...</button>
+            <div id="print">
+                <button id="printButton" type="button">print (also to pdf)...</button>
+            </div>
         </div>
     </div>
 
