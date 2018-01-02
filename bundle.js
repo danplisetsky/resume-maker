@@ -427,7 +427,7 @@ const createAction = (el, actionName) => {
         case 'createSection':
             return () =>
                 insertAfter(
-                    el.parentNode.parentNode.lastChild,
+                    el.parentNode,
                     createSection({
                         columnid: el.parentNode.parentNode.id
                     })
