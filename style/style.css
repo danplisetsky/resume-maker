@@ -2,7 +2,8 @@
 
 #navbar {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto 1fr;
+    width: 100%;
 }
 
 #logo {
@@ -106,7 +107,7 @@ input[type='text'] {
 #grid {
     margin: auto 3%;
     display: grid;
-    grid-template-columns: 1fr 5fr;
+    grid-template-columns: auto 1fr;
     grid-column-gap: 30px;
 }
 
@@ -126,6 +127,10 @@ input[type='text'] {
 
 .section p {
     margin: 0;
+}
+
+.section>:not(h3):not(.dateItem) {
+    font-size: smaller;
 }
 
 h3 {    
@@ -158,6 +163,12 @@ h3 {
     display: grid;
 }
 
+.compoundItem {
+    grid-template-columns: auto 1fr auto;
+    grid-column-gap: 5px;
+    font-size: smaller;
+}
+
 .section>.compoundItem, .dateItem {
     margin: 10px auto;
 }
@@ -165,6 +176,13 @@ h3 {
 .dateItem {
     grid-template-columns: auto 1fr;
     grid-column-gap: 20px;
+}
+
+.date {
+    grid-row: 1;
+    grid-column: 1;
+    width: 100px;
+    font-size: smaller;
 }
 
 .dateItem>.compoundItem {
@@ -190,6 +208,7 @@ h3 {
     grid-row: 1;
     grid-column: 3;
     justify-self: end;
+    width: fit-content;
 }
 
 .compoundItemDetails {
@@ -197,11 +216,6 @@ h3 {
     grid-column: 1/4;
     margin: 1px 0;
     padding-left: 20px;
-}
-
-.date {
-    grid-row: 1;
-    grid-column: 1;
 }
 
 /* action container */
