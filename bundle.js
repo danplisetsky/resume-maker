@@ -369,34 +369,12 @@
         attachMovingBehavior(el)(moveDown);
     };
 
-    const createLinkElement = el => {
+    const createTextLinkElement = ({ link }) => {
       return createElement("a", {
-        // className: "linkElement deleteSelf",
-        href: `http://${el.innerText}`,
-        innerText: el.innerText,
-        behaviors: new Map([[attachActionContainer, ["delete" /* remove link */]]])
-      });
-    };
-
-    const createDescriptionLinkElement = ({
-      description = "description",
-      link
-    }) => {
-      return createElement("div", {
-        className: "descriptionElement deleteSelf",
-        behaviors: new Map([[attachActionContainer, ["delete" /* remove link */]]]),
-        children: [
-          createElement("p", {
-            className: "description canEdit",
-            innerText: description,
-            behaviors: new Map([[attachEditBehavior, ""]])
-          }),
-          createElement("a", {
-            className: "linkDescription",
-            href: `http://${link}`,
-            innerText: link
-          })
-        ]
+        className: "textLinkElement deleteSelf",
+        href: `http://${link}`,
+        innerText: link,
+        behaviors: new Map([[attachActionContainer, ["removeLink", "delete"]]])
       });
     };
 
@@ -404,19 +382,27 @@
       el.nextElementSibling.remove(); //remove action container
       const classList = el.classList;
       switch (true) {
-        case classList.contains("descriptionElement"):
+        /*  case classList.contains("descriptionElement"):
           const descriptionLink = createDescriptionLinkElement({
             description: el.firstChild.innerText,
             link: el.lastChild.innerText
           });
           el.parentNode.replaceChild(descriptionLink, el);
-          break;
-        default:
-          console.log(el);
-          const link = createLinkElement(el);
-          console.log(link);
+          break; */
+        case classList.contains("textElement"):
+          const link = createTextLinkElement({ link: el.innerText });
           el.parentNode.replaceChild(link, el);
           break;
+      }
+    };
+
+    const removeLink = el => {
+      el.nextElementSibling.remove(); //remove action container
+      const classList = el.classList;
+      switch (true) {
+        case classList.contains("textLinkElement"):
+          const textElement = createTextElement({ text: el.innerText });
+          el.parentNode.replaceChild(textElement, el);
       }
     };
 
@@ -481,6 +467,7 @@
         case "attachMoveUpBehavior":
         case "attachMoveDownBehavior":
         case "createLink":
+        case "removeLink":
           return () => actionName(el);
         default:
           return () => insertAfter(el.parentNode.lastChild, actionName());
@@ -508,6 +495,7 @@
         ["addDetail", createDetailElement],
         ["addAfter", createSection],
         ["addLink", createLink],
+        ["removeLink", removeLink],
         ["moveUp", attachMoveUpBehavior],
         ["moveDown", attachMoveDownBehavior],
         ["delete", createDeleteBehavior]

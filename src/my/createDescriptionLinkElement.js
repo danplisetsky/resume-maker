@@ -8,7 +8,9 @@ const createDescriptionLinkElement = ({
 }) => {
   return createElement("div", {
     className: "descriptionElement deleteSelf",
-    behaviors: new Map([[attachActionContainer, ["delete" /* remove link */]]]),
+    behaviors: new Map([
+      [attachActionContainer, ["delete" /* TODO: remove link */]]
+    ]),
     children: [
       createElement("p", {
         className: "description canEdit",

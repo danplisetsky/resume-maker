@@ -18,6 +18,7 @@ import createDateItem from "./createDateItem";
 import attachMoveUpBehavior from "./attachMoveUpBehavior";
 import attachMoveDownBehavior from "./attachMoveDownBehavior";
 import createLink from "./createLink";
+import removeLink from "./removeLink";
 
 const createDeleteBehavior = el => {
   const mapDeleteAction = name => {
@@ -80,6 +81,7 @@ const createAction = (el, actionName) => {
     case "attachMoveUpBehavior":
     case "attachMoveDownBehavior":
     case "createLink":
+    case "removeLink":
       return () => actionName(el);
     default:
       return () => insertAfter(el.parentNode.lastChild, actionName());
@@ -107,6 +109,7 @@ const createActionIcons = (el, icons) => {
     ["addDetail", createDetailElement],
     ["addAfter", createSection],
     ["addLink", createLink],
+    ["removeLink", removeLink],
     ["moveUp", attachMoveUpBehavior],
     ["moveDown", attachMoveDownBehavior],
     ["delete", createDeleteBehavior]
