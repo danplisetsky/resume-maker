@@ -13,9 +13,7 @@ const createLink = el => {
       el.parentNode.replaceChild(descriptionLink, el);
       break;
     default:
-      console.log(el);
       const link = createLinkElement(el);
-      console.log(link);
       el.parentNode.replaceChild(link, el);
       break;
   }
