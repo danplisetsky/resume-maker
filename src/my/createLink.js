@@ -2,6 +2,7 @@ import createLinkElement from "./createLinkElement";
 import createDescriptionLinkElement from "./createDescriptionLinkElement";
 
 const createLink = el => {
+  el.nextElementSibling.remove(); //remove action container
   const classList = el.classList;
   switch (true) {
     case classList.contains("descriptionElement"):
@@ -18,7 +19,6 @@ const createLink = el => {
       el.parentNode.replaceChild(link, el);
       break;
   }
-  // remove actionContainer
 };
 
 export default createLink;

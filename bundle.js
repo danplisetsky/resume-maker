@@ -401,6 +401,7 @@
     };
 
     const createLink = el => {
+      el.nextElementSibling.remove(); //remove action container
       const classList = el.classList;
       switch (true) {
         case classList.contains("descriptionElement"):
