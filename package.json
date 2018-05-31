@@ -1,0 +1,23 @@
+{
+  "name": "resume-maker",
+  "version": "1.0.0",
+  "description": "An interactive resume-making tool",
+  "main": "bundle.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danplisetsky/resume-maker.git"
+  },
+  "author": {
+    "name": "Daniel Plisetsky",
+    "email": "danplisetsky@gmail.com",
+    "url": "https://danplisetsky.github.io"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danplisetsky/resume-maker/issues"
+  },
+  "homepage": "https://github.com/danplisetsky/resume-maker#readme",
+  "dependencies": {
+    "rollup": "^0.59.4"
+  }
+}
