@@ -1,13 +1,13 @@
 import createElement from "./createElement";
 import attachActionContainer from "./attachActionContainer";
 
-const createTextLinkElement = ({ link }) => {
+const createLinkElement = ({ link, className }) => {
   return createElement("a", {
-    className: "textLinkElement deleteSelf",
+    className: `${className} deleteSelf`,
     href: `http://${link}`,
     innerText: link,
     behaviors: new Map([[attachActionContainer, ["removeLink", "delete"]]])
   });
 };
 
-export default createTextLinkElement;
+export default createLinkElement;

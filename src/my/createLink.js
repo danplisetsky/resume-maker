@@ -1,21 +1,36 @@
-import createTextLinkElement from "./createTextLinkElement";
-import createDescriptionLinkElement from "./createDescriptionLinkElement";
+import createLinkElement from "./createLinkElement";
 
 const createLink = el => {
-  el.nextElementSibling.remove(); //remove action container
+  el.nextElementSibling.remove(); //removes action container
+
   const classList = el.classList;
   switch (true) {
-    /*  case classList.contains("descriptionElement"):
-      const descriptionLink = createDescriptionLinkElement({
-        description: el.firstChild.innerText,
-        link: el.lastChild.innerText
+    /* case classList.contains("descriptionElement"): {
+      const link = createLinkElement({
+        link: el.lastChild.innerText,
+        className: "descriptionLinkElement"
       });
-      el.parentNode.replaceChild(descriptionLink, el);
-      break; */
-    case classList.contains("textElement"):
-      const link = createTextLinkElement({ link: el.innerText });
+      el.replaceChild(link, el.lastChild);
+      break;
+    } */
+
+    case classList.contains("textElement"): {
+      const link = createLinkElement({
+        link: el.innerText,
+        className: "textLinkElement"
+      });
       el.parentNode.replaceChild(link, el);
       break;
+    }
+
+    case classList.contains("compoundItemAdditionalInfo"): {
+      const link = createLinkElement({
+        link: el.innerText,
+        className: "additionalInfoLinkItem"
+      });
+      el.parentNode.replaceChild(link, el);
+      break;
+    }
   }
 };
 

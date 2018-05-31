@@ -369,9 +369,9 @@
         attachMovingBehavior(el)(moveDown);
     };
 
-    const createTextLinkElement = ({ link }) => {
+    const createLinkElement = ({ link, className }) => {
       return createElement("a", {
-        className: "textLinkElement deleteSelf",
+        className: `${className} deleteSelf`,
         href: `http://${link}`,
         innerText: link,
         behaviors: new Map([[attachActionContainer, ["removeLink", "delete"]]])
@@ -379,30 +379,65 @@
     };
 
     const createLink = el => {
-      el.nextElementSibling.remove(); //remove action container
+      el.nextElementSibling.remove(); //removes action container
+
       const classList = el.classList;
       switch (true) {
-        /*  case classList.contains("descriptionElement"):
-          const descriptionLink = createDescriptionLinkElement({
-            description: el.firstChild.innerText,
-            link: el.lastChild.innerText
+        /* case classList.contains("descriptionElement"): {
+          const link = createLinkElement({
+            link: el.lastChild.innerText,
+            className: "descriptionLinkElement"
           });
-          el.parentNode.replaceChild(descriptionLink, el);
-          break; */
-        case classList.contains("textElement"):
-          const link = createTextLinkElement({ link: el.innerText });
+          el.replaceChild(link, el.lastChild);
+          break;
+        } */
+
+        case classList.contains("textElement"): {
+          const link = createLinkElement({
+            link: el.innerText,
+            className: "textLinkElement"
+          });
           el.parentNode.replaceChild(link, el);
           break;
+        }
+
+        case classList.contains("compoundItemAdditionalInfo"): {
+          const link = createLinkElement({
+            link: el.innerText,
+            className: "additionalInfoLinkItem"
+          });
+          el.parentNode.replaceChild(link, el);
+          break;
+        }
       }
     };
 
     const removeLink = el => {
-      el.nextElementSibling.remove(); //remove action container
+      el.nextElementSibling.remove(); //removes action container
       const classList = el.classList;
       switch (true) {
         case classList.contains("textLinkElement"):
-          const textElement = createTextElement({ text: el.innerText });
+          const textElement = createTextElement({
+            text: el.innerText
+          });
           el.parentNode.replaceChild(textElement, el);
+          break;
+
+        /* case classList.contains("descriptionLinkElement"):
+          const descriptionElement = createDescriptionElement({
+            description: el.firstChild.innerText,
+            text: el.lastChild.innerText
+          });
+          el.parentNode.replaceChild(descriptionElement, el);
+          break; */
+
+        case classList.contains("additionalInfoLinkItem"):
+          const additionalInfoElement = createTextElement({
+            text: el.innerText,
+            className: "compoundItemAdditionalInfo"
+          });
+          el.parentNode.replaceChild(additionalInfoElement, el);
+          break;
       }
     };
 
