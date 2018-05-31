@@ -1,232 +1,249 @@
 /* navbar */
 
 #navbar {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  width: 100%;
 }
 
 #logo {
-    grid-row: 1;
-    grid-column: 1;
-    align-self: center;
+  grid-row: 1;
+  grid-column: 1;
+  align-self: center;
 }
 
 #title {
-    font-family: monospace;
-    font-size: 20px;
-    color: dimgray !important;
-    margin: 0;
+  font-family: monospace;
+  font-size: 20px;
+  color: dimgray !important;
+  margin: 0;
 }
 
 /* buttons */
 
 button {
-    width: max-content;
+  width: max-content;
 }
 
 #buttons {
-    margin: 10px auto;
-    width: 50%;
-    grid-row: 1;
-    grid-column: 2;
+  margin: 10px auto;
+  width: 50%;
+  grid-row: 1;
+  grid-column: 2;
 
-    display: grid;
-    grid-row-gap: 5px;
-    grid-column-gap: 5px;
+  display: grid;
+  grid-row-gap: 5px;
+  grid-column-gap: 5px;
 }
 
 #newCV {
-    grid-row: 1;
-    grid-column: 1;
+  grid-row: 1;
+  grid-column: 1;
 }
 
 #templateCV {
-    grid-row: 1;
-    grid-column: 2;
+  grid-row: 1;
+  grid-column: 2;
 }
 
 #saveCV {
-    grid-row: 1;
-    grid-column: 3;
+  grid-row: 1;
+  grid-column: 3;
 }
 
 #loadCV {
-    grid-row: 1;
-    grid-column: 4;
+  grid-row: 1;
+  grid-column: 4;
 }
 
 #loadCVButton {
-    display: none;
+  display: none;
 }
 
 #print {
-    grid-row: 1;
-    grid-column: 5;
+  grid-row: 1;
+  grid-column: 5;
 }
-
-
 
 /* header */
 
 #header {
-    height: fit-content;
-    width: 100%;
-    background-color: black;
-    padding: 50px 0;    
+  height: fit-content;
+  width: 100%;
+  background-color: black;
+  padding: 50px 0;
 }
 
- #header input[type='text'] {
-    margin: auto;
-    width: auto;
-    display: block;
- }
+#header input[type="text"] {
+  margin: auto;
+  width: auto;
+  display: block;
+}
 
 .colorPicker {
-    position: absolute;
-    margin: 0;
+  position: absolute;
+  margin: 0;
 }
 
 .canEdit {
-    width: fit-content;
+  width: fit-content;
 }
 
-input[type='text'] {
-    width: -webkit-fill-available;
+input[type="text"] {
+  width: -webkit-fill-available;
 }
 
-#name, #occupation {
-    text-align: center;
-    width: fit-content;
-    margin: auto;
-    color: whitesmoke;
+#name,
+#occupation {
+  text-align: center;
+  width: fit-content;
+  margin: auto;
+  color: whitesmoke;
 }
 
 /* CV */
 
 #grid {
-    margin: auto 3%;
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-column-gap: 30px;
+  margin: auto 3%;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-column-gap: 30px;
 }
 
 #fstColumn {
-    grid-column: 1;
+  grid-column: 1;
 }
 
 #sndColumn {
-    grid-column: 2;
+  grid-column: 2;
 }
 
 .subgrid {
-    display: grid;
+  display: grid;
 }
 
 /* section */
 
 .section p {
-    margin: 0;
+  margin: 0;
 }
 
-.section>:not(h3):not(.dateItem) {
-    font-size: smaller;
+.section > :not(h3):not(.dateItem) {
+  font-size: smaller;
 }
 
-h3 {    
-    margin-bottom: 0;
-    color: navy;
-    width: fit-content;
+h3 {
+  margin-bottom: 0;
+  color: navy;
+  width: fit-content;
 }
 
-.descriptionElement, .listElement {
-    width: fit-content;
+.descriptionElement,
+.listElement {
+  width: fit-content;
 }
 
 .descriptionElement * {
-    display: inline;
+  display: inline;
 }
 
-.descriptionElement>p.description {
-    margin-right: 5px;
+.descriptionElement > p.description {
+  margin-right: 5px;
 }
 
-.description, .compoundItemAdditionalInfo {
-    color: lightslategray;
+.description,
+.compoundItemAdditionalInfo {
+  color: lightslategray;
 }
 
-.listElement>p:not(.description) {
-    margin-left: 10px;
+.listElement > p:not(.description) {
+  margin-left: 10px;
 }
 
-.compoundItem, .dateItem {
-    display: grid;
+.compoundItem,
+.dateItem {
+  display: grid;
 }
 
 .compoundItem {
-    grid-template-columns: auto 1fr auto;
-    grid-column-gap: 5px;
-    font-size: smaller;
+  grid-template-columns: auto 1fr auto;
+  grid-column-gap: 5px;
+  font-size: smaller;
 }
 
-.section>.compoundItem, .dateItem {
-    margin: 10px auto;
+.section > .compoundItem,
+.dateItem {
+  margin: 10px auto;
 }
 
 .dateItem {
-    grid-template-columns: auto 1fr;
-    grid-column-gap: 20px;
+  grid-template-columns: auto 1fr;
+  grid-column-gap: 20px;
 }
 
 .date {
-    grid-row: 1;
-    grid-column: 1;
-    width: 100px;
-    font-size: smaller;
+  grid-row: 1;
+  grid-column: 1;
+  width: 100px;
+  font-size: smaller;
 }
 
-.dateItem>.compoundItem {
-    grid-row: 1;
-    grid-column: 2;
+.dateItem > .compoundItem {
+  grid-row: 1;
+  grid-column: 2;
 }
 
 .compoundItemName {
-    grid-row: 1;
-    grid-column: 1;
-    font-weight: bold;
+  grid-row: 1;
+  grid-column: 1;
+  font-weight: bold;
 }
 
 .compoundItemDescription {
-    grid-row: 1;
-    grid-column: 2;
-    color: gray;
-    font-weight: bolder;
-    justify-self: start;
+  grid-row: 1;
+  grid-column: 2;
+  color: gray;
+  font-weight: bolder;
+  justify-self: start;
 }
 
 .compoundItemAdditionalInfo {
-    grid-row: 1;
-    grid-column: 3;
-    justify-self: end;
-    width: fit-content;
+  grid-row: 1;
+  grid-column: 3;
+  justify-self: end;
+  width: fit-content;
 }
 
 .compoundItemDetails {
-    grid-row: 2;
-    grid-column: 1/4;
-    margin: 1px 0;
-    padding-left: 20px;
+  grid-row: 2;
+  grid-column: 1/4;
+  margin: 1px 0;
+  padding-left: 20px;
 }
 
 /* action container */
 
- .actionContainer {
-     position: absolute;
-     margin: 0; 
-     background-color: pink;
+.actionContainer {
+  position: absolute;
+  margin: 0;
+  border: 1px solid black;
+  background-color: rgb(28, 151, 135);
 }
 
 .actionIcon {
-    width: 16px;
-    height: 16px;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+}
+
+.actionIcon:not(:last-child) {
+  margin-right: 5px;
+}
+
+.actionIcon:last-child {
+  margin-right: 2px;
+}
+
+.actionIcon:first-child {
+  margin-left: 2px;
 }
