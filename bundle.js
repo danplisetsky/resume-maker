@@ -378,19 +378,47 @@
       });
     };
 
+    const createDescriptionLinkElement = ({
+      description = "description",
+      link
+    }) => {
+      return createElement("div", {
+        className: "descriptionLinkElement deleteSelf",
+        behaviors: new Map([[attachActionContainer, ["removeLink", "delete"]]]),
+        children: [
+          createElement("p", {
+            className: "description canEdit",
+            innerText: description,
+            behaviors: new Map([[attachEditBehavior, ""]])
+          }),
+          createElement("a", {
+            className: "linkDescription",
+            href: `http://${link}`,
+            innerText: link
+          })
+        ]
+      });
+    };
+
     const createLink = el => {
       el.nextElementSibling.remove(); //removes action container
 
       const classList = el.classList;
       switch (true) {
-        /* case classList.contains("descriptionElement"): {
-          const link = createLinkElement({
-            link: el.lastChild.innerText,
-            className: "descriptionLinkElement"
+        //TODO: add separate function tpo create description link element due to how popup menu works for them
+
+        //TODO: git clean to remove .DS_STORE
+
+        //TODO: refactor to procedure that returns link, then replace child once
+
+        case classList.contains("descriptionElement"): {
+          const link = createDescriptionLinkElement({
+            description: el.firstChild.innerText,
+            link: el.lastChild.innerText
           });
-          el.replaceChild(link, el.lastChild);
+          el.parentNode.replaceChild(link, el);
           break;
-        } */
+        }
 
         case classList.contains("textElement"): {
           const link = createLinkElement({
@@ -415,6 +443,9 @@
     const removeLink = el => {
       el.nextElementSibling.remove(); //removes action container
       const classList = el.classList;
+
+      // TODO: refactor this, make higher-order procedure of this and create link, pass createLink and removeLink proc used to create new elem to replace
+
       switch (true) {
         case classList.contains("textLinkElement"):
           const textElement = createTextElement({
@@ -423,13 +454,13 @@
           el.parentNode.replaceChild(textElement, el);
           break;
 
-        /* case classList.contains("descriptionLinkElement"):
+        case classList.contains("descriptionLinkElement"):
           const descriptionElement = createDescriptionElement({
             description: el.firstChild.innerText,
             text: el.lastChild.innerText
           });
           el.parentNode.replaceChild(descriptionElement, el);
-          break; */
+          break;
 
         case classList.contains("additionalInfoLinkItem"):
           const additionalInfoElement = createTextElement({
