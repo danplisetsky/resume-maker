@@ -11,28 +11,25 @@
         };
 
     const createElement = (tag, attributes) => {
-        const elem = document.createElement(tag);
-        for (const attr in attributes) {
-
-            switch (attr) {
-                case 'style':
-                    for (const rule in attributes.style)
-                        elem.style[rule] = attributes.style[rule];
-                    break;
-                case 'children':
-                    for (const item of attributes.children)
-                        elem.appendChild(item);
-                    break;
-                case 'behaviors':
-                    for (const [func, args] of attributes.behaviors)
-                        func(elem, args);
-                default:
-                    elem[attr] = attributes[attr];
-                    break;
-            }
-
+      const elem = document.createElement(tag);
+      for (const attr in attributes) {
+        switch (attr) {
+          case "style":
+            for (const rule in attributes.style)
+              elem.style[rule] = attributes.style[rule];
+            break;
+          case "children":
+            for (const item of attributes.children) elem.appendChild(item);
+            break;
+          case "behaviors":
+            for (const [func, args] of attributes.behaviors) func(elem, args);
+            break;
+          default:
+            elem[attr] = attributes[attr];
+            break;
         }
-        return elem;
+      }
+      return elem;
     };
 
     const attachBckgColorPicker = el => {
@@ -404,16 +401,16 @@
       const classList = el.classList;
 
       switch (true) {
-        case classList.contains("descriptionElement"):
-          return createDescriptionLinkElement({
-            description: el.firstChild.innerText,
-            link: el.lastChild.innerText
-          });
-
         case classList.contains("textElement"):
           return createLinkElement({
             link: el.innerText,
             className: "textLinkElement"
+          });
+
+        case classList.contains("descriptionElement"):
+          return createDescriptionLinkElement({
+            description: el.firstChild.innerText,
+            link: el.lastChild.innerText
           });
 
         case classList.contains("compoundItemAdditionalInfo"):
@@ -663,211 +660,210 @@
     };
 
     const createGrid = (
-        fstColumn = {
-            id: 'fstColumn',
-            children: [
-                [
-                    { name: 'contact', color: null }
-                ]
-            ]
-        },
-        sndColumn = {
-            id: 'sndColumn',
-            children: [
-                [
-                    { name: 'experience', color: null }
-                ]
-            ]
-        }) => {
+      fstColumn = {
+        id: "fstColumn",
+        children: [[{ name: "contact", color: null }]]
+      },
+      sndColumn = {
+        id: "sndColumn",
+        children: [[{ name: "experience", color: null }]]
+      }
+    ) => {
+      const makeCreateSection = (id, [fst, ...rest]) => {
+        const addToArgsMeta = (argsMeta, obj) => Object.assign(argsMeta, obj);
 
-        const makeCreateSection = (id, [fst, ...rest]) => {
-
-            const addToArgsMeta = (argsMeta, obj) => Object.assign(argsMeta, obj);
-
-            const processTextElement = ([fstChild]) =>
-                createTextElement({
-                    text: fstChild.textContent
-                });
-
-            const processDescriptionElement = ([fstChild, ...rest], argsMeta = {}) => {
-                return !fstChild
-                    ? createDescriptionElement(argsMeta)
-                    : fstChild.classList.contains('description')
-                        ? processDescriptionElement(
-                            rest,
-                            addToArgsMeta(argsMeta, {
-                                description: fstChild.innerText
-                            }))
-                        : fstChild.classList.contains('descriptionText')
-                            ? processDescriptionElement(
-                                rest,
-                                addToArgsMeta(argsMeta, {
-                                    text: fstChild.innerText
-                                }))
-                            : processDescriptionElement(rest, argsMeta);
-            };
-
-            const processListElement = ([fstChild, ...rest], [argsMeta = {}, ...argsChildren] = []) => {
-                return !fstChild
-                    ? createListElement(argsMeta, argsChildren)
-                    : fstChild.classList.contains('description')
-                        ? processListElement(
-                            rest, [
-                                addToArgsMeta(argsMeta, {
-                                    description: fstChild.innerText
-                                })
-                            ])
-                        : fstChild.classList.contains('textElement')
-                            ? processListElement(
-                                rest, [
-                                    argsMeta,
-                                    ...argsChildren,
-                                    createTextElement({
-                                        text: fstChild.innerText
-                                    })
-                                ])
-                            : processListElement(rest, [argsMeta, argsChildren]);
-            };
-
-            const processCompoundItem = ([fstChild, ...rest], [argsMeta = {}, ...argsChildren] = []) => {
-
-                const processDetails = (
-                    [fstDetail, ...rest],
-                    children = []
-                ) => {
-                    return !fstDetail
-                        ? createDetailsElement(children)
-                        : fstDetail.classList.contains('detailElement')
-                            ? processDetails(rest, children.concat(
-                                createDetailElement(
-                                    {
-                                        text: fstDetail.innerText
-                                    })
-                            ))
-                            : processDetails(rest, children);
-                };
-
-                if (!fstChild) return createCompoundItem(argsMeta, argsChildren);
-                else {
-                    const classList = fstChild.classList;
-                    switch (true) {
-                        case classList.contains('compoundItemName'):
-                            return processCompoundItem(rest, [
-                                addToArgsMeta(argsMeta, {
-                                    name: fstChild.innerText
-                                })
-                            ]);
-                        case classList.contains('compoundItemDescription'):
-                            return processCompoundItem(rest, [
-                                argsMeta,
-                                ...argsChildren,
-                                createTextElement({
-                                    text: fstChild.innerText,
-                                    className: 'compoundItemDescription'
-                                })
-                            ]);
-                        case classList.contains('compoundItemAdditionalInfo'):
-                            return processCompoundItem(rest, [
-                                argsMeta,
-                                ...argsChildren,
-                                createTextElement({
-                                    text: fstChild.innerText,
-                                    className: 'compoundItemAdditionalInfo'
-                                })
-                            ]);
-                        case classList.contains('compoundItemDetails'):
-                            return processCompoundItem(rest, [
-                                argsMeta,
-                                ...argsChildren,
-                                processDetails(fstChild.childNodes)
-                            ]);
-                        default:
-                            return processCompoundItem(rest, [argsMeta, ...argsChildren]);
-                    }
-                }
-            };
-
-            const processDateItem = ([fstChild, ...rest], argsMeta = {}) => {
-                return !fstChild
-                    ? createDateItem(argsMeta)
-                    : fstChild.classList.contains('date')
-                        ? processDateItem(rest, addToArgsMeta(argsMeta, {
-                            date: fstChild.innerText
-                        }))
-                        : fstChild.classList.contains('compoundItem')
-                            ? processDateItem(rest, addToArgsMeta(argsMeta, {
-                                compoundItem: processCompoundItem(fstChild.childNodes)
-                            }))
-                            : processDateItem(rest, argsMeta);
-            };
-
-            const processChildren = ([fstElement, ...rest], children = []) => {
-
-                const processChild = fn => {
-                    return processChildren(
-                        rest,
-                        children.concat(
-                            fn(fstElement.childNodes)
-                        ));
-                };
-
-                if (!fstElement) return children;
-                else {
-                    const classList = fstElement.classList;
-                    switch (true) {
-                        case classList.contains('textElement'):
-                            return processChild(
-                                processTextElement);
-                        case classList.contains('descriptionElement'):
-                            return processChild(
-                                processDescriptionElement);
-                        case classList.contains('listElement'):
-                            return processChild(
-                                processListElement);
-                        case classList.contains('compoundItem'):
-                            return processChild(
-                                processCompoundItem);
-                        case classList.contains('dateItem'):
-                            return processChild(
-                                processDateItem);
-                        default:
-                            return processChildren(rest, children);
-                    }
-                }
-            };
-
-            return fst.hasOwnProperty('name')
-                ? createSection(
-                    {
-                        columnid: id,
-                        name: fst.name,
-                        nameColor: fst.color
-                    },
-                    processChildren(rest))
-                : (() => {
-                    throw 'wrongly formatted CV file'
-                });
+        const processTextLinkElement = ([fstChild]) => {
+          return createLinkElement({
+            link: fstChild.textContent,
+            className: "textLinkElement"
+          });
         };
 
-        const createColumn = ({
-            id,
-            children
-        }) => {
-            const sections = children.map(section => makeCreateSection(id, section));
-            return createElement('div', {
-                id: id,
-                className: 'subgrid',
-                children: sections
-            });
+        const processTextElement = ([fstChild]) => {
+          return createTextElement({
+            text: fstChild.textContent
+          });
         };
 
-        return createElement('div', {
-            id: 'grid',
-            children: [
-                createColumn(fstColumn),
-                createColumn(sndColumn)
-            ]
+        const processDescriptionElement = ([fstChild, ...rest], argsMeta = {}) => {
+          return !fstChild
+            ? createDescriptionElement(argsMeta)
+            : fstChild.classList.contains("description")
+              ? processDescriptionElement(
+                  rest,
+                  addToArgsMeta(argsMeta, {
+                    description: fstChild.innerText
+                  })
+                )
+              : fstChild.classList.contains("descriptionText")
+                ? processDescriptionElement(
+                    rest,
+                    addToArgsMeta(argsMeta, {
+                      text: fstChild.innerText
+                    })
+                  )
+                : processDescriptionElement(rest, argsMeta);
+        };
+
+        const processListElement = (
+          [fstChild, ...rest],
+          [argsMeta = {}, ...argsChildren] = []
+        ) => {
+          return !fstChild
+            ? createListElement(argsMeta, argsChildren)
+            : fstChild.classList.contains("description")
+              ? processListElement(rest, [
+                  addToArgsMeta(argsMeta, {
+                    description: fstChild.innerText
+                  })
+                ])
+              : fstChild.classList.contains("textElement")
+                ? processListElement(rest, [
+                    argsMeta,
+                    ...argsChildren,
+                    createTextElement({
+                      text: fstChild.innerText
+                    })
+                  ])
+                : processListElement(rest, [argsMeta, argsChildren]);
+        };
+
+        const processCompoundItem = (
+          [fstChild, ...rest],
+          [argsMeta = {}, ...argsChildren] = []
+        ) => {
+          const processDetails = ([fstDetail, ...rest], children = []) => {
+            return !fstDetail
+              ? createDetailsElement(children)
+              : fstDetail.classList.contains("detailElement")
+                ? processDetails(
+                    rest,
+                    children.concat(
+                      createDetailElement({
+                        text: fstDetail.innerText
+                      })
+                    )
+                  )
+                : processDetails(rest, children);
+          };
+
+          if (!fstChild) return createCompoundItem(argsMeta, argsChildren);
+          else {
+            const classList = fstChild.classList;
+            switch (true) {
+              case classList.contains("compoundItemName"):
+                return processCompoundItem(rest, [
+                  addToArgsMeta(argsMeta, {
+                    name: fstChild.innerText
+                  })
+                ]);
+              case classList.contains("compoundItemDescription"):
+                return processCompoundItem(rest, [
+                  argsMeta,
+                  ...argsChildren,
+                  createTextElement({
+                    text: fstChild.innerText,
+                    className: "compoundItemDescription"
+                  })
+                ]);
+              case classList.contains("compoundItemAdditionalInfo"):
+                return processCompoundItem(rest, [
+                  argsMeta,
+                  ...argsChildren,
+                  createTextElement({
+                    text: fstChild.innerText,
+                    className: "compoundItemAdditionalInfo"
+                  })
+                ]);
+              case classList.contains("compoundItemDetails"):
+                return processCompoundItem(rest, [
+                  argsMeta,
+                  ...argsChildren,
+                  processDetails(fstChild.childNodes)
+                ]);
+              default:
+                return processCompoundItem(rest, [argsMeta, ...argsChildren]);
+            }
+          }
+        };
+
+        const processDateItem = ([fstChild, ...rest], argsMeta = {}) => {
+          return !fstChild
+            ? createDateItem(argsMeta)
+            : fstChild.classList.contains("date")
+              ? processDateItem(
+                  rest,
+                  addToArgsMeta(argsMeta, {
+                    date: fstChild.innerText
+                  })
+                )
+              : fstChild.classList.contains("compoundItem")
+                ? processDateItem(
+                    rest,
+                    addToArgsMeta(argsMeta, {
+                      compoundItem: processCompoundItem(fstChild.childNodes)
+                    })
+                  )
+                : processDateItem(rest, argsMeta);
+        };
+
+        const processChildren = ([fstElement, ...rest], children = []) => {
+          const processChild = fn => {
+            return processChildren(
+              rest,
+              children.concat(fn(fstElement.childNodes))
+            );
+          };
+
+          if (!fstElement) return children;
+          else {
+            const classList = fstElement.classList;
+            switch (true) {
+              case classList.contains("textElement"):
+                return processChild(processTextElement);
+              case classList.contains("textLinkElement"):
+                return processChild(processTextLinkElement);
+              case classList.contains("descriptionElement"):
+                return processChild(processDescriptionElement);
+              case classList.contains("listElement"):
+                return processChild(processListElement);
+              case classList.contains("compoundItem"):
+                return processChild(processCompoundItem);
+              case classList.contains("dateItem"):
+                return processChild(processDateItem);
+              default:
+                return processChildren(rest, children);
+            }
+          }
+        };
+
+        return fst.hasOwnProperty("name")
+          ? createSection(
+              {
+                columnid: id,
+                name: fst.name,
+                nameColor: fst.color
+              },
+              processChildren(rest)
+            )
+          : () => {
+              throw "wrongly formatted CV file";
+            };
+      };
+
+      const createColumn = ({ id, children }) => {
+        const sections = children.map(section => makeCreateSection(id, section));
+        return createElement("div", {
+          id: id,
+          className: "subgrid",
+          children: sections
         });
+      };
+
+      return createElement("div", {
+        id: "grid",
+        children: [createColumn(fstColumn), createColumn(sndColumn)]
+      });
     };
 
     const createNewCV = (id, header, grid) => {
@@ -901,87 +897,88 @@
     };
 
     const processHeader = (node, id) => {
-        if (!node || !node.childNodes) return;
-        else {
-            switch (node.id) {
-                case 'header':
-                    return createHeader(
-                        {
-                            backgroundColor: node.style.backgroundColor
-                        },
-                        processHeader(node.firstElementChild, 'name'),
-                        processHeader(node.firstElementChild, 'occupation')
-                    );
-                case id:
-                    return {
-                        tag: node.tagName,
-                        id: node.id,
-                        name: node.innerText,
-                        color: node.style.color
-                    };
-                default:
-                    return processHeader(node.nextSibling, id);
-            }
+      if (!node || !node.childNodes) return;
+      else {
+        switch (node.id) {
+          case "header":
+            return createHeader(
+              {
+                backgroundColor: node.style.backgroundColor
+              },
+              processHeader(node.firstElementChild, "name"),
+              processHeader(node.firstElementChild, "occupation")
+            );
+          case id:
+            return {
+              tag: node.tagName,
+              id: node.id,
+              name: node.innerText,
+              color: node.style.color
+            };
+          default:
+            return processHeader(node.nextSibling, id);
         }
+      }
     };
 
     const processGrid = node => {
+      const processSection = ([fstElement, ...rest], children = []) => {
+        return !fstElement
+          ? children
+          : fstElement.classList.contains("nameOfSection")
+            ? processSection(
+                rest,
+                children.concat({
+                  name: fstElement.innerText,
+                  color: fstElement.style.color
+                })
+              )
+            : processSection(rest, children.concat(fstElement));
+      };
 
-        const processSection = ([fstElement, ...rest], children = []) => {
-            return !fstElement
-                ? children
-                : fstElement.classList.contains('nameOfSection')
-                    ? processSection(
-                        rest,
-                        children.concat({
-                            name: fstElement.innerText,
-                            color: fstElement.style.color
-                        }))
-                    : processSection(rest, children.concat(fstElement))
-        };
+      const processSubgrid = ([fstSection, ...rest], children = []) => {
+        return !fstSection
+          ? children
+          : processSubgrid(rest, [
+              ...children,
+              processSection(fstSection.childNodes)
+            ]);
+      };
 
-        const processSubgrid = ([fstSection, ...rest], children = []) => {
-            return !fstSection
-                ? children
-                : processSubgrid(
-                    rest,
-                    [
-                        ...children,
-                        processSection(fstSection.childNodes)
-                    ]);
-        };
-
-        return (!node || !node.childNodes)
-            ? (() => { throw 'wrongly formatted cv!' })
-            : node.id === 'grid'
-                ? createGrid(
-                    processGrid(node.firstElementChild),
-                    processGrid(node.lastElementChild)
-                )
-                : {
-                    id: node.id,
-                    children: processSubgrid(node.childNodes)
-                };
+      return !node || !node.childNodes
+        ? () => {
+            throw "wrongly formatted cv!";
+          }
+        : node.id === "grid"
+          ? createGrid(
+              processGrid(node.firstElementChild),
+              processGrid(node.lastElementChild)
+            )
+          : {
+              id: node.id,
+              children: processSubgrid(node.childNodes)
+            };
     };
 
     const processCV = jsonCV => {
-        try {
-            const domCV = domJSON.toDOM(jsonCV)
-                .firstElementChild;
-            const header = processHeader(
-                [...domCV.childNodes].find(cn => cn.id === 'header'));
-            const grid = processGrid(
-                [...domCV.childNodes].find(cn => cn.id === 'grid'));
+      try {
+        const domCV = domJSON.toDOM(jsonCV).firstElementChild;
+        const header = processHeader(
+          [...domCV.childNodes].find(cn => cn.id === "header")
+        );
+        const grid = processGrid(
+          [...domCV.childNodes].find(cn => cn.id === "grid")
+        );
 
-            createNewCV(domCV.id, header, grid);
-        } catch (e) {
-            if (e instanceof SyntaxError) {
-                console.log('file is wrongly formatted ', e.message);
-            }
-            else
-                console.log('unknown error', e.message);
-            alert('it seems that the cv file is corrupted. Sorry ):');
-        }
+        createNewCV(domCV.id, header, grid);
+      } catch (e) {
+        if (e instanceof SyntaxError)
+          console.log("file is wrongly formatted ", e.message);
+        else console.log("unknown error", e.message);
+
+        console.log(e);
+        alert("it seems that the cv file is corrupted. Sorry ):");
+      }
     };
 
     const loadCV = ev => {
