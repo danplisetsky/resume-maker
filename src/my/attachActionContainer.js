@@ -156,7 +156,7 @@ const attachActionContainer = (el, icons) => {
       className: "actionContainer",
       style: {
         left: `${left + 3}px`,
-        top: `${top + 3}px`
+        top: `${top - 3}px`
       },
       children: createActionIcons(el, [
         ...icons,

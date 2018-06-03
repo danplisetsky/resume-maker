@@ -1,6 +1,4 @@
 const changeLink = ({ el, newElemFunc }) => {
-  console.log(newElemFunc);
-
   el.nextElementSibling.remove(); //removes action container
 
   const newElem = newElemFunc(el);

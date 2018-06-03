@@ -124,8 +124,20 @@ input[type="text"] {
 
 /* section */
 
-.section p {
+a {
+  text-decoration: none;
+  font-style: italic;
+  color: black;
+}
+
+.section p,
+.section a {
   margin: 0;
+}
+
+.section a {
+  display: block;
+  width: fit-content;
 }
 
 .section > :not(h3):not(.dateItem) {
@@ -144,8 +156,10 @@ h3 {
   width: fit-content;
 }
 
-.descriptionElement *,
-.descriptionLinkElement * {
+.descriptionElement a,
+.descriptionElement p,
+.descriptionLinkElement a,
+.descriptionLinkElement p {
   display: inline;
 }
 
@@ -155,11 +169,13 @@ h3 {
 }
 
 .description,
-.compoundItemAdditionalInfo {
+.compoundItemAdditionalInfo,
+.additionalInfoLinkItem {
   color: lightslategray;
 }
 
-.listElement > p:not(.description) {
+.listElement > p:not(.description),
+.listElement > a {
   margin-left: 10px;
 }
 
@@ -210,7 +226,8 @@ h3 {
   justify-self: start;
 }
 
-.compoundItemAdditionalInfo {
+.compoundItemAdditionalInfo,
+.additionalInfoLinkItem {
   grid-row: 1;
   grid-column: 3;
   justify-self: end;

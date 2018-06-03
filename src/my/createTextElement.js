@@ -11,7 +11,12 @@ const createTextElement = ({
     innerText: text,
     behaviors: new Map([
       [attachEditBehavior, ""],
-      [attachActionContainer, ["addLink", "delete"]]
+      [
+        attachActionContainer,
+        className == "compoundItemDescription"
+          ? ["delete"]
+          : ["addLink", "delete"]
+      ]
     ])
   });
 };

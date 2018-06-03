@@ -221,7 +221,12 @@
         innerText: text,
         behaviors: new Map([
           [attachEditBehavior, ""],
-          [attachActionContainer, ["addLink", "delete"]]
+          [
+            attachActionContainer,
+            className == "compoundItemDescription"
+              ? ["delete"]
+              : ["addLink", "delete"]
+          ]
         ])
       });
     };
@@ -443,8 +448,6 @@
     };
 
     const changeLink = ({ el, newElemFunc }) => {
-      console.log(newElemFunc);
-
       el.nextElementSibling.remove(); //removes action container
 
       const newElem = newElemFunc(el);
@@ -587,7 +590,7 @@
           className: "actionContainer",
           style: {
             left: `${left + 3}px`,
-            top: `${top + 3}px`
+            top: `${top - 3}px`
           },
           children: createActionIcons(el, [
             ...icons,
