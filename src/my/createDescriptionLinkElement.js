@@ -18,6 +18,7 @@ const createDescriptionLinkElement = ({
       createElement("a", {
         className: "linkDescription",
         href: `http://${link}`,
+        target: "_blank",
         innerText: link
       })
     ]

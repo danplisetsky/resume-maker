@@ -376,6 +376,7 @@
         className: `${className} deleteSelf`,
         href: `http://${link}`,
         innerText: link,
+        target: "_blank",
         behaviors: new Map([[attachActionContainer, ["removeLink", "delete"]]])
       });
     };
@@ -396,6 +397,7 @@
           createElement("a", {
             className: "linkDescription",
             href: `http://${link}`,
+            target: "_blank",
             innerText: link
           })
         ]

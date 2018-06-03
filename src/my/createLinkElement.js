@@ -6,6 +6,7 @@ const createLinkElement = ({ link, className }) => {
     className: `${className} deleteSelf`,
     href: `http://${link}`,
     innerText: link,
+    target: "_blank",
     behaviors: new Map([[attachActionContainer, ["removeLink", "delete"]]])
   });
 };
