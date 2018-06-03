@@ -748,7 +748,16 @@
                       text: fstChild.innerText
                     })
                   ])
-                : processListElement(rest, [argsMeta, argsChildren]);
+                : fstChild.classList.contains("textLinkElement")
+                  ? processListElement(rest, [
+                      argsMeta,
+                      ...argsChildren,
+                      createLinkElement({
+                        link: fstChild.textContent,
+                        className: "textLinkElement"
+                      })
+                    ])
+                  : processListElement(rest, [argsMeta, argsChildren]);
         };
 
         const processCompoundItem = (
@@ -796,6 +805,15 @@
                   createTextElement({
                     text: fstChild.innerText,
                     className: "compoundItemAdditionalInfo"
+                  })
+                ]);
+              case classList.contains("additionalInfoLinkItem"):
+                return processCompoundItem(rest, [
+                  argsMeta,
+                  ...argsChildren,
+                  createLinkElement({
+                    link: fstChild.textContent,
+                    className: "additionalInfoLinkItem"
                   })
                 ]);
               case classList.contains("compoundItemDetails"):
