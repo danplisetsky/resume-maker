@@ -19,6 +19,7 @@ import attachMoveUpBehavior from "./attachMoveUpBehavior";
 import attachMoveDownBehavior from "./attachMoveDownBehavior";
 import createLink from "./createLink";
 import removeLink from "./removeLink";
+import changeLink from "./changeLink";
 
 const createDeleteBehavior = el => {
   const mapDeleteAction = name => {
@@ -80,9 +81,19 @@ const createAction = (el, actionName) => {
       return () => insertAfter(el, createDetailElement());
     case "attachMoveUpBehavior":
     case "attachMoveDownBehavior":
-    case "createLink":
-    case "removeLink":
       return () => actionName(el);
+    case "createLink":
+      return () =>
+        changeLink({
+          el,
+          newElemFunc: createLink
+        });
+    case "removeLink":
+      return () =>
+        changeLink({
+          el,
+          newElemFunc: removeLink
+        });
     default:
       return () => insertAfter(el.parentNode.lastChild, actionName());
   }

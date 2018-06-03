@@ -401,75 +401,58 @@
     };
 
     const createLink = el => {
-      el.nextElementSibling.remove(); //removes action container
-
       const classList = el.classList;
+
       switch (true) {
-        //TODO: add separate function tpo create description link element due to how popup menu works for them
-
-        //TODO: git clean to remove .DS_STORE
-
-        //TODO: refactor to procedure that returns link, then replace child once
-
-        case classList.contains("descriptionElement"): {
-          const link = createDescriptionLinkElement({
+        case classList.contains("descriptionElement"):
+          return createDescriptionLinkElement({
             description: el.firstChild.innerText,
             link: el.lastChild.innerText
           });
-          el.parentNode.replaceChild(link, el);
-          break;
-        }
 
-        case classList.contains("textElement"): {
-          const link = createLinkElement({
+        case classList.contains("textElement"):
+          return createLinkElement({
             link: el.innerText,
             className: "textLinkElement"
           });
-          el.parentNode.replaceChild(link, el);
-          break;
-        }
 
-        case classList.contains("compoundItemAdditionalInfo"): {
-          const link = createLinkElement({
+        case classList.contains("compoundItemAdditionalInfo"):
+          return createLinkElement({
             link: el.innerText,
             className: "additionalInfoLinkItem"
           });
-          el.parentNode.replaceChild(link, el);
-          break;
-        }
       }
     };
 
     const removeLink = el => {
-      el.nextElementSibling.remove(); //removes action container
       const classList = el.classList;
-
-      // TODO: refactor this, make higher-order procedure of this and create link, pass createLink and removeLink proc used to create new elem to replace
 
       switch (true) {
         case classList.contains("textLinkElement"):
-          const textElement = createTextElement({
-            text: el.innerText
-          });
-          el.parentNode.replaceChild(textElement, el);
-          break;
+          return createTextElement({ text: el.innerText });
 
         case classList.contains("descriptionLinkElement"):
-          const descriptionElement = createDescriptionElement({
+          return createDescriptionElement({
             description: el.firstChild.innerText,
             text: el.lastChild.innerText
           });
-          el.parentNode.replaceChild(descriptionElement, el);
-          break;
 
         case classList.contains("additionalInfoLinkItem"):
-          const additionalInfoElement = createTextElement({
+          return createTextElement({
             text: el.innerText,
             className: "compoundItemAdditionalInfo"
           });
-          el.parentNode.replaceChild(additionalInfoElement, el);
-          break;
       }
+    };
+
+    const changeLink = ({ el, newElemFunc }) => {
+      console.log(newElemFunc);
+
+      el.nextElementSibling.remove(); //removes action container
+
+      const newElem = newElemFunc(el);
+
+      el.parentNode.replaceChild(newElem, el);
     };
 
     const createDeleteBehavior = el => {
@@ -532,9 +515,19 @@
           return () => insertAfter(el, createDetailElement());
         case "attachMoveUpBehavior":
         case "attachMoveDownBehavior":
-        case "createLink":
-        case "removeLink":
           return () => actionName(el);
+        case "createLink":
+          return () =>
+            changeLink({
+              el,
+              newElemFunc: createLink
+            });
+        case "removeLink":
+          return () =>
+            changeLink({
+              el,
+              newElemFunc: removeLink
+            });
         default:
           return () => insertAfter(el.parentNode.lastChild, actionName());
       }
