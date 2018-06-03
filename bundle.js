@@ -705,6 +705,29 @@
                 : processDescriptionElement(rest, argsMeta);
         };
 
+        const processDescriptionLinkElement = (
+          [fstChild, ...rest],
+          argsMeta = {}
+        ) => {
+          return !fstChild
+            ? createDescriptionLinkElement(argsMeta)
+            : fstChild.classList.contains("description")
+              ? processDescriptionLinkElement(
+                  rest,
+                  addToArgsMeta(argsMeta, {
+                    description: fstChild.innerText
+                  })
+                )
+              : fstChild.classList.contains("linkDescription")
+                ? processDescriptionLinkElement(
+                    rest,
+                    addToArgsMeta(argsMeta, {
+                      link: fstChild.innerText
+                    })
+                  )
+                : processDescriptionLinkElement(rest, argsMeta);
+        };
+
         const processListElement = (
           [fstChild, ...rest],
           [argsMeta = {}, ...argsChildren] = []
@@ -825,6 +848,8 @@
                 return processChild(processTextLinkElement);
               case classList.contains("descriptionElement"):
                 return processChild(processDescriptionElement);
+              case classList.contains("descriptionLinkElement"):
+                return processChild(processDescriptionLinkElement);
               case classList.contains("listElement"):
                 return processChild(processListElement);
               case classList.contains("compoundItem"):

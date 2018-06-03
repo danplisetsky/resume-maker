@@ -8,6 +8,7 @@ import createDetailElement from "./createDetailElement";
 import createDateItem from "./createDateItem";
 import createDetailsElement from "./createDetailsElement";
 import createLinkElement from "./createLinkElement";
+import createDescriptionLinkElement from "./createDescriptionLinkElement";
 
 const createGrid = (
   fstColumn = {
@@ -53,6 +54,29 @@ const createGrid = (
                 })
               )
             : processDescriptionElement(rest, argsMeta);
+    };
+
+    const processDescriptionLinkElement = (
+      [fstChild, ...rest],
+      argsMeta = {}
+    ) => {
+      return !fstChild
+        ? createDescriptionLinkElement(argsMeta)
+        : fstChild.classList.contains("description")
+          ? processDescriptionLinkElement(
+              rest,
+              addToArgsMeta(argsMeta, {
+                description: fstChild.innerText
+              })
+            )
+          : fstChild.classList.contains("linkDescription")
+            ? processDescriptionLinkElement(
+                rest,
+                addToArgsMeta(argsMeta, {
+                  link: fstChild.innerText
+                })
+              )
+            : processDescriptionLinkElement(rest, argsMeta);
     };
 
     const processListElement = (
@@ -175,6 +199,8 @@ const createGrid = (
             return processChild(processTextLinkElement);
           case classList.contains("descriptionElement"):
             return processChild(processDescriptionElement);
+          case classList.contains("descriptionLinkElement"):
+            return processChild(processDescriptionLinkElement);
           case classList.contains("listElement"):
             return processChild(processListElement);
           case classList.contains("compoundItem"):
