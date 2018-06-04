@@ -1,6 +1,7 @@
 import createElement from "./createElement";
 import attachActionContainer from "./attachActionContainer";
 import attachEditBehavior from "./attachEditBehavior";
+import parseTextToLink from "./parseTextToLink";
 
 const createDescriptionLinkElement = ({
   description = "description",
@@ -15,12 +16,20 @@ const createDescriptionLinkElement = ({
         innerText: description,
         behaviors: new Map([[attachEditBehavior, ""]])
       }),
-      createElement("a", {
-        className: "linkDescription",
-        href: `http://${link}`,
-        target: "_blank",
-        innerText: link
-      })
+      createElement(
+        "a",
+        Object.assign(
+          {},
+          {
+            className: "linkDescription",
+            innerText: link
+          },
+          parseTextToLink({
+            link,
+            description
+          })
+        )
+      )
     ]
   });
 };
