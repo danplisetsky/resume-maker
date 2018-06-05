@@ -1,6 +1,8 @@
 /* navbar */
 
 #navbar {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   width: 100%;
   margin: 10px 0;
@@ -17,6 +19,8 @@
 /* buttons */
 
 #buttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
 }
 
@@ -42,6 +46,8 @@ button {
 /* header */
 
 #header {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
   height: fit-content;
   width: 100%;
   background-color: black;
@@ -60,16 +66,22 @@ button {
 }
 
 .canEdit {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
   width: fit-content;
 }
 
 input[type="text"] {
   width: -webkit-fill-available;
+  width: -moz-available;
+  width: stretch;
 }
 
 #name,
 #occupation {
   text-align: center;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
   width: fit-content;
   margin: auto;
   color: whitesmoke;
@@ -111,6 +123,8 @@ a {
 
 .section a {
   display: block;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
   width: fit-content;
 }
 
@@ -121,12 +135,16 @@ a {
 h3 {
   margin-bottom: 0;
   color: navy;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
   width: fit-content;
 }
 
 .descriptionElement,
 .descriptionLinkElement,
 .listElement {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
   width: fit-content;
 }
 
@@ -205,6 +223,8 @@ h3 {
   grid-row: 1;
   grid-column: 3;
   justify-self: end;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
   width: fit-content;
 }
 
