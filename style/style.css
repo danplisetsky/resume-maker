@@ -1,68 +1,42 @@
 /* navbar */
 
 #navbar {
-  display: grid;
-  grid-template-columns: auto 1fr;
+  display: flex;
   width: 100%;
+  margin: 10px 0;
 }
 
 #logo {
-  grid-row: 1;
-  grid-column: 1;
-  align-self: center;
-}
-
-#title {
   font-family: monospace;
-  font-size: 20px;
+  font-size: xx-large;
+  font-style: normal;
   color: dimgray !important;
-  margin: 0;
+  margin-right: 50px;
 }
 
 /* buttons */
 
-button {
-  width: max-content;
-}
-
 #buttons {
-  margin: 10px auto;
-  width: 50%;
-  grid-row: 1;
-  grid-column: 2;
-
-  display: grid;
-  grid-row-gap: 5px;
-  grid-column-gap: 5px;
+  display: flex;
 }
 
-#newCV {
-  grid-row: 1;
-  grid-column: 1;
+button {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
 }
 
-#templateCV {
-  grid-row: 1;
-  grid-column: 2;
-}
-
-#saveCV {
-  grid-row: 1;
-  grid-column: 3;
-}
-
-#loadCV {
-  grid-row: 1;
-  grid-column: 4;
+#buttons > *:not(:last-child) {
+  margin-right: 15px;
 }
 
 #loadCVButton {
   display: none;
 }
 
-#print {
-  grid-row: 1;
-  grid-column: 5;
+#loadCV > button {
+  height: 100%;
 }
 
 /* header */
