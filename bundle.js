@@ -20,7 +20,8 @@
           for (const item of attributes.children) elem.appendChild(item);
           break;
         case "behaviors":
-          for (const [func, args] of attributes.behaviors) func(elem, args);
+          for (const [func, args] of attributes.behaviors)
+            func(elem, args || undefined);
           break;
         default:
           elem[attr] = attributes[attr];
@@ -30,20 +31,6 @@
     return elem;
   };
 
-  const attachBckgColorPicker = el => {
-
-      const createColorPicker = () => {
-          return createElement('input', {
-              type: 'color',
-              onchange: ev =>
-                  el.style.backgroundColor = ev.target.value
-          });
-      };
-
-      el.addEventListener('dblclick', () =>
-          createColorPicker().click());
-  };
-
   const forEachElem = selector => {
       return (action, ...args) => {
           const els = [...document.querySelectorAll(selector)];
@@ -51,65 +38,42 @@
       }
   };
 
-  const deleteElementIfNotHoveredOver = (
-      elem,
-      [
-          [clientX, clientY],
-          { left = 0, top = 0, right = 0, bottom = 0 }
-      ]) => {
-      const coord = elem.getBoundingClientRect();
-      if (!(coord.left <= clientX + left && clientX - right <= coord.right && coord.top <= clientY + top && clientY - bottom <= coord.bottom))
-          elem.remove();
-  };
-
   const insertAfter = (referenceElement, newElement) => {
-      referenceElement.parentNode.insertBefore(newElement, referenceElement.nextElementSibling);
+    referenceElement.parentNode.insertBefore(
+      newElement,
+      referenceElement.nextElementSibling
+    );
   };
 
   const removeAllChildren = el => {
-      while (el.hasChildNodes())
-          el.removeChild(el.lastChild);
+    while (el.hasChildNodes()) el.removeChild(el.lastChild);
   };
 
   const removeSelfAndNextSibling = el => {
-      el.nextElementSibling.remove();
-      el.remove();
+    el.nextElementSibling.remove();
+    el.remove();
   };
 
   const moveUp = el => {
-      el.parentNode.insertBefore(el, el.previousElementSibling);
+    el.parentNode.insertBefore(el, el.previousElementSibling);
   };
 
   const moveDown = el => {
-      insertAfter(el.nextElementSibling, el);
+    insertAfter(el.nextElementSibling, el);
   };
 
   const getClientXY = mouseEvent => {
-      return [mouseEvent.clientX, mouseEvent.clientY]
+    return [mouseEvent.clientX, mouseEvent.clientY];
   };
 
-  const attachColorPicker = el => {
+  const rgb2hex = rgb => {
+    if (/^#[0-9A-F]{6}$/i.test(rgb)) return rgb;
 
-      const createColorPicker = clientX => {
-          const colorPicker = createElement('input', {
-              className: 'colorPicker',
-              type: 'color',
-              style: {
-                  left: `${clientX - 22}px`
-              },
-              onchange: ev => el.style.color = ev.target.value,
-              onmouseleave: ev => colorPicker.remove()
-          });
-
-          return colorPicker;
-      };
-
-      el.addEventListener('mouseover', ev =>
-          insertAfter(el, createColorPicker(ev.clientX)));
-
-      el.addEventListener('mouseleave', ev =>
-          forEachElem('.colorPicker')
-              (deleteElementIfNotHoveredOver, getClientXY(ev), { top: 5 }));
+    rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+    function hex(x) {
+      return ("0" + parseInt(x).toString(16)).slice(-2);
+    }
+    return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
   };
 
   const attachEditBehavior = el => {
@@ -161,46 +125,72 @@
           : 'Jane Doe';
   };
 
+  const attachColorPickerBehavior = (el, styleColor = "color") => {
+    el.onclick = ev => {
+      ev.stopPropagation();
+      const colorPicker = document.getElementById("colorPicker");
+
+      colorPicker.value = rgb2hex(getComputedStyle(el)[styleColor]) || "#000000";
+      colorPicker.select();
+
+      colorPicker.oninput = _ => (el.style[styleColor] = colorPicker.value);
+    };
+  };
+
   const createSubheader = ({ tag, id, name, color }) => {
-      return createElement(tag, {
-          id: id,
-          className: 'canPickColor canEdit',
-          innerText: name,
-          style: {
-              color: color
-          },
-          behaviors: new Map([
-              [attachColorPicker, ''],
-              [attachEditBehavior, '']
-          ])
-      });
+    return createElement(tag, {
+      id: id,
+      className: "canPickColor canEdit",
+      innerText: name,
+      style: {
+        color: color
+      },
+      behaviors: new Map([
+        [attachColorPickerBehavior, ""],
+        [attachEditBehavior, ""]
+      ])
+    });
   };
 
   const createHeader = (
-      header = {
-          backgroundColor: null
-      },
-      name = {
-          tag: 'h1', id: 'name', name: randomName(), color: null
-      },
-      occupation = {
-          tag: 'h2', id: 'occupation', name: 'software developer', color: null
-      }   
+    header = {
+      backgroundColor: null
+    },
+    name = {
+      tag: "h1",
+      id: "name",
+      name: randomName(),
+      color: null
+    },
+    occupation = {
+      tag: "h2",
+      id: "occupation",
+      name: "software developer",
+      color: null
+    }
   ) => {
-      return createElement('div', {
-          id: 'header',
-          className: 'canPickBackgroundColor',
-          style: {
-              backgroundColor: header.backgroundColor
-          },
-          behaviors: new Map([
-              [attachBckgColorPicker, '']
-          ]),
-          children: [
-              createSubheader(name),
-              createSubheader(occupation)           
-          ]
-      });
+    const headerElement = createElement("div", {
+      id: "header",
+      className: "canPickBackgroundColor",
+      style: {
+        backgroundColor: header.backgroundColor
+      },
+      behaviors: new Map([[attachColorPickerBehavior, "backgroundColor"]]),
+      children: [createSubheader(name), createSubheader(occupation)]
+    });
+
+    return headerElement;
+  };
+
+  const deleteElementIfNotHoveredOver = (
+      elem,
+      [
+          [clientX, clientY],
+          { left = 0, top = 0, right = 0, bottom = 0 }
+      ]) => {
+      const coord = elem.getBoundingClientRect();
+      if (!(coord.left <= clientX + left && clientX - right <= coord.right && coord.top <= clientY + top && clientY - bottom <= coord.bottom))
+          elem.remove();
   };
 
   const DeleteAction = {
@@ -667,43 +657,43 @@
   };
 
   const createSection = (
-      {
-          columnid,
-          name = 'section',
-          nameColor = null
-      } = {},
-      children = []) => {
+    { columnid, name = "section", nameColor = null } = {},
+    children = []
+  ) => {
+    const defaultBehaviors = new Map([
+      [attachEditBehavior, ""],
+      [attachColorPickerBehavior, ""]
+    ]);
 
-      const defaultBehaviors = new Map([
-          [attachEditBehavior, ''],
-          [attachColorPicker, '']
-      ]);
-
-      return createElement('div', {
-          className: 'section',
-          children: [
-              createElement('h3', {
-                  className:
-                      'nameOfSection canPickColor  deleteParentIfNotLast',
-                  innerText: name,
-                  style: {
-                      color: nameColor
-                  },
-                  behaviors: columnid === 'fstColumn'
-                      ? new Map([
-                          ...defaultBehaviors.entries(),
-                          [attachActionContainer,
-                              ['addText', 'addDescription', 'addList', 'addAfter', 'delete']]
-                      ])
-                      : new Map([
-                          ...defaultBehaviors.entries(),
-                          [attachActionContainer,
-                              ['addCompoundItem', 'addDateItem', 'addAfter', 'delete']]
-                      ])
-              }),
-              ...children
-          ]
-      });
+    return createElement("div", {
+      className: "section",
+      children: [
+        createElement("h3", {
+          className: "nameOfSection canPickColor  deleteParentIfNotLast",
+          innerText: name,
+          style: {
+            color: nameColor
+          },
+          behaviors:
+            columnid === "fstColumn"
+              ? new Map([
+                  ...defaultBehaviors.entries(),
+                  [
+                    attachActionContainer,
+                    ["addText", "addDescription", "addList", "addAfter", "delete"]
+                  ]
+                ])
+              : new Map([
+                  ...defaultBehaviors.entries(),
+                  [
+                    attachActionContainer,
+                    ["addCompoundItem", "addDateItem", "addAfter", "delete"]
+                  ]
+                ])
+        }),
+        ...children
+      ]
+    });
   };
 
   const createGrid = (

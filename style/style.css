@@ -43,6 +43,20 @@ button {
   height: 100%;
 }
 
+#colorPicker,
+#colorPickerLabel {
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+#colorPickerLabel {
+  margin-left: auto;
+}
+
+#colorPicker {
+  margin-left: 10px;
+}
+
 /* header */
 
 #header {

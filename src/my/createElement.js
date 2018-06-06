@@ -10,7 +10,8 @@ const createElement = (tag, attributes) => {
         for (const item of attributes.children) elem.appendChild(item);
         break;
       case "behaviors":
-        for (const [func, args] of attributes.behaviors) func(elem, args);
+        for (const [func, args] of attributes.behaviors)
+          func(elem, args || undefined);
         break;
       default:
         elem[attr] = attributes[attr];
