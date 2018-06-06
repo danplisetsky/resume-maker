@@ -1120,4 +1120,10 @@
     newCV();
   };
 
+  window.onbeforeunload = ev => {
+    const msg = "Please don't go without saving your work… ";
+    ev.returnValue = msg;
+    return msg;
+  };
+
 }());
