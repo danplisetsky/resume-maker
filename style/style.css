@@ -33,6 +33,11 @@ button {
   cursor: pointer;
 }
 
+button > img {
+  width: 24px;
+  height: 24px;
+}
+
 #buttons > *:not(:last-child) {
   margin-right: 15px;
 }

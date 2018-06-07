@@ -571,8 +571,6 @@
     const createIcon = ([name, actionName]) => {
       return createElement("div", {
         className: `actionIcon ${name}`,
-        // src: `img/${name}.svg`,
-        // alt: name,
         onclick: createAction(el, actionName)
       });
     };
@@ -1125,5 +1123,7 @@
     ev.returnValue = msg;
     return msg;
   };
+
+  console.log(pako);
 
 }());
