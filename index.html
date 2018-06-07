@@ -2,54 +2,58 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Resume Maker</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Resume Maker</title>
 
-    <link rel="stylesheet" href="style/style.css">
-    <link rel="stylesheet" href="style/print.css" media="print" />
+  <link rel="stylesheet" href="style/style.css">
+  <link rel="stylesheet" href="style/print.css" media="print" />
 
-    <script src="./src/others/FileSaver.min.js"></script>
-    <script src="./src/others/domJSON.min.js"></script>
+  <script src="./src/others/FileSaver.min.js"></script>
+  <script src="./src/others/domJSON.min.js"></script>
 </head>
 
 <body>
 
-    <div id="navbar" class="noPrint">
-        <a id="logo" href="https://github.com/danplisetsky/resume-maker" title="Check out the code on Github!">
-            <p id="title">resume-maker</p>
-        </a>
-        <div id="buttons">
-            <div id="newCV">
-                <button type="button" id="newCVButton">new CV</button>
-            </div>
+  <div id="navbar" class="noPrint">
+    <a id="logo" href="https://github.com/danplisetsky/resume-maker" title="Check out the code on Github!">resume-maker</a>
+    <div id="buttons">
 
-            <div id="templateCV">
-                <button type="button" id="templateCVButton">template CV</button>
-            </div>
+      <button type="button" id="newCVButton" title="Create New CV">
+        <img src="img/nav/005-new-document-button.png" alt="create new resume">
+      </button>
 
+      <button type="button" id="saveCVButton" title="Save CV on Disk">
+        <img src="img/nav/003-download.png" alt="save resume on disk">
+      </button>
 
-            <div id="saveCV">
-                <button type="button" id="saveCVButton">save CV...</button>
-            </div>
+      <div id="loadCV">
+        <input type="file" id="loadCVButton" accept=".cv">
+        <button onclick="document.getElementById('loadCVButton').click();" title="Open CV from Disk">
+          <img src="img/nav/002-upload.png" alt="open resume from disk">
+        </button>
+      </div>
 
-            <div id="loadCV">
-                <input type="file" id="loadCVButton" accept=".cv">
-                <button onclick="document.getElementById('loadCVButton').click();">load CV...</button>
-            </div>
+      <button type="button" id="templateCVButton" title="Load Template CV">
+        <img src="img/nav/004-tex-template.png" alt="load template resume">
+      </button>
 
-            <div id="print">
-                <button id="printButton" type="button">print (also to pdf)...</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="CV">
+      <button id="printButton" type="button" title="Print (also to PDF)">
+        <img src="img/nav/001-printer.png" alt="print (also to pdf)">
+      </button>
 
     </div>
 
-    <script src="bundle.js"></script>
+    <label for="colorPicker" id="colorPickerLabel">Color: </label>
+    <input type="color" id="colorPicker">
+  </div>
+
+  <div id="CV">
+
+  </div>
+
+  <script src="bundle.js"></script>
 </body>
 
 </html>
