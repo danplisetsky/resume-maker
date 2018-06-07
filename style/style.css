@@ -106,7 +106,7 @@ input[type="text"] {
 /* CV */
 
 #grid {
-  margin: auto 3%;
+  margin: auto 50px;
   display: grid;
   grid-template-columns: auto 1fr;
   grid-column-gap: 30px;
@@ -258,12 +258,17 @@ h3 {
   margin: 0;
   border: 1px solid black;
   background-color: whitesmoke;
+  display: flex;
+  flex-direction: row;
 }
 
 .actionIcon {
   width: 16px;
   height: 16px;
-  margin-top: 3px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background-size: contain;
+  cursor: pointer;
 }
 
 .actionIcon:not(:last-child) {
@@ -271,9 +276,9 @@ h3 {
 }
 
 .actionIcon:last-child {
-  margin-right: 2px;
+  margin-right: 5px;
 }
 
 .actionIcon:first-child {
-  margin-left: 2px;
+  margin-left: 5px;
 }

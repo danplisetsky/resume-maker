@@ -101,10 +101,8 @@ const createAction = (el, actionName) => {
 
 const createActionIcons = (el, icons) => {
   const createIcon = ([name, actionName]) => {
-    return createElement("img", {
-      className: "actionIcon",
-      src: `img/${name}.svg`,
-      alt: name,
+    return createElement("div", {
+      className: `actionIcon ${name}`,
       onclick: createAction(el, actionName)
     });
   };

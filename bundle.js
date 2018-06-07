@@ -569,10 +569,10 @@
 
   const createActionIcons = (el, icons) => {
     const createIcon = ([name, actionName]) => {
-      return createElement("img", {
-        className: "actionIcon",
-        src: `img/${name}.svg`,
-        alt: name,
+      return createElement("div", {
+        className: `actionIcon ${name}`,
+        // src: `img/${name}.svg`,
+        // alt: name,
         onclick: createAction(el, actionName)
       });
     };
@@ -957,7 +957,7 @@
   };
 
   const newCV = () => {
-      createNewCV('CV', createHeader(), createGrid());
+    createNewCV("CV", createHeader(), createGrid());
   };
 
   const saveCV = () => {

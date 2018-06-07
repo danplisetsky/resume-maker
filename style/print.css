@@ -1,3 +1,6 @@
 .noPrint {
-    display: none !important;
+  display: none !important;
+}
+#grid {
+  margin: auto 3%;
 }
