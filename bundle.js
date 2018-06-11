@@ -955,23 +955,28 @@
   };
 
   const newCV = () => {
+    history.replaceState("", document.title, window.location.pathname);
     createNewCV("CV", createHeader(), createGrid());
   };
 
+  const domToJSON = cvId => {
+    const CV = document.getElementById(cvId);
+
+    return domJSON.toJSON(CV, {
+      attributes: [false, "id", "class", "style"],
+      domProperties: [false, "alt"],
+      stringify: true
+    });
+  };
+
   const saveCV = () => {
-      const CV = document.getElementById('CV');
+    const jsonOutput = domToJSON("CV");
 
-      const jsonOutput = domJSON.toJSON(CV, {
-          attributes: [false, 'id', 'class', 'style'],
-          domProperties: [false, 'alt'],
-          stringify: true
-      });
-
-      const name = document.getElementById('name').innerText + '.cv';
-      const blob = new Blob([jsonOutput], {
-          type: "text/plain;charset=utf-8"
-      });
-      saveAs(blob, name);
+    const name = document.getElementById("name").innerText + ".cv";
+    const blob = new Blob([jsonOutput], {
+      type: "text/plain;charset=utf-8"
+    });
+    saveAs(blob, name);
   };
 
   const processHeader = (node, id) => {
@@ -1089,6 +1094,38 @@
 
   const print = () => window.print();
 
+  const shareCV = _ => {
+    const jsonOutput = domToJSON("CV");
+
+    const zip = pako.deflate(jsonOutput, { to: "string" });
+    const base64 = btoa(zip);
+    window.location.hash = base64;
+    document.getElementById("hashInput").value = window.location.href;
+  };
+
+  const setupClipboard = buttonId => {
+    const clipboard = new ClipboardJS(`#${buttonId}`);
+    clipboard.on("success", ev => {
+      ev.clearSelection();
+    });
+
+    clipboard.on("error", ev => {
+      console.log("something went wrong with link copying:");
+      console.log(ev);
+    });
+  };
+
+  const processHash = hash => {
+    if (hash) {
+      const h = hash.replace(/^#/, "");
+      const decodedBase64 = atob(h);
+      const unzip = pako.inflate(decodedBase64, { to: "string" });
+      processCV(unzip);
+    } else {
+      newCV();
+    }
+  };
+
   window.onload = () => {
     const buttonsAndBehaviors = [
       {
@@ -1110,12 +1147,17 @@
       {
         id: "printButton",
         callback: print
+      },
+      {
+        id: "shareCVButton",
+        callback: shareCV
       }
     ];
 
     buttonsAndBehaviors.forEach(bab => attachButtonBehavior(bab));
 
-    newCV();
+    setupClipboard("shareCVButton");
+    processHash(window.location.hash);
   };
 
   window.onbeforeunload = ev => {
@@ -1123,7 +1165,5 @@
     ev.returnValue = msg;
     return msg;
   };
-
-  console.log(pako);
 
 }());

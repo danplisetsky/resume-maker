@@ -24,6 +24,7 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  align-self: flex-end;
 }
 
 button {
@@ -62,6 +63,23 @@ button > img {
 
 #colorPicker {
   margin-left: 10px;
+}
+
+/* hashInput */
+
+#hashInput {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 2em;
+  height: 2em;
+  padding: 0;
+  border: none;
+  outline: none;
+  margin: 0;
+  box-shadow: none;
+  background: transparent;
+  color: transparent;
 }
 
 /* header */

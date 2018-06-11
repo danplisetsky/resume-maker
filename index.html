@@ -14,6 +14,7 @@
   <script src="./src/others/FileSaver.min.js"></script>
   <script src="./src/others/domJSON.min.js"></script>
   <script src="./src/others/pako.min.js"></script>
+  <script src="./src/others/clipboard.min.js"></script>
 </head>
 
 <body>
@@ -40,9 +41,11 @@
         <img src="img/nav/004-tex-template.png" alt="load template resume">
       </button>
 
-      <button type="button" id='shareCVButton' title="Create Shareable Link to CV">
-        <img src="img/nav/share.png" alt="create shareable link to resume">
+      <button type="button" id='shareCVButton' title="Generate Shareable Link and Copy It to Clipboard" data-clipboard-target="#hashInput">
+        <img src="img/nav/share.png" alt="generate shareable link and copy it to clipboard">
       </button>
+
+      <input type="text" id="hashInput">
 
       <button id="printButton" type="button" title="Print (also to PDF)">
         <img src="img/nav/001-printer.png" alt="print (also to pdf)">
