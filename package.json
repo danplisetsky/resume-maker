@@ -21,8 +21,8 @@
     "url": "https://github.com/danplisetsky/resume-maker/issues"
   },
   "homepage": "https://github.com/danplisetsky/resume-maker#readme",
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
     "rollup": "^0.59.4"
-  }
+  },
+  "devDependencies": {}
 }
