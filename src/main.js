@@ -6,7 +6,8 @@ import templateCV from "./my/templateCV";
 import print from "./my/print";
 import shareCV from "./my/shareCV";
 import setupClipboard from "./my/setupClipboard";
-import processHash from "./my/processHash";
+import processInput from "./my/processInput";
+import saveInBrowser from "./my/saveInBrowser";
 
 window.onload = () => {
   const buttonsAndBehaviors = [
@@ -33,13 +34,17 @@ window.onload = () => {
     {
       id: "shareCVButton",
       callback: shareCV
+    },
+    {
+      id: "saveInBrowser",
+      callback: saveInBrowser
     }
   ];
 
   buttonsAndBehaviors.forEach(bab => attachButtonBehavior(bab));
 
   setupClipboard("shareCVButton");
-  processHash(window.location.hash);
+  processInput({ hash: window.location.hash });
 };
 
 window.onbeforeunload = ev => {

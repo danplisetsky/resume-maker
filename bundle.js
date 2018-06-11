@@ -1118,14 +1118,49 @@
     });
   };
 
-  const processHash = hash => {
-    if (hash) {
-      const h = hash.replace(/^#/, "");
-      const decodedBase64 = atob(h);
-      const unzip = pako.inflate(decodedBase64, { to: "string" });
-      processCV(unzip);
+  const processInput = ({ hash }) => {
+    switch (true) {
+      case hash.length > 0:
+        const h = hash.replace(/^#/, "");
+        const decodedBase64 = atob(h);
+        const unzip = pako.inflate(decodedBase64, { to: "string" });
+        processCV(unzip);
+        break;
+      case localStorage.getItem("content").length > 0:
+        processCV(localStorage.getItem("content"));
+        break;
+      default:
+        newCV();
+    }
+  };
+
+  const saveAndShowAlert = ({ jsonOutput }) => {
+    localStorage.setItem("content", jsonOutput);
+    swal({
+      title: "Saved",
+      text: "Your CV has been saved!",
+      icon: "success",
+      button: false,
+      timer: 3000
+    });
+  };
+
+  const saveInBrowser = () => {
+    const jsonOutput = domToJSON("CV");
+    if (localStorage.getItem("content")) {
+      swal({
+        title: "Confirm Overwriting",
+        text: "Are you sure you want to overwrite the CV you've saved before?",
+        dangerMode: true,
+        buttons: true,
+        icon: "warning",
+        closeOnClickOutside: false,
+        closeOnEsc: false
+      }).then(val => {
+        if (val) saveAndShowAlert({ jsonOutput });
+      });
     } else {
-      newCV();
+      saveAndShowAlert({ jsonOutput });
     }
   };
 
@@ -1154,13 +1189,17 @@
       {
         id: "shareCVButton",
         callback: shareCV
+      },
+      {
+        id: "saveInBrowser",
+        callback: saveInBrowser
       }
     ];
 
     buttonsAndBehaviors.forEach(bab => attachButtonBehavior(bab));
 
     setupClipboard("shareCVButton");
-    processHash(window.location.hash);
+    processInput({ hash: window.location.hash });
   };
 
   window.onbeforeunload = ev => {
