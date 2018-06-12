@@ -34,7 +34,8 @@ button {
   cursor: pointer;
 }
 
-button > img {
+button > img,
+a > img {
   width: 24px;
   height: 24px;
 }
@@ -51,10 +52,17 @@ button > img {
   height: 100%;
 }
 
+/* other nav elements */
+
+#helpLink {
+  align-self: flex-end;
+  margin: 0 auto;
+}
+
 #colorPicker,
 #colorPickerLabel {
   cursor: pointer;
-  align-self: flex-end;
+  align-self: center;
 }
 
 #colorPickerLabel {
