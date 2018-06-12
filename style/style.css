@@ -10,12 +10,27 @@
   border-bottom: 1px solid #e8e8e8;
 }
 
+@media (max-width: 680px) {
+  #navbar {
+    display: grid;
+    grid-template-areas:
+      "logo help"
+      "buttons color";
+  }
+}
+
 #logo {
   font-family: monospace;
   font-size: xx-large;
   font-style: normal;
   color: dimgray !important;
   margin-right: 50px;
+}
+
+@media (max-width: 680px) {
+  #logo {
+    grid-area: logo;
+  }
 }
 
 /* buttons */
@@ -25,6 +40,12 @@
   display: -ms-flexbox;
   display: flex;
   align-self: flex-end;
+}
+
+@media (max-width: 680px) {
+  #buttons {
+    grid-area: buttons;
+  }
 }
 
 button {
@@ -59,18 +80,37 @@ a > img {
   margin: 0 auto;
 }
 
-#colorPicker,
-#colorPickerLabel {
-  cursor: pointer;
+@media (max-width: 680px) {
+  #helpLink {
+    grid-area: help;
+    margin: 0;
+    justify-self: end;
+    align-self: center;
+  }
+}
+
+#colorField {
   align-self: center;
-}
-
-#colorPickerLabel {
   margin-left: auto;
+  display: flex;
+  flex-direction: row;
 }
 
-#colorPicker {
-  margin-left: 10px;
+@media (max-width: 680px) {
+  #colorField {
+    grid-area: color;
+    flex-direction: column;
+    font-size: smaller;
+  }
+}
+
+#colorField > * {
+  cursor: pointer;
+}
+
+#colorField > *:not(:last-child) {
+  margin-right: 5px;
+  align-self: center;
 }
 
 /* hashInput */
@@ -141,6 +181,12 @@ input[type="text"] {
   display: grid;
   grid-template-columns: auto 1fr;
   grid-column-gap: 30px;
+}
+
+@media (max-width: 680px) {
+  #grid {
+    margin: auto 5px;
+  }
 }
 
 #fstColumn {
