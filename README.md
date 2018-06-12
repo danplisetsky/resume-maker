@@ -1,16 +1,18 @@
 # resume-maker
 
-A simple online resume-making tool. Live version is here: https://danplisetsky.github.io/resume-maker/
+A simple interactive resume-making tool. Live version is here: <https://danplisetsky.github.io/resume-maker/>
 
 ## How to use
 
-* Edit text by double-clicking
-* Choose color by hovering over and clicking on a color picker
-* Choose background color by double-clicking on the background (only in the header)
-* Hover over elements for more options
-* Check out the template CV to get an idea of what you can create!
-
-
+- Edit text by double-clicking an element
+- Change colors by clicking an element once and choosing the color at the right-hand corner
+- Hover over elements for more options
+- Check out the template CV to get an idea of what you can create!
+- Save your CV:
+  - Locally, by clicking on the download button and choosing where to save the file
+  - Creating a shareable link
+  - In the browser, by clicking on the Save in Browser button
+- Note that on mobile devices it's not meant to be used for editing, just for viewing
 
 ## Thanks
 
