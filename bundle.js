@@ -128,12 +128,15 @@
   const attachColorPickerBehavior = (el, styleColor = "color") => {
     el.onclick = ev => {
       ev.stopPropagation();
-      const colorPicker = document.getElementById("colorPicker");
+      if (ev.target === el) {
+        const colorPicker = document.getElementById("colorPicker");
 
-      colorPicker.value = rgb2hex(getComputedStyle(el)[styleColor]) || "#000000";
-      colorPicker.select();
+        colorPicker.value =
+          rgb2hex(getComputedStyle(el)[styleColor]) || "#000000";
+        colorPicker.select();
 
-      colorPicker.oninput = _ => (el.style[styleColor] = colorPicker.value);
+        colorPicker.oninput = _ => (el.style[styleColor] = colorPicker.value);
+      }
     };
   };
 
@@ -569,10 +572,8 @@
 
   const createActionIcons = (el, icons) => {
     const createIcon = ([name, actionName]) => {
-      return createElement("img", {
-        className: "actionIcon",
-        src: `img/${name}.svg`,
-        alt: name,
+      return createElement("div", {
+        className: `actionIcon ${name}`,
         onclick: createAction(el, actionName)
       });
     };
@@ -957,23 +958,28 @@
   };
 
   const newCV = () => {
-      createNewCV('CV', createHeader(), createGrid());
+    history.replaceState("", document.title, window.location.pathname);
+    createNewCV("CV", createHeader(), createGrid());
+  };
+
+  const domToJSON = cvId => {
+    const CV = document.getElementById(cvId);
+
+    return domJSON.toJSON(CV, {
+      attributes: [false, "id", "class", "style"],
+      domProperties: [false, "alt"],
+      stringify: true
+    });
   };
 
   const saveCV = () => {
-      const CV = document.getElementById('CV');
+    const jsonOutput = domToJSON("CV");
 
-      const jsonOutput = domJSON.toJSON(CV, {
-          attributes: [false, 'id', 'class', 'style'],
-          domProperties: [false, 'alt'],
-          stringify: true
-      });
-
-      const name = document.getElementById('name').innerText + '.cv';
-      const blob = new Blob([jsonOutput], {
-          type: "text/plain;charset=utf-8"
-      });
-      saveAs(blob, name);
+    const name = document.getElementById("name").innerText + ".cv";
+    const blob = new Blob([jsonOutput], {
+      type: "text/plain;charset=utf-8"
+    });
+    saveAs(blob, name);
   };
 
   const processHeader = (node, id) => {
@@ -1091,6 +1097,74 @@
 
   const print = () => window.print();
 
+  const shareCV = _ => {
+    const jsonOutput = domToJSON("CV");
+
+    const zip = pako.deflate(jsonOutput, { to: "string" });
+    const base64 = btoa(zip);
+    window.location.hash = base64;
+    document.getElementById("hashInput").value = window.location.href;
+  };
+
+  const setupClipboard = buttonId => {
+    const clipboard = new ClipboardJS(`#${buttonId}`);
+    clipboard.on("success", ev => {
+      ev.clearSelection();
+    });
+
+    clipboard.on("error", ev => {
+      console.log("something went wrong with link copying:");
+      console.log(ev);
+    });
+  };
+
+  const processInput = ({ hash }) => {
+    switch (true) {
+      case hash.length > 0:
+        const h = hash.replace(/^#/, "");
+        const decodedBase64 = atob(h);
+        const unzip = pako.inflate(decodedBase64, { to: "string" });
+        processCV(unzip);
+        break;
+      case localStorage.getItem("content") &&
+        localStorage.getItem("content").length > 0:
+        processCV(localStorage.getItem("content"));
+        break;
+      default:
+        newCV();
+    }
+  };
+
+  const saveAndShowAlert = ({ jsonOutput }) => {
+    localStorage.setItem("content", jsonOutput);
+    swal({
+      title: "Saved",
+      text: "Your CV has been saved!",
+      icon: "success",
+      button: false,
+      timer: 3000
+    });
+  };
+
+  const saveInBrowser = () => {
+    const jsonOutput = domToJSON("CV");
+    if (localStorage.getItem("content")) {
+      swal({
+        title: "Confirm Overwriting",
+        text: "Are you sure you want to overwrite the CV you've saved before?",
+        dangerMode: true,
+        buttons: true,
+        icon: "warning",
+        closeOnClickOutside: false,
+        closeOnEsc: false
+      }).then(val => {
+        if (val) saveAndShowAlert({ jsonOutput });
+      });
+    } else {
+      saveAndShowAlert({ jsonOutput });
+    }
+  };
+
   window.onload = () => {
     const buttonsAndBehaviors = [
       {
@@ -1112,12 +1186,21 @@
       {
         id: "printButton",
         callback: print
+      },
+      {
+        id: "shareCVButton",
+        callback: shareCV
+      },
+      {
+        id: "saveInBrowser",
+        callback: saveInBrowser
       }
     ];
 
     buttonsAndBehaviors.forEach(bab => attachButtonBehavior(bab));
 
-    newCV();
+    setupClipboard("shareCVButton");
+    processInput({ hash: window.location.hash });
   };
 
   window.onbeforeunload = ev => {

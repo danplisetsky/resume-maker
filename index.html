@@ -8,14 +8,17 @@
   <title>Resume Maker</title>
 
   <link rel="stylesheet" href="style/style.css">
+  <link rel="stylesheet" href="style/actionIcons.css">
   <link rel="stylesheet" href="style/print.css" media="print" />
 
   <script src="./src/others/FileSaver.min.js"></script>
   <script src="./src/others/domJSON.min.js"></script>
+  <script src="./src/others/pako.min.js"></script>
+  <script src="./src/others/clipboard.min.js"></script>
+  <script src="./src/others/sweetalert.min.js"></script>
 </head>
 
 <body>
-
   <div id="navbar" class="noPrint">
     <a id="logo" href="https://github.com/danplisetsky/resume-maker" title="Check out the code on Github!">resume-maker</a>
     <div id="buttons">
@@ -39,14 +42,30 @@
         <img src="img/nav/004-tex-template.png" alt="load template resume">
       </button>
 
+      <button type="button" id='shareCVButton' title="Generate Shareable Link and Copy It to Clipboard" data-clipboard-target="#hashInput">
+        <img src="img/nav/share.png" alt="generate shareable link and copy it to clipboard">
+      </button>
+
+      <input type="text" id="hashInput">
+
+      <button id="saveInBrowser" type="button" title="Save in Browser">
+        <img src="img/nav/save.png" alt="save in browser">
+      </button>
+
       <button id="printButton" type="button" title="Print (also to PDF)">
         <img src="img/nav/001-printer.png" alt="print (also to pdf)">
       </button>
 
     </div>
 
-    <label for="colorPicker" id="colorPickerLabel">Color: </label>
-    <input type="color" id="colorPicker">
+    <a href="https://github.com/danplisetsky/resume-maker#resume-maker" target="_blank" id="helpLink">
+      <img src="img/nav/information.png" alt="help">
+    </a>
+
+    <div id="colorField">
+      <label for="colorPicker" id="colorPickerLabel">Color: </label>
+      <input type="color" id="colorPicker">
+    </div>
   </div>
 
   <div id="CV">
