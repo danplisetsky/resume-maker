@@ -9,7 +9,8 @@ const processInput = ({ hash }) => {
       const unzip = pako.inflate(decodedBase64, { to: "string" });
       processCV(unzip);
       break;
-    case localStorage.getItem("content").length > 0:
+    case localStorage.getItem("content") &&
+      localStorage.getItem("content").length > 0:
       processCV(localStorage.getItem("content"));
       break;
     default:
