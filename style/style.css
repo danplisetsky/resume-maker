@@ -83,7 +83,9 @@ a > img {
 }
 
 .swal-help {
-  width: 70%;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
   text-align: left;
 }
 
