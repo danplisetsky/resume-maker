@@ -39,6 +39,7 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -ms-flex-item-align: end;
   align-self: flex-end;
 }
 
@@ -75,9 +76,15 @@ a > img {
 
 /* other nav elements */
 
-#helpLink {
+#helpButton {
+  -ms-flex-item-align: end;
   align-self: flex-end;
   margin: 0 auto;
+}
+
+.swal-help {
+  width: 70%;
+  text-align: left;
 }
 
 @media (max-width: 680px) {
@@ -85,20 +92,30 @@ a > img {
     grid-area: help;
     margin: 0;
     justify-self: end;
+    -ms-flex-item-align: center;
     align-self: center;
   }
 }
 
 #colorField {
+  -ms-flex-item-align: center;
   align-self: center;
   margin-left: auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
   flex-direction: row;
 }
 
 @media (max-width: 680px) {
   #colorField {
     grid-area: color;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
     font-size: smaller;
   }
@@ -110,6 +127,7 @@ a > img {
 
 #colorField > *:not(:last-child) {
   margin-right: 5px;
+  -ms-flex-item-align: center;
   align-self: center;
 }
 
@@ -125,6 +143,7 @@ a > img {
   border: none;
   outline: none;
   margin: 0;
+  -webkit-box-shadow: none;
   box-shadow: none;
   background: transparent;
   color: transparent;
@@ -159,8 +178,8 @@ a > img {
 }
 
 input[type="text"] {
-  width: -webkit-fill-available;
   width: -moz-available;
+  width: -webkit-fill-available;
   width: stretch;
 }
 
@@ -335,7 +354,12 @@ h3 {
   margin: 0;
   border: 1px solid black;
   background-color: whitesmoke;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
   flex-direction: row;
 }
 

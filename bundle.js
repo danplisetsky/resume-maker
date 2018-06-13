@@ -1165,6 +1165,30 @@
     }
   };
 
+  var bodyHtml = "<h1>resume-maker</h1>\n<p>A simple interactive resume-making tool. Live version is here: <a href=\"https://danplisetsky.github.io/resume-maker/\">https://danplisetsky.github.io/resume-maker/</a></p>\n<h2>How to use</h2>\n<ul>\n<li>Edit text by double-clicking an element</li>\n<li>Change colors by clicking an element once and choosing the color at the right-hand corner</li>\n<li>Hover over elements for more options</li>\n<li>Check out the template CV to get an idea of what you can create!</li>\n<li>Save your CV:\n<ul>\n<li>Locally, by clicking on the download button and choosing where to save the file</li>\n<li>Creating a shareable link</li>\n<li>In the browser, by clicking on the Save in Browser button</li>\n</ul>\n</li>\n<li>Note that on mobile devices it's not meant to be used for editing, just for viewing</li>\n</ul>\n<h2>Thanks</h2>\n<p>Inspired by Anjana Vakil's <a href=\"https://vakila.github.io/docs/Vakil-Resume.pdf\">CV</a></p>\n<p>Icons made by <a href=\"https://www.flaticon.com/authors/alfredo-hernandez\" title=\"Alfredo Hernandez\">Alfredo Hernandez</a> from <a href=\"https://www.flaticon.com/\" title=\"Flaticon\">www.flaticon.com</a> is licensed by <a href=\"http://creativecommons.org/licenses/by/3.0/\" title=\"Creative Commons BY 3.0\">CC 3.0 BY</a></p>\n";
+
+  const parseHtml = htmlString => {
+    const div = document.createElement("div");
+    div.innerHTML = htmlString.trim();
+    return div;
+  };
+
+  const getInstructionsFromReadme = htmlString => {
+    const regex = /<h2>How to use<\/h2>(.+)<h2>/;
+    const instructions = regex.exec(htmlString)[1];
+    return parseHtml(instructions);
+  };
+
+  const showHelp = () => {
+    swal({
+      title: "How to Use",
+      icon: "info",
+      button: false,
+      content: getInstructionsFromReadme(bodyHtml.replace(/\n/g, "")),
+      className: "swal-help"
+    });
+  };
+
   window.onload = () => {
     const buttonsAndBehaviors = [
       {
@@ -1194,6 +1218,10 @@
       {
         id: "saveInBrowser",
         callback: saveInBrowser
+      },
+      {
+        id: "helpButton",
+        callback: showHelp
       }
     ];
 

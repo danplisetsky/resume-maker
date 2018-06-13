@@ -5,7 +5,7 @@
   "main": "bundle.js",
   "scripts": {
     "sync": "browser-sync start --server --files \"index.html, style/*.css, bundle.js  \"",
-    "build": "rollup -c"
+    "build": "processmd README.MD && rollup -c"
   },
   "repository": {
     "type": "git",
@@ -22,7 +22,9 @@
   },
   "homepage": "https://github.com/danplisetsky/resume-maker#readme",
   "dependencies": {
-    "rollup": "^0.59.4"
+    "processmd": "^4.2.1",
+    "rollup": "^0.59.4",
+    "rollup-plugin-json": "^3.0.0"
   },
   "devDependencies": {}
 }

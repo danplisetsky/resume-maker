@@ -8,6 +8,7 @@ import shareCV from "./my/shareCV";
 import setupClipboard from "./my/setupClipboard";
 import processInput from "./my/processInput";
 import saveInBrowser from "./my/saveInBrowser";
+import showHelp from "./my/showHelp";
 
 window.onload = () => {
   const buttonsAndBehaviors = [
@@ -38,6 +39,10 @@ window.onload = () => {
     {
       id: "saveInBrowser",
       callback: saveInBrowser
+    },
+    {
+      id: "helpButton",
+      callback: showHelp
     }
   ];
 
