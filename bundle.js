@@ -657,8 +657,14 @@
     );
   };
 
+  const attachDragAndDropBehavior = el => {
+    el.ondragstart = ev => {
+      console.log(ev);
+    };
+  };
+
   const createSection = (
-    { columnid, name = "section", nameColor = null } = {},
+    { columnid, name = "section", nameColor = null, draggable = true } = {},
     children = []
   ) => {
     const defaultBehaviors = new Map([
@@ -668,6 +674,9 @@
 
     return createElement("div", {
       className: "section",
+      draggable: draggable,
+      behaviors: new Map([[attachDragAndDropBehavior, ""]]),
+
       children: [
         createElement("h3", {
           className: "nameOfSection canPickColor  deleteParentIfNotLast",

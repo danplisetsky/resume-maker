@@ -76,10 +76,14 @@ a > img {
 
 /* other nav elements */
 
-#helpButton {
+#helpButton,
+#dragButton {
   -ms-flex-item-align: end;
   align-self: flex-end;
-  margin: 0 auto;
+}
+
+#dragButton {
+  margin: 0 15px 0 auto;
 }
 
 .swal-help {

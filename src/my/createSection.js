@@ -2,9 +2,10 @@ import createElement from "./createElement";
 import attachEditBehavior from "./attachEditBehavior";
 import attachActionContainer from "./attachActionContainer";
 import attachColorPickerBehavior from "./attachColorPickerBehavior";
+import attachDragAndDropBehavior from "./attachDragAndDropBehavior";
 
 const createSection = (
-  { columnid, name = "section", nameColor = null } = {},
+  { columnid, name = "section", nameColor = null, draggable = true } = {},
   children = []
 ) => {
   const defaultBehaviors = new Map([
@@ -14,6 +15,9 @@ const createSection = (
 
   return createElement("div", {
     className: "section",
+    draggable: draggable,
+    behaviors: new Map([[attachDragAndDropBehavior, ""]]),
+
     children: [
       createElement("h3", {
         className: "nameOfSection canPickColor  deleteParentIfNotLast",
