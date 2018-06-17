@@ -90,7 +90,7 @@ a > img {
 }
 
 @media (max-width: 680px) {
-  #helpLink {
+  #helpButton {
     grid-area: help;
     margin: 0;
     justify-self: end;
