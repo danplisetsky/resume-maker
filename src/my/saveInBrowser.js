@@ -6,7 +6,7 @@ const saveAndShowAlert = ({ jsonOutput }) => {
     title: "Saved",
     text: "Your CV has been saved!",
     icon: "success",
-    button: false,
+    button: true,
     timer: 3000
   });
 };

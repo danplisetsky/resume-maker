@@ -16,7 +16,7 @@ const showHelp = () => {
   swal({
     title: "How to Use",
     icon: "info",
-    button: false,
+    button: true,
     content: getInstructionsFromReadme(bodyHtml.replace(/\n/g, "")),
     className: "swal-help"
   });

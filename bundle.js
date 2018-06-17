@@ -1141,7 +1141,7 @@
       title: "Saved",
       text: "Your CV has been saved!",
       icon: "success",
-      button: false,
+      button: true,
       timer: 3000
     });
   };
@@ -1183,7 +1183,7 @@
     swal({
       title: "How to Use",
       icon: "info",
-      button: false,
+      button: true,
       content: getInstructionsFromReadme(bodyHtml.replace(/\n/g, "")),
       className: "swal-help"
     });
