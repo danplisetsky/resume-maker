@@ -700,11 +700,17 @@
   const createGrid = (
     fstColumn = {
       id: "fstColumn",
-      children: [[{ name: "contact", color: null }]]
+      children: [
+        [{ name: "contact", color: null }],
+        [{ name: "skills", color: null }]
+      ]
     },
     sndColumn = {
       id: "sndColumn",
-      children: [[{ name: "experience", color: null }]]
+      children: [
+        [{ name: "experience", color: null }],
+        [{ name: "education", color: null }]
+      ]
     }
   ) => {
     const makeCreateSection = (id, [fst, ...rest]) => {
