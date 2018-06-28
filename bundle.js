@@ -77,46 +77,44 @@
   };
 
   const attachEditBehavior = el => {
+    const createInput = () => {
+      const elStyle = getComputedStyle(el);
+      const prevDisplay = el.style.display;
 
-      const createInput = () => {
-          const elStyle = getComputedStyle(el);
-          const prevDisplay = el.style.display;
-
-          const input = createElement('input', {
-              type: 'text',
-              value: el.innerText,
-              style: {
-                  fontSize: elStyle.fontSize,
-                  fontWeight: elStyle.fontWeight
-              },
-              onkeydown: ev => {
-                  if (ev.code === 'Enter' || ev.code === 'NumpadEnter') {
-                      if (!input.value)
-                          alert("can't be empty!");
-                      else {
-                          el.innerText = input.value;
-                          el.style.display = prevDisplay;
-                          input.parentNode.remove();
-                          forEachElem('.actionContainer')(ac => ac.remove());
-                      }
-                  }
-              }
-          });
-
-          return createElement('div', {
-              className: 'input',
-              children: [input]
-          });
-      };
-
-      el.addEventListener('dblclick', ev => {
-          const input = createInput();
-          insertAfter(el, input);
-          input.firstChild.focus();
-          el.style.display = 'none';
-          ev.stopPropagation();
-          forEachElem('.actionContainer')(ac => ac.remove());
+      const input = createElement("input", {
+        type: "text",
+        value: el.innerText,
+        style: {
+          fontSize: elStyle.fontSize,
+          fontWeight: elStyle.fontWeight
+        },
+        onkeydown: ev => {
+          if (ev.key === "Enter" || ev.code === "NumpadEnter") {
+            if (!input.value) alert("can't be empty!");
+            else {
+              el.innerText = input.value;
+              el.style.display = prevDisplay;
+              input.parentNode.remove();
+              forEachElem(".actionContainer")(ac => ac.remove());
+            }
+          }
+        }
       });
+
+      return createElement("div", {
+        className: "input",
+        children: [input]
+      });
+    };
+
+    el.addEventListener("dblclick", ev => {
+      const input = createInput();
+      insertAfter(el, input);
+      input.firstChild.focus();
+      el.style.display = "none";
+      ev.stopPropagation();
+      forEachElem(".actionContainer")(ac => ac.remove());
+    });
   };
 
   const randomName = () => {
@@ -700,11 +698,17 @@
   const createGrid = (
     fstColumn = {
       id: "fstColumn",
-      children: [[{ name: "contact", color: null }]]
+      children: [
+        [{ name: "contact", color: null }],
+        [{ name: "skills", color: null }]
+      ]
     },
     sndColumn = {
       id: "sndColumn",
-      children: [[{ name: "experience", color: null }]]
+      children: [
+        [{ name: "experience", color: null }],
+        [{ name: "education", color: null }]
+      ]
     }
   ) => {
     const makeCreateSection = (id, [fst, ...rest]) => {
@@ -1165,7 +1169,7 @@
     }
   };
 
-  var bodyHtml = "<h1>resume-maker</h1>\n<p>A simple interactive resume-making tool. Live version is here: <a href=\"https://danplisetsky.github.io/resume-maker/\">https://danplisetsky.github.io/resume-maker/</a></p>\n<h2>How to use</h2>\n<ul>\n<li>Edit text by double-clicking an element</li>\n<li>Change colors by clicking an element once and choosing the color at the right-hand corner</li>\n<li>Hover over elements for more options</li>\n<li>Create links from elements when you need it (for instance, if your blog is at <code>https://www.example.com/coolblog</code>, just enter <code>example.com/coolblog</code> and create a link)\n<ul>\n<li>Some links are smarter than others! For twitter, @coolhandle is enough, for github your profile name will suffice, and for email -- well, punch in your email address and click on the link icon!</li>\n</ul>\n</li>\n<li>Check out the template resume to get an idea of what you can create!</li>\n<li>Save your resume:\n<ul>\n<li>Locally, by clicking on the Save Resume on Disk button and choosing where to save the file</li>\n<li>Creating a shareable link, by clicking on the Generate Shareable Link button</li>\n<li>In the browser, by clicking on the Save in Browser button</li>\n</ul>\n</li>\n<li>Note that on mobile devices it's not meant to be used for editing, just for viewing</li>\n</ul>\n<h2>Thanks</h2>\n<p>Inspired by Anjana Vakil's <a href=\"https://vakila.github.io/docs/Vakil-Resume.pdf\">CV</a></p>\n<p>Icons made by <a href=\"https://www.flaticon.com/authors/alfredo-hernandez\" title=\"Alfredo Hernandez\">Alfredo Hernandez</a> from <a href=\"https://www.flaticon.com/\" title=\"Flaticon\">www.flaticon.com</a> is licensed by <a href=\"http://creativecommons.org/licenses/by/3.0/\" title=\"Creative Commons BY 3.0\">CC 3.0 BY</a></p>\n";
+  const bodyHtml = "<h1>resume-maker</h1>\n<p>A simple interactive resume-making tool. Live version is here: <a href=\"https://danplisetsky.github.io/resume-maker/\">https://danplisetsky.github.io/resume-maker/</a></p>\n<h2>How to use</h2>\n<ul>\n<li>Edit text by double-clicking an element</li>\n<li>Change colors by clicking an element once and choosing the color at the right-hand corner</li>\n<li>Hover over elements for more options</li>\n<li>Create links from elements when you need it (for instance, if your blog is at <code>https://www.example.com/coolblog</code>, just enter <code>example.com/coolblog</code> and create a link)\n<ul>\n<li>Some links are smarter than others! For twitter, @coolhandle is enough, for github your profile name will suffice, and for email -- well, punch in your email address and click on the link icon!</li>\n</ul>\n</li>\n<li>Check out the template resume to get an idea of what you can create!</li>\n<li>Save your resume:\n<ul>\n<li>Locally, by clicking on the Save Resume on Disk button and choosing where to save the file</li>\n<li>Creating a shareable link, by clicking on the Generate Shareable Link button</li>\n<li>In the browser, by clicking on the Save in Browser button</li>\n</ul>\n</li>\n<li>Note that on mobile devices it's not meant to be used for editing, just for viewing\n<ul>\n<li>If you are editing your resume on a mobile device, please make sure to use landscape mode</li>\n</ul>\n</li>\n</ul>\n<h2>Thanks</h2>\n<p>Inspired by Anjana Vakil's <a href=\"https://vakila.github.io/docs/Vakil-Resume.pdf\">CV</a></p>\n<p>Icons made by <a href=\"https://www.flaticon.com/authors/alfredo-hernandez\" title=\"Alfredo Hernandez\">Alfredo Hernandez</a> from <a href=\"https://www.flaticon.com/\" title=\"Flaticon\">www.flaticon.com</a> is licensed by <a href=\"http://creativecommons.org/licenses/by/3.0/\" title=\"Creative Commons BY 3.0\">CC 3.0 BY</a></p>\n";
 
   const parseHtml = htmlString => {
     const div = document.createElement("div");
