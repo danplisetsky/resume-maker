@@ -7,5 +7,9 @@ export default {
     format: "iife"
   },
 
-  plugins: [json()]
+  plugins: [
+    json({
+      preferConst: true
+    })
+  ]
 };

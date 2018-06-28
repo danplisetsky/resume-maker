@@ -15,6 +15,7 @@ A simple interactive resume-making tool. Live version is here: <https://danplise
   - Creating a shareable link, by clicking on the Generate Shareable Link button
   - In the browser, by clicking on the Save in Browser button
 - Note that on mobile devices it's not meant to be used for editing, just for viewing
+  - If you are editing your resume on a mobile device, please make sure to use landscape mode
 
 ## Thanks
 
