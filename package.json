@@ -5,7 +5,8 @@
   "main": "bundle.js",
   "scripts": {
     "sync": "browser-sync start --server --files \"index.html, style/*.css, bundle.js  \"",
-    "build": "processmd README.MD && rollup -c"
+    "build": "processmd README.MD && rollup -c",
+    "start": "npm run build && npm run sync"
   },
   "repository": {
     "type": "git",
