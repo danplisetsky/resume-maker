@@ -303,7 +303,7 @@ h3 {
 
 .dateItem {
   grid-template-columns: auto 1fr;
-  grid-column-gap: 20px;
+  /* grid-column-gap: 20px; */
 }
 
 .date {
