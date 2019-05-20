@@ -202,6 +202,7 @@ input[type="text"] {
   display: grid;
   grid-template-columns: auto 1fr;
   grid-column-gap: 30px;
+  font-family: 'Montserrat', sans-serif;
 }
 
 @media (max-width: 680px) {
@@ -240,6 +241,8 @@ a {
   width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
+  color:  #598392;
+  font-weight: bold;
 }
 
 .section > :not(h3):not(.dateItem) {
