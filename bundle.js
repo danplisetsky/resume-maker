@@ -1103,28 +1103,34 @@
 
   const shareCV = _ => {
     const jsonOutput = domToJSON("CV");
-
     const zip = pako.deflate(jsonOutput, { to: "string" });
     const base64 = btoa(zip);
-    window.location.hash = base64;
-    document.getElementById("hashInput").value = window.location.href;
+    const hash = sha1(base64);
+
+    saveCV$1(base64, hash)
+      .then(() => {
+        const link = window.location.host + "/#" + hash;
+        clipboard.writeText(link);
+        swal({
+          title: "Link created! (and copied to clipboard)",
+          icon: "success",
+          text: link
+        });
+      })
+      .catch(e => {
+        swal(
+          "Oops!",
+          "The remote island in the Pacific we use to store the CVs appears to be down (Let's hope it's not completely sumberged). Maybe try again a bit later?",
+          "error"
+        );
+        console.error(e);
+      });
   };
 
-  const setupClipboard = buttonId => {
-    const clipboard = new ClipboardJS(`#${buttonId}`);
-    clipboard.on("success", ev => {
-      ev.clearSelection();
-      swal({
-        title: "Link created! (and copied to clipboard)",
-        icon: "success",
-        text: ev.text
-      });
-    });
-
-    clipboard.on("error", ev => {
-      swal("Oops!", "Something went wrong!", "error");
-      console.log("something went wrong with link copying:");
-      console.log(ev);
+  const saveCV$1 = (base64, hash) => {
+    return fetch("https://kvdb.io/BpgRTgqZc46butEFssnwP3/" + hash, {
+      method: "POST",
+      body: JSON.stringify(base64)
     });
   };
 
@@ -1132,9 +1138,21 @@
     switch (true) {
       case hash.length > 0:
         const h = hash.replace(/^#/, "");
-        const decodedBase64 = atob(h);
-        const unzip = pako.inflate(decodedBase64, { to: "string" });
-        processCV(unzip);
+        retrieveCV(h)
+          .then(base64 => {
+            const decodedBase64 = atob(base64);
+            const unzip = pako.inflate(decodedBase64, { to: "string" });
+            processCV(unzip);
+          })
+          .catch(e => {
+            swal(
+              "Oops!",
+              "The remote island in the Pacific we use to store the CVs appears to be down (Let's hope it's not completely sumberged). Maybe try again a bit later?",
+              "error"
+            );
+            console.error(e);
+            newCV();
+          });
         break;
       case localStorage.getItem("content") &&
         localStorage.getItem("content").length > 0:
@@ -1143,6 +1161,12 @@
       default:
         newCV();
     }
+  };
+
+  const retrieveCV = key => {
+    return fetch("https://kvdb.io/BpgRTgqZc46butEFssnwP3/" + key).then(data =>
+      data.json()
+    );
   };
 
   const saveAndShowAlert = ({ jsonOutput }) => {
@@ -1237,7 +1261,6 @@
 
     buttonsAndBehaviors.forEach(bab => attachButtonBehavior(bab));
 
-    setupClipboard("shareCVButton");
     processInput({ hash: window.location.hash });
   };
 

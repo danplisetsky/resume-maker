@@ -5,7 +5,6 @@ import loadCV from "./my/loadCV";
 import templateCV from "./my/templateCV";
 import print from "./my/print";
 import shareCV from "./my/shareCV";
-import setupClipboard from "./my/setupClipboard";
 import processInput from "./my/processInput";
 import saveInBrowser from "./my/saveInBrowser";
 import showHelp from "./my/showHelp";
@@ -48,7 +47,6 @@ window.onload = () => {
 
   buttonsAndBehaviors.forEach(bab => attachButtonBehavior(bab));
 
-  setupClipboard("shareCVButton");
   processInput({ hash: window.location.hash });
 };
 
