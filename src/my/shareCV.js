@@ -8,7 +8,7 @@ const shareCV = _ => {
 
   saveCV(base64, hash)
     .then(() => {
-      const link = window.location.host + "/#" + hash;
+      const link = window.location.host + window.location.pathname + "#" + hash;
       clipboard.writeText(link);
       swal({
         title: "Link created! (and copied to clipboard)",
