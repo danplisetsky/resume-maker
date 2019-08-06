@@ -13,7 +13,7 @@ const shareCV = _ => {
       swal({
         title: "Link created! (and copied to clipboard)",
         icon: "success",
-        text: link
+        text: link + "\n\n" + "It will expire in 7 days."
       });
     })
     .catch(e => {
