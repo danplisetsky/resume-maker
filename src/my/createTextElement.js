@@ -13,9 +13,9 @@ const createTextElement = ({
       [attachEditBehavior, ""],
       [
         attachActionContainer,
-        className == "compoundItemDescription"
+        className === "compoundItemDescription"
           ? ["delete"]
-          : ["addLink", "delete"]
+          : ["addStrikethrough", "addLink", "delete"]
       ]
     ])
   });

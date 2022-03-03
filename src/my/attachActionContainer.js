@@ -9,6 +9,7 @@ import deleteElementIfNotHoveredOver from "./deleteElementIfNotHoveredOver";
 import createSection from "./createSection";
 import DeleteAction from "./deleteAction";
 import attachEditBehavior from "./attachEditBehavior";
+import addStrikethrough from "./addStrikethrough";
 import createTextElement from "./createTextElement";
 import createDescriptionElement from "./createDescriptionElement";
 import createListElement from "./createListElement";
@@ -81,6 +82,7 @@ const createAction = (el, actionName) => {
       return () => insertAfter(el, createDetailElement());
     case "attachMoveUpBehavior":
     case "attachMoveDownBehavior":
+    case "addStrikethrough":
       return () => actionName(el);
     case "createLink":
       return () =>
@@ -118,6 +120,7 @@ const createActionIcons = (el, icons) => {
     ["addDetail", createDetailElement],
     ["addAfter", createSection],
     ["addLink", createLink],
+    ["addStrikethrough", addStrikethrough],
     ["removeLink", removeLink],
     ["moveUp", attachMoveUpBehavior],
     ["moveDown", attachMoveDownBehavior],

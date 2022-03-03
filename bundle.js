@@ -201,6 +201,18 @@
       DeleteParentIfNotLast: 4
   };
 
+  const addStrikethrough = el => {
+      const classList = el.classList;
+
+      switch(true) {
+          case classList.contains("textElement"):
+              el.style['textDecoration'] = el.style['textDecoration'] === 'line-through'
+                  ? ''
+                  : 'line-through';
+              return el;
+      }
+  };
+
   const createTextElement = ({
     text = "text",
     className = "textElement"
@@ -212,9 +224,9 @@
         [attachEditBehavior, ""],
         [
           attachActionContainer,
-          className == "compoundItemDescription"
+          className === "compoundItemDescription"
             ? ["delete"]
-            : ["addLink", "delete"]
+            : ["addStrikethrough", "addLink", "delete"]
         ]
       ])
     });
@@ -550,6 +562,7 @@
         return () => insertAfter(el, createDetailElement());
       case "attachMoveUpBehavior":
       case "attachMoveDownBehavior":
+      case "addStrikethrough":
         return () => actionName(el);
       case "createLink":
         return () =>
@@ -587,6 +600,7 @@
       ["addDetail", createDetailElement],
       ["addAfter", createSection],
       ["addLink", createLink],
+      ["addStrikethrough", addStrikethrough],
       ["removeLink", removeLink],
       ["moveUp", attachMoveUpBehavior],
       ["moveDown", attachMoveDownBehavior],
