@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  build-bundle:
+  build-and-publish:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -17,9 +17,3 @@ jobs:
         run: |
           npm install
           npm run build
-  publish-bundle:
-    runs-on: ubuntu-latest
-    steps:
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
