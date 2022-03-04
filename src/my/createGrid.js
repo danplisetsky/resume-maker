@@ -36,9 +36,10 @@ const createGrid = (
       });
     };
 
-    const processTextElement = ([fstChild]) => {
+    const processTextElement = ([fstChild], { style }) => {
       return createTextElement({
-        text: fstChild.textContent
+        text: fstChild.textContent,
+        style: { 'textDecoration': style['textDecoration'] }
       });
     };
 
@@ -206,10 +207,10 @@ const createGrid = (
     };
 
     const processChildren = ([fstElement, ...rest], children = []) => {
-      const processChild = fn => {
+      const processChild = (fn, extra) => {
         return processChildren(
           rest,
-          children.concat(fn(fstElement.childNodes))
+          children.concat(fn(fstElement.childNodes, extra))
         );
       };
 
@@ -218,7 +219,7 @@ const createGrid = (
         const classList = fstElement.classList;
         switch (true) {
           case classList.contains("textElement"):
-            return processChild(processTextElement);
+            return processChild(processTextElement, { style: fstElement.style });
           case classList.contains("textLinkElement"):
             return processChild(processTextLinkElement);
           case classList.contains("descriptionElement"):
