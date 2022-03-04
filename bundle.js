@@ -804,7 +804,8 @@
                   argsMeta,
                   ...argsChildren,
                   createTextElement({
-                    text: fstChild.innerText
+                    text: fstChild.innerText,
+                    style: { 'textDecoration': fstChild.style['textDecoration'] }
                   })
                 ])
               : fstChild.classList.contains("textLinkElement")
